@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>A New Picture of Segregation</title>
+        <meta charset="utf-8"/>
+        <!-- jQuery -->
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+        <!-- Fonts -->
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+         <!-- Semantic -->
+        <script src="semantic/dist/semantic.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+
+
+        <!-- D3 -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"  crossorigin="anonymous"></script>
+
+        <!-- Custom Stylesheet -->
+        <link rel="stylesheet" type="text/css" href="main.css">
+
+        <!-- Maplibre -->
+        <script src="https://unpkg.com/maplibre-gl@3.0.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>
+        <link
+          href="https://unpkg.com/maplibre-gl@3.0.1/dist/maplibre-gl.css"
+          rel="stylesheet"
+        />
+
+        <!-- Mapbox -->
+        <!-- <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"> -->
+        <!-- <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script> -->
+
+        <!-- Maplibre Search -->
+        <script src="https://unpkg.com/@stadiamaps/maplibre-search-box/dist/maplibre-search-box.umd.js"></script>
+        <link
+          href="https://unpkg.com/@stadiamaps/maplibre-search-box/dist/style.css"
+          rel="stylesheet"
+        />
+
+        <!-- Jawg search -->
+        <script src="https://api.jawg.io/libraries/jawg-places@latest/jawg-places.js?access-token=7a2eSRhtCbdwcC29QQVpudx5QTKDKgcGTS9H6ZZFXnGQICMzOlGsWklmqRvVnIYy"></script>
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@1.15.2/dist/maplibre-gl.min.css">
+          <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@1.15.2/dist/maplibre-gl.min.js"></script>
+        <!-- Protomaps -->
+        <script src="https://unpkg.com/pmtiles@2.10.0/dist/index.js"></script>
+
+        <!-- Scripts -->
+   <!--      <script src="js/mapmain.js"></script>
+        <script src="js/main.js"></script>
+    -->    
+    </head>
+    <body>
+        <div class="ui dimmerwrapper ">
+          <div class="ui page dimmer active">
+            <div class="content ui  very padded  container  introSegment">
+              
+              <h1 class="ui header introHeader">A New Picture of Segregation:
+              <br>Experienced Diversity Using Cell Phone Location Data</h1>
+              <p class="ui  introHeader"> text text text
+              </p>  
+            
+
+              <!-- <div class="ui primary button">Add</div> -->
+              <div id='undim'class="ui disabled big basic loading inverted button introButton"><b>Enter</b></div>
+            </div>
+          </div>
+        
+        <div id="map" class='ui container'></div>
+      
+
+        <div id ='info' class="ui container">
+
+            <!-- Search Bar -->
+            <h5> Search</h5>
+            <div id="my-container" class="ui fluid search mapboxgl-ctrl maplibregl-ctrl">
+             <div id = "searchBar" class="ui fluid search">
+                 <input id="my-input" style="width: 100%;" type="text" placeholder="Search">
+                 <button class="ui basic button">
+                  Ok
+                </button>
+             </div>
+             <div id="my-result-container" class="ui jawg-places-results"></div>
+            </div>
+              
+            <!-- Toggle Metrics -->
+            <h5 >Metric</h5>
+            <div id = "censusDropdown1" class="ui fluid search selection dropdown">
+              <input type="hidden" value="total_diversity_exp">
+              <i class="dropdown icon"></i>
+              <div class="text" >Total Experienced Diversity</div>
+              <div id='censusDropdown' class="menu"></div>
+            </div>
+
+
+            <!-- Legend -->
+                          <div class="ui divider"></div>
+              <div class="item compact disabled legendIcon" data-value="legend">
+
+                <div class='left aligned content censusLegend'>
+                  <h5 class="header smallHeader ">
+                  <!-- <i class="fa fa-info-circle "></i> -->
+                  Legend
+                  </h5>
+                </div>
+               
+               <font size="1px">Source: NHGIS Decennial census and ACS </font>
+              </div>
+              
+        </div>
+       
+        
+       
+    </body>
+    <footer>
+        <script src="js/mapmain.js"></script>
+        <script src="js/charts.js"></script>
+        <!-- <script src="js/main.js"></script> -->
+    </footer>
+</html>
