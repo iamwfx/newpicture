@@ -56,77 +56,14 @@
     -->    
 
     </head>
- <body>
-        <button class="openbtn" onclick="openNav()">☰ Toggle Sidepanel</button>  
-        <div id="mySidepanel" class="sidepanel">
-          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-          <a href="#">About</a>
-          <a href="download.html">Download</a>
-          <a href="#">Contact</a>
-        </div>
-
-   
-        <div class="ui dimmerwrapper ">
-          <div class="ui page dimmer active">
-            <div class="content ui  very padded  container  introSegment">
-              
-              <h1 class="ui header introHeader">A New Picture of Segregation:
-              <br>Experienced Diversity Using Cell Phone Location Data</h1>
-              <p class="ui  introHeader"> text text text
-              </p>  
-            
-
-              <!-- <div class="ui primary button">Add</div> -->
-              <div id='undim'class="ui disabled big basic loading inverted button introButton"><b>Enter</b></div>
-            </div>
-          </div>
-        
-        <div id="map" class='ui container'></div>
-      
-
-        <div id ='info' class="ui container">
-
-            <!-- Search Bar -->
-            <h5> Search</h5>
-            
-             <div id = "searchBar" class="ui fluid search">
-                 <input id="my-input" style="width: 100%;" type="text" placeholder="Search">
-                 <button class="ui basic button">
-                  Ok
-                </button>
-             </div>
-          
-       
-              
-            <!-- Toggle Metrics -->
-            <h5 >Metric</h5>
-            <div id = "censusDropdown1" class="ui fluid search selection dropdown">
-              <input type="hidden" value="total_diversity_exp">
-              <i class="dropdown icon"></i>
-              <div class="text" >Total Experienced Diversity</div>
-              <div id='censusDropdown' class="menu"></div>
-            </div>
+<div id="mySidepanel" class="sidepanel">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+  <a href="#">About</a>
+  <a href="#">Download</a>
+  <a href="#">Contact</a>
+</div>
 
 
-            <!-- Legend -->
-                          <div class="ui divider"></div>
-              <div class="item compact disabled legendIcon" data-value="legend">
-
-                <div class='left aligned content censusLegend'>
-                  <h5 class="header smallHeader ">
-                  <!-- <i class="fa fa-info-circle "></i> -->
-                  Legend
-                  </h5>
-                </div>
-               
-               <font size="1px">Source: NHGIS Decennial census and ACS </font>
-              </div>
-              
-        </div>
-       
-        
-       
-    </body>
     <footer>
         <script src="js/mapmain.js"></script>
         <script src="js/charts.js"></script>

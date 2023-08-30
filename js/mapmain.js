@@ -571,5 +571,12 @@ p_tract.getHeader().then(h => {
     });
 
 });
+function openNav() {
+  document.getElementById("mySidepanel").style.width = "340px";
+}
+
+function closeNav() {
+  document.getElementById("mySidepanel").style.width = "0";
+}
 
 
