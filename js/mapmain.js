@@ -571,12 +571,18 @@ p_tract.getHeader().then(h => {
     });
 
 });
-function openNav() {
-  document.getElementById("mySidepanel").style.width = "340px";
-}
 
-function closeNav() {
-  document.getElementById("mySidepanel").style.width = "0";
-}
+        // JavaScript code to toggle the side panel
+        let isSidePanelOpen = false;
 
-
+        function toggleNav() {
+            const sidepanel = document.getElementById("mySidepanel");
+            
+            if (isSidePanelOpen) {
+                sidepanel.style.width = "0";
+            } else {
+                sidepanel.style.width = "340px";
+            }
+            
+            isSidePanelOpen = !isSidePanelOpen;
+        }

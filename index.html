@@ -11,6 +11,9 @@
         <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100;300;400;500;600&display=swap" rel="stylesheet">
 
         <!-- Semantic -->
         <script src="semantic/dist/semantic.min.js"></script>
@@ -18,6 +21,7 @@
 
         <!-- Icon -->
         <link href='https://unpkg.com/css.gg@2.0.0/icons/css/menu.css' rel='stylesheet'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <!-- D3 -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"  crossorigin="anonymous"></script>
@@ -51,32 +55,36 @@
         <script src="https://unpkg.com/pmtiles@2.10.0/dist/index.js"></script>
 
         <!-- Scripts -->
-   <!--      <script src="js/mapmain.js"></script>
+        <!-- <script src="js/mapmain.js"></script>
         <script src="js/main.js"></script>
-    -->    
+        -->    
 
     </head>
- <body>
-        <button class="openbtn" onclick="openNav()">☰ Toggle Sidepanel</button>  
+    <body>
+      <!-- Menu button -->
+        <button class="openbtn" onclick="toggleNav()"><i class="gg-menu"></i></button>  
         <div id="mySidepanel" class="sidepanel">
-          <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+
           <a href="#">About</a>
           <a href="download.html">Download</a>
           <a href="#">Contact</a>
         </div>
 
-   
+       <div id ='title bar' class="title">
+        <h3>A New Picture of Segregation</h3>
+      </div>
+
+      <!-- Intro -->
         <div class="ui dimmerwrapper ">
           <div class="ui page dimmer active">
             <div class="content ui  very padded  container  introSegment">
-              
               <h1 class="ui header introHeader">A New Picture of Segregation:
               <br>Experienced Diversity Using Cell Phone Location Data</h1>
               <p class="ui  introHeader"> text text text
               </p>  
             
 
-              <!-- <div class="ui primary button">Add</div> -->
+      <!-- <div class="ui primary button">Add</div> -->
               <div id='undim'class="ui disabled big basic loading inverted button introButton"><b>Enter</b></div>
             </div>
           </div>
@@ -88,16 +96,21 @@
 
             <!-- Search Bar -->
             <h5> Search</h5>
-            
-             <div id = "searchBar" class="ui fluid search">
-                 <input id="my-input" style="width: 100%;" type="text" placeholder="Search">
-                 <button class="ui basic button">
-                  Ok
-                </button>
-             </div>
+            <div class="wrap">
+              <div id="my-container" class="ui fluid search mapboxgl-ctrl maplibregl-ctrl">
+                <div id="searchBar" class="ui fluid search">
+
+                    <input type="text" class="searchTerm" placeholder="What are you looking for?">
+                    <button type="submit" class="searchButton">
+                    <i class="fa fa-search"></i>
+                    </button>
+                  </div>
+              <div id="my-result-container" class="ui jawg-places-results"></div>
+            </div>
+              </div>
+
           
        
-              
             <!-- Toggle Metrics -->
             <h5 >Metric</h5>
             <div id = "censusDropdown1" class="ui fluid search selection dropdown">
@@ -111,7 +124,6 @@
             <!-- Legend -->
                           <div class="ui divider"></div>
               <div class="item compact disabled legendIcon" data-value="legend">
-
                 <div class='left aligned content censusLegend'>
                   <h5 class="header smallHeader ">
                   <!-- <i class="fa fa-info-circle "></i> -->
