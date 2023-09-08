@@ -1,72 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>A New Picture of Segregation</title>
-        <meta charset="utf-8"/>
-        <!-- jQuery -->
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-
-        <!-- Fonts -->
-        <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
-        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-        <!-- Semantic -->
-        <script src="semantic/dist/semantic.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
-
-        <!-- Icon -->
-        <link href='https://unpkg.com/css.gg@2.0.0/icons/css/menu.css' rel='stylesheet'>
-
-        <!-- D3 -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"  crossorigin="anonymous"></script>
-
-        <!-- Custom Stylesheet -->
-        <link rel="stylesheet" type="text/css" href="main.css">
-
-        <!-- Maplibre -->
-        <script src="https://unpkg.com/maplibre-gl@3.0.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>
-        <link
-          href="https://unpkg.com/maplibre-gl@3.0.1/dist/maplibre-gl.css"
-          rel="stylesheet"
-        />
-
-        <!-- Mapbox -->
-        <!-- <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"> -->
-        <!-- <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script> -->
-
-        <!-- Maplibre Search -->
-        <script src="https://unpkg.com/@stadiamaps/maplibre-search-box/dist/maplibre-search-box.umd.js"></script>
-        <link
-          href="https://unpkg.com/@stadiamaps/maplibre-search-box/dist/style.css"
-          rel="stylesheet"
-        />
-
-        <!-- Jawg search -->
-        <script src="https://api.jawg.io/libraries/jawg-places@latest/jawg-places.js?access-token=7a2eSRhtCbdwcC29QQVpudx5QTKDKgcGTS9H6ZZFXnGQICMzOlGsWklmqRvVnIYy"></script>
-          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@1.15.2/dist/maplibre-gl.min.css">
-          <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@1.15.2/dist/maplibre-gl.min.js"></script>
-        <!-- Protomaps -->
-        <script src="https://unpkg.com/pmtiles@2.10.0/dist/index.js"></script>
-
-        <!-- Scripts -->
-   <!--      <script src="js/mapmain.js"></script>
-        <script src="js/main.js"></script>
-    -->    
-
-    </head>
-<div id="mySidepanel" class="sidepanel">
-  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-  <a href="#">About</a>
-  <a href="#">Download</a>
-  <a href="#">Contact</a>
-</div>
-
-
-    <footer>
-        <script src="js/mapmain.js"></script>
-        <script src="js/charts.js"></script>
-        <!-- <script src="js/main.js"></script> -->
-    </footer>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Map Example</title>
+    <script src="mapdata.js"></script>
+    <script src="usmap.js"></script>
+  </head>
+    <body>
+        <div>
+            <div style="max-width: 700px"> <!-- Keep map above fold -->
+                <div id="map"></div>
+            </div>
+        </div>
+    </body>
 </html>
+      
+    
+
