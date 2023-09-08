@@ -25,6 +25,7 @@
 
         <!-- D3 -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"  crossorigin="anonymous"></script>
+        <script src="https://d3js.org/d3.v4.js"></script>
 
         <!-- Custom Stylesheet -->
         <link rel="stylesheet" type="text/css" href="main.css">
@@ -100,13 +101,13 @@
               <div id="my-container" class="ui fluid search mapboxgl-ctrl maplibregl-ctrl">
                 <div id="searchBar" class="ui fluid search">
 
-                    <input type="text" class="searchTerm" placeholder="What are you looking for?">
+                    <input type="text"  id="searchTerm" placeholder="What are you looking for?">
                     <button type="submit" class="searchButton">
                     <i class="fa fa-search"></i>
                     </button>
                   </div>
-              <div id="my-result-container" class="ui jawg-places-results"></div>
-            </div>
+                    <div id="my-result-container" class="ui jawg-places-results"></div>
+                  </div>
               </div>
 
           
@@ -133,7 +134,15 @@
                
                <font size="1px">Source: NHGIS Decennial census and ACS </font>
               </div>
+            <!-- boxplot -->
+             <div id="my_dataviz">
+                 
+
+
+             </div>
               
+            <!-- histogram -->
+             <div id="histogram"></div> 
         </div>
        
         
