@@ -691,7 +691,7 @@ svg.selectAll("toto")
 
 // set the dimensions and margins of the graph
 // set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 30, left: 40},
+/*var margin = {top: 10, right: 30, bottom: 30, left: 40},
     width = 460 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
@@ -740,4 +740,4 @@ svg.selectAll("rect")
       .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
       .attr("width", function(d) { return x(d.x1) - x(d.x0) - 1; })
       .attr("height", function(d) { return height - y(d.length); })
-      .style("fill", "#69b3a2");
+      .style("fill", "#69b3a2");*/

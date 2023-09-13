@@ -71,7 +71,7 @@ body{
 
 #searchTerm {
   width: 100%;
-  border: 1px solid #ffdede;
+  border: 1px solid #FFE1C7;
   border-right: none;
   padding: 10px;
   height: 36px;
@@ -84,7 +84,7 @@ body{
 .searchButton {
   width: 40px;
   height: 36px;
-  border: 1px solid #ffdede;
+  border: 1px solid #FFE1C7;
   background: white;
   text-align: center;
   color: black;
@@ -95,7 +95,7 @@ body{
 
 .ui.fluid.search.selection.dropdown {
   width: 100%;
-  border: 1px solid #ffdede;
+  border: 1px solid #FFE1C7;
   padding: 10px;
   height: 36px;
   border-radius: 5px 5px 5px 5px;
@@ -144,7 +144,7 @@ body{
   height: 100%;
   top: 50px;
   left: 0;
-  background-color: #ffdede;
+  background-color: #FFE1C7;
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 5px;
@@ -175,8 +175,8 @@ body{
   height: 50px;
   z-index: 3;
   cursor: pointer;
-  background-color: #ffdede;
-  color: darkgray;
+  background-color: #FFE1C7;
+  color: #91755B;
   /*padding: 10px 15px;*/
   border: none;
   display: flex;
@@ -192,8 +192,8 @@ body{
   width: 290px;
   height: 50px;
   z-index: 3;
-  background-color: #ffdede;
-  color: darkgray;
+  background-color: #FFE1C7;
+  color: #91755B;
   padding: 15px;
   border: none;
   display: flex;
