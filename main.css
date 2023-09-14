@@ -148,16 +148,17 @@ body{
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 5px;
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 
 }
 
 .sidepanel a {
-  padding: 8px 8px 8px 14px;
+  padding: 8px 75px 8px 15px;
   text-decoration: none;
   font-size: 25px;
-  color: white;
+  color: #91755B;
   display: block;
   transition: 0.3s;
+  text-align: left;
 }
 
 .sidepanel a:hover {

@@ -481,11 +481,27 @@ p_tract.getHeader().then(h => {
                                 [0.603, '#9ed93a'],
                                 [0.9, '#fde725']]
                         },
+                    'fill-outline-color': 'black',
+                    //'fill-outline-width': 2,
                     'fill-opacity': [
-                    'case',
+                    'interpolate',
+                    // Set the exponential rate of change to 0.5
+                    ['exponential', 0.5],
+                    ['zoom'],
+                    // When zoom is 10, buildings will be 100% transparent.
+                    10,
+                                        ['case',
                     ['boolean', ['feature-state', 'hover'], false],
                     1,
-                    0.5
+                    0.5],
+                    // When zoom is 18 or higher, buildings will be 100% opaque.
+                    20,
+                    ['case',
+                    ['boolean', ['feature-state', 'hover'], false],
+                    1,
+                    0.1]
+                    
+
                 ]
                     
                 }
@@ -512,8 +528,9 @@ p_tract.getHeader().then(h => {
                         'fill-opacity': [
                               'case',
                             ['boolean', ['feature-state', 'hover'], false],
-                            1,
-                            0.5
+                            0.8,
+                            0.4,
+
                         ]
                         
                     }
