@@ -1,10 +1,13 @@
-
+@font-face {
+  font-family: 'EduDiatypeRounded';
+  src: url('font/Edu Diatype Rounded Semi-Mono/EduDiatypeRoundedSemi-Mono-Regular.otf') format('opentype');
+}
 body {
         margin: 0;
         padding: 0;
         color: 'pink';
         font-size: 13px;
-        font-family: 'Barlow Condensed', sans-serif;
+        font-family: 'EduDiatypeRounded', Arial, sans-serif;
       }
 body * {
    -webkit-touch-callout: none;
@@ -49,7 +52,7 @@ background: repeating-linear-gradient(-45deg,        #ff0000,   #ff0000 5px,   #
 .introHeader{
   color:white !important;
   font-size: 15px;
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'EduDiatypeRounded', Arial, sans-serif;
 }
 .introButton{
   background:white !important;
@@ -57,27 +60,30 @@ background: repeating-linear-gradient(-45deg,        #ff0000,   #ff0000 5px,   #
 
 body{
   background: #f2f2f2;
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'EduDiatypeRounded', Arial, sans-serif;
 }
 
 /* searchbar */
 
-#searchBar {
-  width: 100%;
-  position: relative;
+
+
+.search {
+
   display: flex;
+  flex-direction: row;
 }
 
 
-#searchTerm {
+#my-input {
   width: 100%;
   border: 1px solid #FFE1C7;
   border-right: none;
-  padding: 10px;
+
   height: 36px;
   border-radius: 5px 0 0 5px;
   outline: none;
-  color: black;
+  color: black; 
+  display: flex;
 }
 
 
@@ -108,9 +114,6 @@ body{
     width:100%;
 }   
 
-
-
-
 }
 .popup{
   cursor-events: none
@@ -123,16 +126,16 @@ body{
 
 #info {
   position: absolute;
-  left: 0;
-  top:50px;
+  left:0;
+  top:0px;
   background: #fff;
-  height: 95%;
+  height: 100%;
   bottom: 0;
-  padding: 15px;
+  padding: 50px 15px 5px 15px;
   width: 340px;
   z-index: 1; /* Stay on top */
   overflow-x: hidden; /* Disable horizontal scroll */
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'EduDiatypeRounded', Arial, sans-serif;
 
 
 }
@@ -199,10 +202,15 @@ body{
   border: none;
   display: flex;
   align-items: center;
-  font-family: 'Barlow Condensed', sans-serif;
+  font-family: 'EduDiatypeRounded', Arial, sans-serif;
 
 }
 
 .openbtn:hover {
   background-color:#444;
+}
+
+.hatch-pattern {
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, #000 5px, #000 10px);
+  background-size: 10px 10px; /* Adjust the size and spacing of the hatch lines */
 }

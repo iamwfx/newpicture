@@ -8,9 +8,9 @@ var simplemaps_usmap_mapdata={
     
 		//State defaults
 		state_description: "State description",
-    state_color: "#88A4BC",
-    state_hover_color: "#3B729F",
-    state_url: "https://simplemaps.com",
+    state_color: "lightgray",
+    state_hover_color: "gray",
+    state_url: "https://google.com",
     border_size: 1.5,
     border_color: "#ffffff",
     all_states_inactive: "no",
@@ -33,8 +33,8 @@ var simplemaps_usmap_mapdata={
 		//Label defaults
 		label_color: "#ffffff",
     label_hover_color: "#ffffff",
-    label_size: 22,
-    label_font: "Arial",
+    label_size: 15,
+    label_font: "EduDiatypeRounded",
     hide_labels: "no",
    
 		//Zoom settings
@@ -58,7 +58,7 @@ var simplemaps_usmap_mapdata={
     popup_opacity: 0.9,
     popup_shadow: 1,
     popup_corners: 5,
-    popup_font: "12px/1.5 Verdana, Arial, Helvetica, sans-serif",
+    popup_font: "EduDiatypeRounded",
     popup_nocss: "no",
     //popup_sticky: "yes", // Add this line to make the popup stable
     //popup_location: "location" // Add this line to make the popup stable
@@ -74,6 +74,8 @@ var simplemaps_usmap_mapdata={
     fade_time: 0.1,
     link_text: "View Website"
   },
+
+  
   state_specific: {
     HI: {
       name: "Hawaii",
