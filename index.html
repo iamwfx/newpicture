@@ -63,17 +63,7 @@
     </head>
     <body>
       <!-- Menu button -->
-        <button class="openbtn" onclick="toggleNav()"><i class="gg-menu"></i></button>  
-        <div id="mySidepanel" class="sidepanel">
-
-          <a href="#">About</a>
-          <a href="download.html">Download</a>
-          <a href="#">Contact</a>
-        </div>
-
-       <div id ='title bar' class="title">
-        <h3>A New Picture of Segregation</h3>
-      </div>
+        
 
       <!-- Intro -->
         <div class="ui dimmerwrapper ">
@@ -90,25 +80,36 @@
             </div>
           </div>
         
-        <div id="map" class='ui container'></div>
-      
+                <div id="map" class='ui container'></div>
+                <div id ='info' class="ui container">
+                  <button class="openbtn" onclick="toggleNav()"><i class="gg-menu"></i></button>  
+                    <div id="mySidepanel" class="sidepanel">
+                      <a href="#">About</a>
+                      <a href="download.html">Download</a>
+                      <a href="#">Contact</a>
+                    </div>
 
-        <div id ='info' class="ui container">
+            <div id ='title bar' class="title">
+              <h3>A New Picture of Segregation</h3>
+            </div>
+                  
+
 
             <!-- Search Bar -->
             <h5> Search</h5>
-            <div class="wrap">
+            <div class="search">
               <div id="my-container" class="ui fluid search mapboxgl-ctrl maplibregl-ctrl">
-                <div id="searchBar" class="ui fluid search">
-
-                    <input type="text"  id="searchTerm" placeholder="What are you looking for?">
+                 <div id = "searchBar" class="ui fluid search">
+                    <input id="my-input" type="text" placeholder="What are you looking for?">
+                    <!--<input type="text"  id="searchTerm" placeholder="What are you looking for?">-->
                     <button type="submit" class="searchButton">
                     <i class="fa fa-search"></i>
                     </button>
                   </div>
                     <div id="my-result-container" class="ui jawg-places-results"></div>
                   </div>
-              </div>
+                 </div>
+
 
           
        
@@ -140,11 +141,17 @@
 
 
              </div>
-              
+              </div>
             <!-- histogram -->
             <!-- <div id="histogram"></div> 
         </div>-->
-       
+       <svg width="0" height="0">
+  <defs>
+    <pattern id="hatch-pattern" width="10" height="10" patternUnits="userSpaceOnUse">
+      <line x1="0" y1="0" x2="10" y2="10" stroke="black" stroke-width="2" />
+    </pattern>
+  </defs>
+</svg>
         
        
     </body>
@@ -153,4 +160,6 @@
         <script src="js/charts.js"></script>
         <!-- <script src="js/main.js"></script> -->
     </footer>
+
+    
 </html>
