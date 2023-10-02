@@ -24,7 +24,7 @@ const censusCatDict = {
                    '#f7fcf5', '#d5efcf', '#9ed798', '#55b567', '#1d8641', '#00441b'
                 ],
             "black_diversity_exp": [
-              '#f7fbff', '#f7fbff', '#9ac8e0', '#d1e2f3', '#529dcc', '#1d6cb1', '#08306b'
+              '#f7fbff', '#d6edfb', '#98c5e0', '#7ab5e2', '#449bcc', '#2173b2', '#1d3666'
               ],
             "asian_diversity_exp":  [
                '#FFF7EE', '#FFF7EE', '#FDDFC1', '#FCB77E', '#F68A48', '#D5602E', '#91492F'
@@ -55,19 +55,19 @@ const censusCatDict_v2 = {
                                 [.25, '#00441b']
                                 ],
             "black_diversity_exp": [[0, '#f7fbff'],
-                                [0.014, '#f7fbff'],
-                                [0.043, '#9ac8e0'],
-                                [.079, '#d1e2f3'],
-                                [0.122, '#529dcc'],
-                                [0.17, '#1d6cb1'],
-                                [.25, '#08306b']],
+                                [0.014, '#d6edfb'],
+                                [0.043, '#98c5e0'],
+                                [.079, '#7ab5e2'],
+                                [0.122, '#449bcc'],
+                                [0.17, '#2173b2'],
+                                [.25, '#1d3666']],
             "asian_diversity_exp":  [[0, '#FFF7EE'],
-                                [0.01, '#FFF7EE'],
-                                [0.032, '#FDDFC1'],
-                                [.062, '#FCB77E'],
-                                [0.104, '#F68A48'],
-                                [0.162, '#D5602E'],
-                                [.25, '#91492F']],
+                                [0.01, '#FCD2C1'],
+                                [0.032, '#E0A586'],
+                                [.062, '#C58258'],
+                                [0.104, '#A7592F'],
+                                [0.162, '#89381D'],
+                                [.25, '#5C1C0C']],
             "hispanic_diversity_exp": [[0, '#FFF7F2'],
                                 [0.018, '#FFF7F2'],
                                 [0.055, '#FCD3C2'],
@@ -128,12 +128,12 @@ const choroplethColors={'white_diversity_exp':{
                         'black_diversity_exp':{
                             property:'black_diversity_exp',
                             stops: [[0, '#f7fbff'],
-                                [0.014, '#f7fbff'],
-                                [0.043, '#9ac8e0'],
-                                [.079, '#d1e2f3'],
-                                [0.122, '#529dcc'],
-                                [0.17, '#1d6cb1'],
-                                [.25, '#08306b']],
+                                [0.014, '#d6edfb'],
+                                [0.043, '#98c5e0'],
+                                [.079, '#7ab5e2'],
+                                [0.122, '#449bcc'],
+                                [0.17, '#2173b2'],
+                                [.25, '#1d3666']],
                              default: 'gray'
                         }, 
                         'asian_diversity_exp':{
@@ -509,13 +509,13 @@ p_tract.getHeader().then(h => {
                     12,
                                         ['case',
                     ['boolean', ['feature-state', 'hover'], false],
-                    0.8,
-                    0.4],
+                    0.9,
+                    0.6],
                     // When zoom is 18 or higher, buildings will be 100% opaque.
                     20,
                     ['case',
                     ['boolean', ['feature-state', 'hover'], false],
-                    0.6,
+                    0.9,
                     0.1]
                     
 
@@ -545,11 +545,12 @@ p_tract.getHeader().then(h => {
                         },
 
 
+
                         'fill-opacity': [
                               'case',
                             ['boolean', ['feature-state', 'hover'], false],
-                            0.8,
-                            0.4,
+                            0.9,
+                            0.6,
 
                         ]
                         

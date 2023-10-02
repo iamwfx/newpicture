@@ -75,8 +75,8 @@ body{
 
 
 #my-input {
-  width: 100%;
-  border: 1px solid #FFE1C7;
+  width: 270px;
+  border: 1px solid #A5DEE4;
   border-right: none;
 
   height: 36px;
@@ -90,7 +90,7 @@ body{
 .searchButton {
   width: 40px;
   height: 36px;
-  border: 1px solid #FFE1C7;
+  border: 1px solid #A5DEE4;
   background: white;
   text-align: center;
   color: black;
@@ -101,7 +101,7 @@ body{
 
 .ui.fluid.search.selection.dropdown {
   width: 100%;
-  border: 1px solid #FFE1C7;
+  border: 1px solid #A5DEE4;
   padding: 10px;
   height: 36px;
   border-radius: 5px 5px 5px 5px;
@@ -147,7 +147,7 @@ body{
   height: 100%;
   top: 50px;
   left: 0;
-  background-color: #FFE1C7;
+  background-color: #A5DEE4;
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 5px;
@@ -155,10 +155,10 @@ body{
 }
 
 .sidepanel a {
-  padding: 8px 75px 8px 15px;
+  padding: 8px 75px 5px 15px;
   text-decoration: none;
-  font-size: 25px;
-  color: #91755B;
+  font-size: 18px;
+  color: #1C2526;
   display: block;
   transition: 0.3s;
   text-align: left;
@@ -179,8 +179,8 @@ body{
   height: 50px;
   z-index: 3;
   cursor: pointer;
-  background-color: #FFE1C7;
-  color: #91755B;
+  background-color: #A5DEE4;
+  color: #1C2526;
   /*padding: 10px 15px;*/
   border: none;
   display: flex;
@@ -196,8 +196,8 @@ body{
   width: 290px;
   height: 50px;
   z-index: 3;
-  background-color: #FFE1C7;
-  color: #91755B;
+  background-color: #A5DEE4;
+  color: #1C2526;
   padding: 15px;
   border: none;
   display: flex;
