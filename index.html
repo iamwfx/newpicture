@@ -18,7 +18,8 @@
         <!-- Semantic -->
         <script src="semantic/dist/semantic.min.js"></script>
         <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
-
+        <script src="semantic/dist/components/dropdown.js"></script>
+        <link rel="stylesheet" type="text/css" href="semantic/dist/components/dropdown.min.css">
         <!-- Icon -->
         <link href='https://unpkg.com/css.gg@2.0.0/icons/css/menu.css' rel='stylesheet'>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -82,7 +83,7 @@
         
                 <div id="map" class='ui container'></div>
                 <div id ='info' class="ui container">
-                  <button class="openbtn" onclick="toggleNav()"><i class="gg-menu"></i></button>  
+                  <!--<button class="openbtn" onclick="toggleNav()"><i class="gg-menu"></i></button>  -->
                     <div id="mySidepanel" class="sidepanel">
                       <a href="#">About</a>
                       <a href="download.html">Download</a>
@@ -91,6 +92,13 @@
 
             <div id ='title bar' class="title">
               <h3>A New Picture of Segregation</h3>
+
+            </div>
+            <div id ='menu-buttons' class="my-button">
+                      <a href="#">About</a>
+                      <a href="download.html">Download</a>
+                      <a href="https://www.urbandataresearchlab.org/">Urban Data Research Lab</a>
+
             </div>
                   
 
@@ -100,7 +108,7 @@
             <div class="search">
               <div id="my-container" class="ui fluid search mapboxgl-ctrl maplibregl-ctrl">
                  <div id = "searchBar" class="ui fluid search">
-                    <input id="my-input" type="text" placeholder="What are you looking for?">
+                    <input id="my-input" type="text" placeholder="  What are you looking for?">
                     <!--<input type="text"  id="searchTerm" placeholder="What are you looking for?">-->
                     <button type="submit" class="searchButton">
                     <i class="fa fa-search"></i>
@@ -110,9 +118,15 @@
                   </div>
                  </div>
 
-
+<br>
           
-       
+                     <h5>City</h5>
+        <div id = "cityDropdown1" class="ui fluid search selection dropdown">
+          <input type="hidden" name="year">
+          <i class="dropdown icon"></i>
+          <div class="text">Cleveland</div>
+          <div id='cityDropdown' class="menu"></div>
+        </div>
             <!-- Toggle Metrics -->
             <h5 >Metric</h5>
             <div id = "censusDropdown1" class="ui fluid search selection dropdown">
@@ -135,25 +149,19 @@
                
                <font size="1px">Source: NHGIS Decennial census and ACS </font>
               </div>
+
             <!-- boxplot -->
+            <h5 >Boxplot</h5>
              <div id="my_dataviz">
-                 
-
-
-             </div>
-              </div>
+            </div>
+              
             <!-- histogram -->
-            <!-- <div id="histogram"></div> 
-        </div>-->
-       <svg width="0" height="0">
-  <defs>
-    <pattern id="hatch-pattern" width="10" height="10" patternUnits="userSpaceOnUse">
-      <line x1="0" y1="0" x2="10" y2="10" stroke="black" stroke-width="2" />
-    </pattern>
-  </defs>
-</svg>
-        
-       
+            <h5 >Histogram</h5>
+            <div id="my_histogram"></div>  
+
+
+</div>     
+
     </body>
     <footer>
         <script src="js/mapmain.js"></script>

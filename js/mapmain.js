@@ -697,7 +697,29 @@ p_tract.getHeader().then(h => {
             }
             
             isSidePanelOpen = !isSidePanelOpen;
-        }
+        };
+
+
+/////////////////////////////////
+//////// initial parameters /////
+/////////////////////////////////
+
+/// Definite the initial category parameters
+var city='Cleveland';
+
+
+
+/////////////////////////////////
+// initialize city dropdown /////
+/////////////////////////////////
+/*var $cityDropdown = $("#cityDropdown");
+$('#cityDropdown1').dropdown();
+var cityList = cities.sort();
+
+$cityDropdown.empty();
+$.each(cityList, function() {
+$cityDropdown.append($('<div class="item" data-value="'+this+'">'+this+'</div>'))});*/
+
 /////////////////////////////////
 ///////////// Boxplot ///////////
 /////////////////////////////////
@@ -707,22 +729,22 @@ function updateBoxplot(category) {
     return d[0];
   });
 
-  // Update the Y scale domain based on the legend data
-  y.domain([d3.min(legendData), d3.max(legendData)]);
-  
+  // Update the X scale domain based on the legend data (swap x and y)
+  x.domain([d3.min(legendData), d3.max(legendData)]);
+
   // Select the boxplot elements and update their positions and sizes
   svg.select("line")
-    .attr("y1", y(d3.min(legendData)))
-    .attr("y2", y(d3.max(legendData)));
-    
+    .attr("x1", x(d3.min(legendData)))
+    .attr("x2", x(d3.max(legendData)));
+
   svg.select("rect")
-    .attr("y", y(d3.quantile(legendData, .75)))
-    .attr("height", y(d3.quantile(legendData, .25)) - y(d3.quantile(legendData, .75)));
+    .attr("x", x(d3.quantile(legendData, .25)))
+    .attr("width", x(d3.quantile(legendData, .75)) - x(d3.quantile(legendData, .25)));
 
   svg.selectAll("line.toto")
     .data([d3.min(legendData), d3.median(legendData), d3.max(legendData)])
-    .attr("y1", function (d) { return y(d); })
-    .attr("y2", function (d) { return y(d); });
+    .attr("x1", function (d) { return x(d); })
+    .attr("x2", function (d) { return x(d); });
 }
 
 $('#censusDropdown1').on('change', function () {
@@ -730,22 +752,21 @@ $('#censusDropdown1').on('change', function () {
   updateBoxplot(selectedCategory);
 });
 
+// Set the dimensions and margins of the graph
+var margin = { top: 10, right: 10, bottom: 30, left: 10 },
+  width = 310 - margin.left - margin.right,
+  height = 90 - margin.top - margin.bottom;
 
-// set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 30, left: 40},
-  width = 300 - margin.left - margin.right,
-  height = 300 - margin.top - margin.bottom;
-
-// append the svg object to the body of the page
+// Append the SVG object to the body of the page
 var svg = d3.select("#my_dataviz")
-.append("svg")
+  .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
-.append("g")
+  .append("g")
   .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")");
+    "translate(" + margin.left + "," + margin.top + ")");
 
-// create dummy data
+// Create dummy data
 var data = censusCatDict_v2['white_diversity_exp'].map(function (d) {
   return d[0];
 });
@@ -759,97 +780,101 @@ var interQuantileRange = q3 - q1
 var min = q1 - 1.5 * interQuantileRange
 var max = q1 + 1.5 * interQuantileRange
 
-// Show the Y scale
-var y = d3.scaleLinear()
+// Show the X scale (swap x and y)
+var x = d3.scaleLinear()
   .domain([d3.min(data), d3.max(data)]) // Adjust the domain based on your legend data
-  .range([height, 0]);
-svg.call(d3.axisLeft(y));
+  .range([0, width]);
+svg.call(d3.axisBottom(x)); // Update to use axisBottom
 
-var center = 200; // Adjust as needed
-var width = 100; // Adjust as needed
+var center = 50; // Adjust as needed
+var height = 20; // Adjust as needed
 
-// Show the main vertical line
+// Show the main horizontal line (swap x and y)
 svg.append("line")
-  .attr("x1", center)
-  .attr("x2", center)
-  .attr("y1", y(d3.min(data)))
-  .attr("y2", y(d3.max(data)))
+  .attr("x1", x(d3.min(data)))
+  .attr("x2", x(d3.max(data)))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
   .attr("stroke", "black");
 
-// Show the box
+// Show the box (swap x and y)
 svg.append("rect")
-  .attr("x", center - width / 2)
-  .attr("y", y(d3.quantile(data, .75)))
-  .attr("height", y(d3.quantile(data, .25)) - y(d3.quantile(data, .75)))
-  .attr("width", width)
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2) // Swap x and y
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height) // Swap width and height
   .attr("stroke", "black")
-  .style("fill", "#69b3a2");
+  .style("fill", "#A5DEE4");
 
-// Show median, min, and max horizontal lines
+// Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
   .data([d3.min(data), d3.median(data), d3.max(data)])
   .enter()
   .append("line")
-  .attr("x1", center - width / 2)
-  .attr("x2", center + width / 2)
-  .attr("y1", function (d) { return y(d); })
-  .attr("y2", function (d) { return y(d); })
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
   .attr("stroke", "black");
+
+
 
 /////////////////////////////////
 ///////////// Histogram ///////////
 /////////////////////////////////
 
 
-// set the dimensions and margins of the graph
-// set the dimensions and margins of the graph
-/*var margin = {top: 10, right: 30, bottom: 30, left: 40},
-    width = 460 - margin.left - margin.right,
-    height = 400 - margin.top - margin.bottom;
+// Set the dimensions and margins of the graph for the histogram
+var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
+    histogramWidth = 340 - histogramMargin.left - histogramMargin.right,
+    histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
 
-// append the svg object to the body of the page
-var svg = d3.select("#histogram")
+// Append the SVG object to the body of the page for the histogram
+var histogramSvg = d3.select("#my_histogram")
   .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
+    .attr("width", histogramWidth + histogramMargin.left + histogramMargin.right)
+    .attr("height", histogramHeight + histogramMargin.top + histogramMargin.bottom)
   .append("g")
     .attr("transform",
-          "translate(" + margin.left + "," + margin.top + ")");
+          "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
+
 
 // get the data
-
+d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", function(data) {
 
   // X axis: scale and draw:
-var x = d3.scaleLinear()
-    .domain([0, d3.max(data)]) // Update the domain to match your data
-    .range([0, width]);
-svg.append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
+  var x = d3.scaleLinear()
+      .domain([0, 1000])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+      .range([0, histogramWidth]);
+  histogramSvg.append("g")
+      .attr("transform", "translate(0," + histogramHeight + ")")
+      .call(d3.axisBottom(x));
 
-// set the parameters for the histogram
-var histogram = d3.histogram()
-    .value(function(d) { return d; }) // Update to use your data
-    .domain(x.domain())
-    .thresholds(x.ticks(70));
+  // set the parameters for the histogram
+  var histogram = d3.histogram()
+      .value(function(d) { return d.price; })   // I need to give the vector of value
+      .domain(x.domain())  // then the domain of the graphic
+      .thresholds(x.ticks(70)); // then the numbers of bins
 
-// And apply this function to data to get the bins
-var bins = histogram(data);
+  // And apply this function to data to get the bins
+  var bins = histogram(data);
 
-// Y axis: scale and draw:
-var y = d3.scaleLinear()
-    .range([height, 0]);
-y.domain([0, d3.max(bins, function(d) { return d.length; })]);
-svg.append("g")
-    .call(d3.axisLeft(y));
+  // Y axis: scale and draw:
+  var y = d3.scaleLinear()
+      .range([histogramHeight, 0]);
+      y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+  histogramSvg.append("g")
+      .call(d3.axisLeft(y));
 
-// append the bar rectangles to the svg element
-svg.selectAll("rect")
-    .data(bins)
-    .enter()
-    .append("rect")
-      .attr("x", 1)
-      .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-      .attr("width", function(d) { return x(d.x1) - x(d.x0) - 1; })
-      .attr("height", function(d) { return height - y(d.length); })
-      .style("fill", "#69b3a2");*/
+  // append the bar rectangles to the svg element
+  histogramSvg.selectAll("rect")
+      .data(bins)
+      .enter()
+      .append("rect")
+        .attr("x", 1)
+        .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+        .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+        .attr("height", function(d) { return histogramHeight - y(d.length); })
+        .style("fill", "#A5DEE4")
+
+});
