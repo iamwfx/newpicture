@@ -64,7 +64,18 @@
     </head>
     <body>
       <!-- Menu button -->
-        
+                    <div class="search">
+              <div id="my-container" class="ui fluid search mapboxgl-ctrl maplibregl-ctrl">
+                 <div id = "searchBar" class="ui fluid search">
+                    <input id="my-input" type="text" placeholder="  What are you looking for?">
+                    <!--<input type="text"  id="searchTerm" placeholder="What are you looking for?">-->
+                    <button type="submit" class="searchButton">
+                    <i class="fa fa-search"></i>
+                    </button>
+                  </div>
+                    <div id="my-result-container" class="ui jawg-places-results"></div>
+                  </div>
+                 </div>
 
       <!-- Intro -->
         <div class="ui dimmerwrapper ">
@@ -82,6 +93,7 @@
           </div>
         
                 <div id="map" class='ui container'></div>
+                
                 <div id ='info' class="ui container">
                   <!--<button class="openbtn" onclick="toggleNav()"><i class="gg-menu"></i></button>  -->
                     <div id="mySidepanel" class="sidepanel">
@@ -105,18 +117,7 @@
 
             <!-- Search Bar -->
             <h5> Search</h5>
-            <div class="search">
-              <div id="my-container" class="ui fluid search mapboxgl-ctrl maplibregl-ctrl">
-                 <div id = "searchBar" class="ui fluid search">
-                    <input id="my-input" type="text" placeholder="  What are you looking for?">
-                    <!--<input type="text"  id="searchTerm" placeholder="What are you looking for?">-->
-                    <button type="submit" class="searchButton">
-                    <i class="fa fa-search"></i>
-                    </button>
-                  </div>
-                    <div id="my-result-container" class="ui jawg-places-results"></div>
-                  </div>
-                 </div>
+
 
 <br>
 <br>
@@ -125,7 +126,7 @@
         <div id = "cityDropdown1" class="ui fluid search selection dropdown">
           <input type="hidden" name="year">
           <i class="dropdown icon"></i>
-          <div class="text">Cleveland</div>
+          <div class="text">Ithaca, NY</div>
           <div id='cityDropdown' class="menu"></div>
         </div>
             <!-- Toggle Metrics -->
@@ -136,28 +137,32 @@
               <div class="text" >Total Experienced Diversity</div>
               <div id='censusDropdown' class="menu"></div>
             </div>
-
+            <br>
+ <div class="ui divider"></div>
 
 
 <h5 >Factors</h5>
-<button type="button" class="collapsible">Open Collapsible</button>
+<button type="button" class="collapsible">Total Population</button>
 <div class="collapsible-content">
-  <p>Lorem ipsum...</p>
+   <div id="my_dataviz"></div>
 </div>
-<button type="button" class="collapsible">Open Collapsible</button>
+<button type="button" class="collapsible">Total schools</button>
 <div class="collapsible-content">
-  <p>Lorem ipsum...</p>
+   <div id="my_dataviz1"></div>
 </div>
-<button type="button" class="collapsible">Open Collapsible</button>
+<button type="button" class="collapsible">Higher Education</button>
 <div class="collapsible-content">
-  <p>Lorem ipsum...</p>
+   <div id="my_dataviz2"></div>
 </div>
-<button type="button" class="collapsible">Open Collapsible</button>
+<button type="button" class="collapsible">Median Income</button>
 <div class="collapsible-content">
-  <p>Lorem ipsum...</p>
+   <div id="my_dataviz3"></div>
 </div>
+            <!-- histogram -->
+            <h5 >Histogram</h5>
+            <div id="my_histogram"></div>  
             <!-- Legend -->
-                          <div class="ui divider"></div>
+                         
               <div class="item compact disabled legendIcon" data-value="legend">
                 <div class='left aligned content censusLegend'>
                   <h5 class="header smallHeader ">
@@ -169,14 +174,7 @@
                <font size="1px">Source: NHGIS Decennial census and ACS </font>
               </div>
 
-            <!-- boxplot -->
-            <h5 >Boxplot</h5>
-             <div id="my_dataviz">
-            </div>
-              
-            <!-- histogram -->
-            <h5 >Histogram</h5>
-            <div id="my_histogram"></div>  
+
 
 
 </div>     
