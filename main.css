@@ -86,7 +86,7 @@ body{
   border-right: none;
   position: relative;
   top: 0.1vw;
-  left: calc(100vw - 370px);
+  left: calc(100vw - 390px);
   height: 36px;
   border-radius: 5px 0 0 5px;
   outline: none;
@@ -104,7 +104,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   border-right: none;
   position: relative;
   top: calc(0.1vw + 36px);
-  left: calc(100vw - 680px);
+  left: calc(100vw - 700px);
 
 }
 
@@ -116,7 +116,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   text-align: center;
   position: relative;
   top: 0.1vw;
-  left: calc(100vw - 370px);
+  left: calc(100vw - 390px);
   color: black;
   border-radius: 0 5px 5px 0;
   cursor: pointer;
