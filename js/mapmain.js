@@ -381,13 +381,15 @@ maplibregl.addProtocol("pmtiles",protocol.tile);
 
 let PMTILES_URL_tract = "https://dewsfcxuf47u5.cloudfront.net/segregation_all-10-13.pmtiles";
 let PMTILES_URL_county = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties-2-11.pmtiles";
+let PMTILES_URL_CBSA = "https://dewsfcxuf47u5.cloudfront.net/tl_2020_us_cbsa.pmtiles";
 
 const p_tract = new pmtiles.PMTiles(PMTILES_URL_tract)
 const p_county = new pmtiles.PMTiles(PMTILES_URL_county)
+const p_CBSA = new pmtiles.PMTiles(PMTILES_URL_CBSA)
 
 protocol.add(p_tract);
 protocol.add(p_county);
-
+protocol.add(p_CBSA);
 
 const baseWidth = .5
 const baseZoom = 4
@@ -458,6 +460,8 @@ function updateLegend(category){
 
 }
 
+///////////////pop//////////////
+
 function createPopUp(popUp,layer,map,hoveredStateId){
     var layerPopUpInfo = {
          'counties':{
@@ -476,10 +480,13 @@ function createPopUp(popUp,layer,map,hoveredStateId){
         // e.stopPropagation();
         metric = $("#censusDropdown1 input").val();
         var div_score_exp  = e.features[0]['properties'][metric];
-        
+        var ba_perc = e.features[0]['properties']['ba_perc'];
+
         // Get the text
-        popUpStr = ` <div class='popup'>
-          <h4>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h4></div>`
+popUpStr = `<div class='popup'>
+    <h4>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h4>
+    <p>ba_perc: ${ba_perc}</p>
+</div>`;
 
         popUp.setHTML(popUpStr);
         popUp.setLngLat([e.lngLat.lng, e.lngLat.lat+.003]);
@@ -622,9 +629,9 @@ p_tract.getHeader().then(h => {
         url: "pmtiles://" + PMTILES_URL_county,
         });
 
-        map.addImage('hatch-pattern', '/pattern-test.png', {
-            //'width': 10,  // Adjust the width as needed
-            //'height': 10  // Adjust the height as needed
+        map.addSource('NAME',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_CBSA,
         });
 
 
@@ -802,11 +809,33 @@ p_tract.getHeader().then(h => {
 
             })
 
+/////////////////////////////////
+///////////// popup ///////////
+/////////////////////////////////
 
         const popup = new maplibregl.Popup({
           closeButton: false,
           closeOnClick: false
         });
+
+        map.on('mouseenter','segregation_allfgb',function(e){
+            const coordinates = e.features[0].geometry.coordinates.slice();
+                function emptyToYesNo(val){
+                  if (val.length > 1){
+                      return "Yes"} else {return "No"};
+              }
+              const total_pop =emptyToYesNo(e.features[0].properties.total_pop); // We apply this function to our value.
+              /// THERE ARE THREE MORE VARIABLES MISSING!
+              /// FILL IN THE RES
+              var description = '<h4>' + total_pop + '</h4>'
+
+               popup.setLngLat(coordinates[0][0]).setHTML(description).addTo(map);
+        })
+
+          map.on('mouseleave', 'segregation_allfgb', function() {
+            map.getCanvas().style.cursor = '';
+            popup.remove();
+            });
 
 
         const delay = 70;
@@ -987,7 +1016,7 @@ svg.selectAll("toto")
   .attr("stroke", "black");
 
 /////////////////////////////////
-///////////// Boxplot ///////////
+///////////// Boxplot school ///////////
 /////////////////////////////////
 function updateBoxplot(category) {
   // Extract data from the selected category in the legend
@@ -1104,6 +1133,7 @@ var svg = d3.select("#my_dataviz2")
 // Create dummy data
 var data = [0.079879014,0.130764853,0.218333871,0.370618273,0.546269361]
 
+
 // Compute summary statistics used for the box:
 var data_sorted = data.sort(d3.ascending)
 var q1 = d3.quantile(data_sorted, .25)
@@ -1122,6 +1152,8 @@ svg.call(d3.axisBottom(x)); // Update to use axisBottom
 var center = 50; // Adjust as needed
 var height = 20; // Adjust as needed
 
+var ba_perc = ba_perc
+
 // Show the main horizontal line (swap x and y)
 svg.append("line")
   .attr("x1", x(d3.min(data)))
@@ -1129,6 +1161,7 @@ svg.append("line")
   .attr("y1", center) // Swap y1 and x1
   .attr("y2", center) // Swap y2 and x2
   .attr("stroke", "black");
+
 
 // Show the box (swap x and y)
 svg.append("rect")
@@ -1149,6 +1182,14 @@ svg.selectAll("toto")
   .attr("y1", center - height / 2) // Swap x1 and y1
   .attr("y2", center + height / 2) // Swap x2 and y2
   .attr("stroke", "black");
+
+  svg.append("line")
+  .attr("x1", x(ba_perc))
+  .attr("x2", x(ba_perc))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red"); // You can choose a color for the line
+
 /////////////////////////////////
 //////// Boxplot Income//////////
 /////////////////////////////////
