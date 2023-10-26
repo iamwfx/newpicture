@@ -1,4 +1,10 @@
 
+d3.csv("csv/boxplot_summary_national.csv", function(data) {
+    for (var i = 0; i < data.length; i++) {
+
+        console.log(data[i].category);
+    }
+});
 
 //Globals
 const catDict ={'white_diversity_exp':'White Experienced Diversity',
@@ -466,7 +472,9 @@ function updateLegend(category){
 
 let baPercValue = null;
 
-function createPopUp(popUp,layer,map,hoveredStateId){
+
+function createPopUp(popUp,layer,map,hoveredStateId,svg){
+    
     var layerPopUpInfo = {
          'counties':{
             'sourceLayer':'segregation_all_countiesfgb',
@@ -478,28 +486,47 @@ function createPopUp(popUp,layer,map,hoveredStateId){
             }
     }
     
+
     ///// Change the opacity of the highlighted HOLC zone 
-    map.on('click',layer, e => {
+    map.on('mousemove',layer, e => {
+//mousemove
         map.getCanvas().style.cursor = 'pointer';
         // e.stopPropagation();
         metric = $("#censusDropdown1 input").val();
         var div_score_exp  = e.features[0]['properties'][metric];
+        
+        // set up factors
         baPercValue = e.features[0]['properties']['ba_perc'];
+        totolPopValue = e.features[0]['properties']['total_pop'];
+        WHPopValue = e.features[0]['properties']['white_perc'];
+        BLPopValue = e.features[0]['properties']['black_perc']; 
+        ASPopValue = e.features[0]['properties']['asian_perc'];
+        HIPopValue = e.features[0]['properties']['hispanic_perc'];
+        OTPopValue = e.features[0]['properties']['other_perc'];  
+        medianIncValue = e.features[0]['properties']['median_inc'];          
 
- console.log(baPercValue);
+        $('#baPercValueDisplay').text('Bachelor Degree:' + d3.format(",.1%")(baPercValue));      
 
+["#Boxplot_White","#Boxplot_Black","#Boxplot_Asian","#Boxplot_Hisp","#Boxplot_Other","#Boxplot_2", "#Boxplot_3"].forEach(function(id) {
+  var existingBoxplot = d3.select(id).select("svg");
+  if (!existingBoxplot.empty()) {
+    existingBoxplot.remove();
+  }
+});
+    
+//console.log(baPercValue);
 
-  /////////////////////////////////
-///////////// Boxplot Education///////////
+/////////////////////////////////
+//// White Population///////////
 /////////////////////////////////
 
 // Set the dimensions and margins of the graph
-var margin = { top: 10, right: 10, bottom: 30, left: 10 },
-  width = 310 - margin.left - margin.right,
-  height = 90 - margin.top - margin.bottom;
+var margin = { top: 15, right: 20, bottom: 30, left: 15 },
+  width = 300 - margin.left - margin.right,
+  height = 60 - margin.top - margin.bottom;
 
 // Append the SVG object to the body of the page
-var svg = d3.select("#my_dataviz2")
+var svg = d3.select("#Boxplot_White")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
@@ -508,8 +535,7 @@ var svg = d3.select("#my_dataviz2")
     "translate(" + margin.left + "," + margin.top + ")");
 
 // Create dummy data
-var data = [0.079879014,0.130764853,0.218333871,0.370618273,0.546269361]
-
+var data = [0.09733569257365707,0.4121006861158183,0.7340962196249035,0.8918411340289653,0.952799690935183]
 
 // Compute summary statistics used for the box:
 var data_sorted = data.sort(d3.ascending)
@@ -522,12 +548,21 @@ var max = q1 + 1.5 * interQuantileRange
 
 // Show the X scale (swap x and y)
 var x = d3.scaleLinear()
-  .domain([d3.min(data), d3.max(data)]) // Adjust the domain based on your legend data
+  .domain([0, 1]) // Adjust the domain based on your data
   .range([0, width]);
-svg.call(d3.axisBottom(x)); // Update to use axisBottom
 
-var center = 50; // Adjust as needed
-var height = 20; // Adjust as needed
+var formatTicks = d3.format(".1%"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+svg.call(xAxis);
+
+var center =  35 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
 
 // Show the main horizontal line (swap x and y)
 svg.append("line")
@@ -558,14 +593,426 @@ svg.selectAll("toto")
   .attr("y2", center + height / 2) // Swap x2 and y2
   .attr("stroke", "black");
 
-
-   
   svg.append("line")
-  .attr("x1", x(0.3333333333333333333))
-  .attr("x2", x(0.3333333333333333333))
+  .attr("x1", x(WHPopValue))
+  .attr("x2", x(WHPopValue))
   .attr("y1", center - height / 2)
   .attr("y2", center + height / 2)
   .attr("stroke", "red"); // You can choose a color for the line
+
+
+/////////////////////////////////
+//// Black Population///////////
+/////////////////////////////////
+
+// Set the dimensions and margins of the graph
+var margin = { top: 15, right: 20, bottom: 30, left: 15 },
+  width = 300 - margin.left - margin.right,
+  height = 60 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_Black")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [0.003119633207536783,0.009328091836647715,0.036006794355198594,0.13880348075635815,0.42492614401867124]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Show the X scale (swap x and y)
+var x = d3.scaleLinear()
+  .domain([0, 1]) // Adjust the domain based on your data
+  .range([0, width]);
+
+var formatTicks = d3.format(".1%"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+svg.call(xAxis);
+
+var center =  35 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+// Show the main horizontal line (swap x and y)
+svg.append("line")
+  .attr("x1", x(d3.min(data)))
+  .attr("x2", x(d3.max(data)))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "black");
+
+
+// Show the box (swap x and y)
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2) // Swap x and y
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height) // Swap width and height
+  .attr("stroke", "black")
+  .style("fill", "#A5DEE4");
+
+// Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "black");
+
+  svg.append("line")
+  .attr("x1", x(BLPopValue))
+  .attr("x2", x(BLPopValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red"); // You can choose a color for the line
+
+/////////////////////////////////
+//// Asian Population///////////
+/////////////////////////////////
+
+// Set the dimensions and margins of the graph
+var margin = { top: 15, right: 20, bottom: 30, left: 15 },
+  width = 300 - margin.left - margin.right,
+  height = 60 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_Asian")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [0.0015873015873015873,0.004385527772920674,0.013943921193069492,0.041750644682946265,0.10923682506051323]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Show the X scale (swap x and y)
+var x = d3.scaleLinear()
+  .domain([0, 1]) // Adjust the domain based on your data
+  .range([0, width]);
+
+var formatTicks = d3.format(".1%"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+svg.call(xAxis);
+
+var center =  35 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+// Show the main horizontal line (swap x and y)
+svg.append("line")
+  .attr("x1", x(d3.min(data)))
+  .attr("x2", x(d3.max(data)))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "black");
+
+
+// Show the box (swap x and y)
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2) // Swap x and y
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height) // Swap width and height
+  .attr("stroke", "black")
+  .style("fill", "#A5DEE4");
+
+// Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "black");
+
+  svg.append("line")
+  .attr("x1", x(ASPopValue))
+  .attr("x2", x(ASPopValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red"); // You can choose a color for the line
+
+/////////////////////////////////
+//// Hispanic Population///////////
+/////////////////////////////////
+
+// Set the dimensions and margins of the graph
+var margin = { top: 15, right: 20, bottom: 30, left: 15 },
+  width = 300 - margin.left - margin.right,
+  height = 60 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_Hisp")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [0.01250681005983965,0.02444987775061125,0.063359831464639,0.18972645213357398,0.49704283711592157]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Show the X scale (swap x and y)
+var x = d3.scaleLinear()
+  .domain([0, 1]) // Adjust the domain based on your data
+  .range([0, width]);
+
+var formatTicks = d3.format(".1%"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+svg.call(xAxis);
+
+var center =  35 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+// Show the main horizontal line (swap x and y)
+svg.append("line")
+  .attr("x1", x(d3.min(data)))
+  .attr("x2", x(d3.max(data)))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "black");
+
+
+// Show the box (swap x and y)
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2) // Swap x and y
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height) // Swap width and height
+  .attr("stroke", "black")
+  .style("fill", "#A5DEE4");
+
+// Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "black");
+
+  svg.append("line")
+  .attr("x1", x(HIPopValue))
+  .attr("x2", x(HIPopValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red"); // You can choose a color for the line
+
+/////////////////////////////////
+//// Other Population///////////
+/////////////////////////////////
+
+// Set the dimensions and margins of the graph
+var margin = { top: 15, right: 20, bottom: 30, left: 15 },
+  width = 300 - margin.left - margin.right,
+  height = 60 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_Other")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [0.07987901372985093,0.1307648531057408,0.21833387129439763,0.3706182732546282,0.5462693608340624]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Show the X scale (swap x and y)
+var x = d3.scaleLinear()
+  .domain([0, 1]) // Adjust the domain based on your data
+  .range([0, width]);
+
+var formatTicks = d3.format(".1%"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+svg.call(xAxis);
+
+var center = 35; // Adjust as needed
+var height = 10; // Adjust as needed
+
+// Show the main horizontal line (swap x and y)
+svg.append("line")
+  .attr("x1", x(d3.min(data)))
+  .attr("x2", x(d3.max(data)))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "black");
+
+
+// Show the box (swap x and y)
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2) // Swap x and y
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height) // Swap width and height
+  .attr("stroke", "black")
+  .style("fill", "#A5DEE4");
+
+// Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "black");
+
+  svg.append("line")
+  .attr("x1", x(OTPopValue))
+  .attr("x2", x(OTPopValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red"); // You can choose a color for the line
+
+/////////////////////////////////
+//// Boxplot Education///////////
+/////////////////////////////////
+
+// Set the dimensions and margins of the graph
+var margin = { top: 15, right: 20, bottom: 30, left: 15 },
+  width = 300 - margin.left - margin.right,
+  height = 60 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_2")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [0.079879014,0.130764853,0.218333871,0.370618273,0.546269361]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Show the X scale (swap x and y)
+var x = d3.scaleLinear()
+  .domain([0, 0.6]) // Adjust the domain based on your data
+  .range([0, width]);
+
+var formatTicks = d3.format(".1%"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+svg.call(xAxis);
+
+var center =  35 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+// Show the main horizontal line (swap x and y)
+svg.append("line")
+  .attr("x1", x(d3.min(data)))
+  .attr("x2", x(d3.max(data)))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "black");
+
+
+// Show the box (swap x and y)
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2) // Swap x and y
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height) // Swap width and height
+  .attr("stroke", "black")
+  .style("fill", "#A5DEE4");
+
+// Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "black");
 
   svg.append("line")
   .attr("x1", x(baPercValue))
@@ -574,20 +1021,99 @@ svg.selectAll("toto")
   .attr("y2", center + height / 2)
   .attr("stroke", "red"); // You can choose a color for the line
 
+/////////////////////////////////
+//////// Boxplot Income//////////
+/////////////////////////////////
 
 
-  
+// Set the dimensions and margins of the graph
+var margin = { top: 10, right: 10, bottom: 30, left: 10 },
+  width = 300 - margin.left - margin.right,
+  height = 60 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_3")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+//Create dummy data
+var incData = [27306,36806,49375,67313,90296.8]
+
+// Compute summary statistics used for the box:
+var data_sorted = incData.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Show the X scale (swap x and y)
+var x = d3.scaleLinear()
+  .domain([20000, 100000]) // Adjust the domain based on your legend data
+  .range([0, width]);
+
+var formatTick = d3.format(".0s");
+
+var xAxis = d3.axisBottom(x)
+              .ticks(5)
+              .tickFormat(function (d) {
+                            return formatTick(d);
+  });; // Change the number of ticks as needed
+
+svg.call(xAxis);
+
+var center =  35 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+// Show the main horizontal line (swap x and y)
+svg.append("line")
+  .attr("x1", x(d3.min(incData)))
+  .attr("x2", x(d3.max(incData)))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "black");
+
+
+// Show the box (swap x and y)
+svg.append("rect")
+  .attr("x", x(d3.quantile(incData, .25)))
+  .attr("y", center - height / 2) // Swap x and y
+  .attr("width", x(d3.quantile(incData, .75)) - x(d3.quantile(incData, .25)))
+  .attr("height", height) // Swap width and height
+  .attr("stroke", "black")
+  .style("fill", "#A5DEE4");
+
+// Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([d3.min(incData), d3.median(incData), d3.max(incData)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "black");
+
+  svg.append("line")
+  .attr("x1", x(medianIncValue))
+  .attr("x2", x(medianIncValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red"); // You can choose a color for the line
+
+
+
         // Get the text
 popUpStr = `<div class='popup'>
     <h4>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h4>
     <p>percentage of bachelor degrees in 2020: ${d3.format(",.2")(baPercValue)}</p>
+    <p>percentage of bachelor degrees in 2020: ${(medianIncValue)}</p>
 </div>`;
-
-
-    // Output the value of ba_perc2 to the console log
-
-
-
 
         popUp.setHTML(popUpStr);
         popUp.setLngLat([e.lngLat.lng, e.lngLat.lat+.003]);
@@ -621,6 +1147,8 @@ popUpStr = `<div class='popup'>
             }
             
     });
+
+
     ///// Change the opacity back
     map.on('mouseleave',layer, event => {
         
@@ -1056,10 +1584,10 @@ $('#censusDropdown1').on('change', function () {
 // Set the dimensions and margins of the graph
 var margin = { top: 10, right: 10, bottom: 30, left: 10 },
   width = 310 - margin.left - margin.right,
-  height = 90 - margin.top - margin.bottom;
+  height = 60 - margin.top - margin.bottom;
 
 // Append the SVG object to the body of the page
-var svg = d3.select("#my_dataviz")
+var svg = d3.select("#Boxplot_")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
@@ -1087,8 +1615,8 @@ var x = d3.scaleLinear()
   .range([0, width]);
 svg.call(d3.axisBottom(x)); // Update to use axisBottom
 
-var center = 50; // Adjust as needed
-var height = 20; // Adjust as needed
+var center =  35 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
 
 // Show the main horizontal line (swap x and y)
 svg.append("line")
@@ -1153,10 +1681,10 @@ $('#censusDropdown1').on('change', function () {
 // Set the dimensions and margins of the graph
 var margin = { top: 10, right: 10, bottom: 30, left: 10 },
   width = 310 - margin.left - margin.right,
-  height = 90 - margin.top - margin.bottom;
+  height = 60 - margin.top - margin.bottom;
 
 // Append the SVG object to the body of the page
-var svg = d3.select("#my_dataviz1")
+var svg = d3.select("#Boxplot_1")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
@@ -1184,8 +1712,8 @@ var x = d3.scaleLinear()
   .range([0, width]);
 svg.call(d3.axisBottom(x)); // Update to use axisBottom
 
-var center = 50; // Adjust as needed
-var height = 20; // Adjust as needed
+var center =  35 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
 
 // Show the main horizontal line (swap x and y)
 svg.append("line")
@@ -1222,10 +1750,10 @@ svg.selectAll("toto")
 // // Set the dimensions and margins of the graph
 // var margin = { top: 10, right: 10, bottom: 30, left: 10 },
 //   width = 310 - margin.left - margin.right,
-//   height = 90 - margin.top - margin.bottom;
+//   height = 60 - margin.top - margin.bottom;
 
 // // Append the SVG object to the body of the page
-// var svg = d3.select("#my_dataviz2")
+// var svg = d3.select("#Boxplot_2")
 //   .append("svg")
 //   .attr("width", width + margin.left + margin.right)
 //   .attr("height", height + margin.top + margin.bottom)
@@ -1252,8 +1780,8 @@ svg.selectAll("toto")
 //   .range([0, width]);
 // svg.call(d3.axisBottom(x)); // Update to use axisBottom
 
-// var center = 50; // Adjust as needed
-// var height = 20; // Adjust as needed
+// var center =  35 ; // Adjust as needed
+// var height =  10  ; // Adjust as needed
 
 // // Show the main horizontal line (swap x and y)
 // svg.append("line")
@@ -1285,7 +1813,7 @@ svg.selectAll("toto")
 //   .attr("stroke", "black");
 
 
-   
+
 //   svg.append("line")
 //   .attr("x1", x(0.3333333333333333333))
 //   .attr("x2", x(0.3333333333333333333))
@@ -1299,92 +1827,6 @@ svg.selectAll("toto")
 //   .attr("y1", center - height / 2)
 //   .attr("y2", center + height / 2)
 //   .attr("stroke", "red"); // You can choose a color for the line
-
-
-/////////////////////////////////
-//////// Boxplot Income//////////
-/////////////////////////////////
-
-
-
-
-
-// Set the dimensions and margins of the graph
-var margin = { top: 10, right: 10, bottom: 30, left: 10 },
-  width = 310 - margin.left - margin.right,
-  height = 90 - margin.top - margin.bottom;
-
-// Append the SVG object to the body of the page
-var svg = d3.select("#my_dataviz3")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-    "translate(" + margin.left + "," + margin.top + ")");
-
-
-  d3.csv("boxplot_summary_national.csv", function(d){
-    console.log(d[0]); //<-- this is the first row
-  });
-
-    var newData = [];
-  for (var key in data[0]){
-    if (key != "median_inc"){
-      newData.push({
-        name: key,
-        value: +data[0][key]
-      })
-    }
-  };
-
-    console.log(data)
-
-// Compute summary statistics used for the box:
-var data_sorted = newData.sort(d3.ascending)
-var q1 = d3.quantile(data_sorted, .25)
-var median = d3.quantile(data_sorted, .5)
-var q3 = d3.quantile(data_sorted, .75)
-var interQuantileRange = q3 - q1
-var min = q1 - 1.5 * interQuantileRange
-var max = q1 + 1.5 * interQuantileRange
-
-// Show the X scale (swap x and y)
-var x = d3.scaleLinear()
-  .domain([d3.min(newData), d3.max(newData)]) // Adjust the domain based on your legend data
-  .range([0, width]);
-svg.call(d3.axisBottom(x)); // Update to use axisBottom
-
-var center = 50; // Adjust as needed
-var height = 20; // Adjust as needed
-
-// Show the main horizontal line (swap x and y)
-svg.append("line")
-  .attr("x1", x(d3.min(newData)))
-  .attr("x2", x(d3.max(newData)))
-  .attr("y1", center) // Swap y1 and x1
-  .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
-// Show the box (swap x and y)
-svg.append("rect")
-  .attr("x", x(d3.quantile(newData, .25)))
-  .attr("y", center - height / 2) // Swap x and y
-  .attr("width", x(d3.quantile(newData, .75)) - x(d3.quantile(newData, .25)))
-  .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
-
-// Show median, min, and max vertical lines (swap x and y)
-svg.selectAll("toto")
-  .data([d3.min(newData), d3.median(newData), d3.max(newData)])
-  .enter()
-  .append("line")
-  .attr("x1", function (d) { return x(d); })
-  .attr("x2", function (d) { return x(d); })
-  .attr("y1", center - height / 2) // Swap x1 and y1
-  .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
 
 
 
@@ -1448,3 +1890,4 @@ d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_data
         .style("fill", "#A5DEE4")
 
 });
+
