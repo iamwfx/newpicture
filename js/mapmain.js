@@ -505,9 +505,16 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
         OTPopValue = e.features[0]['properties']['other_perc'];  
         medianIncValue = e.features[0]['properties']['median_inc'];          
 
-        $('#baPercValueDisplay').text('Bachelor Degree:' + d3.format(",.1%")(baPercValue));      
+        $('#baPercValueDisplay').text(' ' + d3.format(",.1%")(baPercValue));     
+        $('#WHPopValue').text(' ' + d3.format(",.1%")(WHPopValue));
+        $('#BLPopValue').text(' ' + d3.format(",.1%")(BLPopValue));       
+        $('#ASPopValue').text(' ' + d3.format(",.1%")(ASPopValue));
+        $('#HIPopValue').text(' ' + d3.format(",.1%")(HIPopValue));
+        $('#OTPopValue').text(' ' + d3.format(",.1%")(OTPopValue));
+        $('#medianIncValue').text(' ' + d3.format(".0f")(medianIncValue));
+        $('#totolPopValue').text(' ' + d3.format(".1f")(totolPopValue));
 
-["#Boxplot_White","#Boxplot_Black","#Boxplot_Asian","#Boxplot_Hisp","#Boxplot_Other","#Boxplot_2", "#Boxplot_3"].forEach(function(id) {
+["#Boxplot_White","#Boxplot_Black","#Boxplot_Asian","#Boxplot_Hisp","#Boxplot_Other","#Boxplot_2", "#Boxplot_3", "#Boxplot_totalPop"].forEach(function(id) {
   var existingBoxplot = d3.select(id).select("svg");
   if (!existingBoxplot.empty()) {
     existingBoxplot.remove();
@@ -515,6 +522,129 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
 });
     
 //console.log(baPercValue);
+
+///////////////////////////
+//////////fly to///////////
+///////////////////////////
+
+// Define the URL of your hosted CSV file
+const csvFileURL = 'https://raw.githubusercontent.com/acopod/newpicture-tung/main/csv/CBSA_latlong.csv?token=GHSAT0AAAAAACGMKFTMA55IHBW6GN5LKFV2ZKCTDSA';
+
+// Load and parse the CSV from the specified URL
+Papa.parse(csvFileURL, {
+  download: true, // This option indicates that we're downloading from a URL
+  complete: function (results) {
+    const parsedData = results.data;
+
+    // Add an event listener to the dropdown selection change
+    $('#cityDropdown1').dropdown({
+      onChange: function (value, text, $selectedItem) {
+        const cityName = text;
+
+        // Search for the city name in the "NAME" column (column D) and retrieve "INTPTLAT" (column K) and "INTPTLON" (column L)
+        const result = parsedData.find((row) => row[3] === cityName);
+
+        if (result) {
+          const intptlat = parseFloat(result[10]); // Parse latitude as a float
+          const intptlon = parseFloat(result[11]); // Parse longitude as a float
+
+          // Fly to the selected location
+          map.flyTo({
+            center: [intptlon, intptlat], // Longitude, Latitude
+            zoom: 10,
+            essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+          });
+          
+        } else {
+          console.log(`City '${cityName}' not found.`);
+        }
+      },
+    });
+  },
+});
+
+/////////////////////////////////
+/////// Boxplot Total Pop////////
+/////////////////////////////////
+// Set the dimensions and margins of the graph
+var margin = { top: 15, right: 20, bottom: 30, left: 15 },
+  width = 300 - margin.left - margin.right,
+  height = 60 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_totalPop")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [2046, 2886, 4004, 5325, 6670]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Show the X scale (swap x and y)
+var x = d3.scaleLinear()
+  .domain([0, 10000]) // Adjust the domain based on your data
+  .range([0, width]);
+
+var formatTicks = d3.format(".0s"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+svg.call(xAxis);
+
+var center =  35 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+// Show the main horizontal line (swap x and y)
+svg.append("line")
+  .attr("x1", x(d3.min(data)))
+  .attr("x2", x(d3.max(data)))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "black");
+
+
+// Show the box (swap x and y)
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2) // Swap x and y
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height) // Swap width and height
+  .attr("stroke", "black")
+  .style("fill", "#A5DEE4");
+
+// Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "black");
+
+  svg.append("line")
+  .attr("x1", x(totolPopValue))
+  .attr("x2", x(totolPopValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red"); // You can choose a color for the line
 
 /////////////////////////////////
 //// White Population///////////
@@ -1111,8 +1241,8 @@ svg.selectAll("toto")
         // Get the text
 popUpStr = `<div class='popup'>
     <h4>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h4>
-    <p>percentage of bachelor degrees in 2020: ${d3.format(",.2")(baPercValue)}</p>
-    <p>percentage of bachelor degrees in 2020: ${(medianIncValue)}</p>
+    
+    
 </div>`;
 
         popUp.setHTML(popUpStr);
@@ -1521,12 +1651,14 @@ var city='Ithaca, NY';
 /////////////////////////////////
 // initialize city dropdown /////
 /////////////////////////////////
+
+
 var $cityDropdown = $("#cityDropdown");
 $('#cityDropdown1').dropdown();
 
 $cityDropdown.empty();
-$.each(cities, function() {
-$cityDropdown.append($('<div class="item" data-value="'+this+'">'+this+'</div>'))});
+$.each(cities, function () {
+$cityDropdown.append($('<div class="item" data-value="' + this + '">' + this + '</div>'));});
 
 /////////////////////////////////
 ////// collapsible-content //////
@@ -1587,7 +1719,7 @@ var margin = { top: 10, right: 10, bottom: 30, left: 10 },
   height = 60 - margin.top - margin.bottom;
 
 // Append the SVG object to the body of the page
-var svg = d3.select("#Boxplot_")
+var svg = d3.select("#Boxplot_totalPop")
   .append("svg")
   .attr("width", width + margin.left + margin.right)
   .attr("height", height + margin.top + margin.bottom)
