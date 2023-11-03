@@ -6,19 +6,29 @@
         <!-- jQuery -->
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <!-- PapaParse -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
         <!-- Fonts -->
         <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100;300;400;500;600&display=swap" rel="stylesheet">
 
-         <!-- Semantic -->
+        <!-- Semantic -->
         <script src="semantic/dist/semantic.min.js"></script>
         <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
-
+        <script src="semantic/dist/components/dropdown.js"></script>
+        <link rel="stylesheet" type="text/css" href="semantic/dist/components/dropdown.min.css">
+        <!-- Icon -->
+        <link href='https://unpkg.com/css.gg@2.0.0/icons/css/menu.css' rel='stylesheet'>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
         <!-- D3 -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"  crossorigin="anonymous"></script>
+        <script src="https://d3js.org/d3.v4.js"></script>
 
         <!-- Custom Stylesheet -->
         <link rel="stylesheet" type="text/css" href="main.css">
@@ -31,8 +41,8 @@
         />
 
         <!-- Mapbox -->
-        <!-- <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet"> -->
-        <!-- <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script> -->
+        <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+        <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
 
         <!-- Maplibre Search -->
         <script src="https://unpkg.com/@stadiamaps/maplibre-search-box/dist/maplibre-search-box.umd.js"></script>
@@ -49,43 +59,75 @@
         <script src="https://unpkg.com/pmtiles@2.10.0/dist/index.js"></script>
 
         <!-- Scripts -->
-   <!--      <script src="js/mapmain.js"></script>
+        <!-- <script src="js/mapmain.js"></script>
         <script src="js/main.js"></script>
-    -->    
+        -->    
+
     </head>
     <body>
+      <!-- Menu button -->
+                    <div class="search">
+              <div id="my-container" class="ui fluid search mapboxgl-ctrl maplibregl-ctrl">
+                 <div id = "searchBar" class="ui fluid search">
+                    <input id="my-input" type="text" placeholder="  What are you looking for?">
+                    <!--<input type="text"  id="searchTerm" placeholder="What are you looking for?">-->
+                    <button type="submit" class="searchButton">
+                    <i class="fa fa-search"></i>
+                    </button>
+                  </div>
+                    <div id="my-result-container" class="ui jawg-places-results"></div>
+                  </div>
+                 </div>
+
+      <!-- Intro   -->
         <div class="ui dimmerwrapper ">
           <div class="ui page dimmer active">
             <div class="content ui  very padded  container  introSegment">
-              
               <h1 class="ui header introHeader">A New Picture of Segregation:
               <br>Experienced Diversity Using Cell Phone Location Data</h1>
               <p class="ui  introHeader"> text text text
               </p>  
-            
+           
 
-              <!-- <div class="ui primary button">Add</div> -->
+      <!-- <div class="ui primary button">Add</div> -->
               <div id='undim'class="ui disabled big basic loading inverted button introButton"><b>Enter</b></div>
             </div>
           </div>
+          
         
-        <div id="map" class='ui container'></div>
-      
+                <div id="map" class='ui container'></div>
+                
+                <div id ='info' class="ui container">
+                  <!--<button class="openbtn" onclick="toggleNav()"><i class="gg-menu"></i></button>  -->
+                    <div id="mySidepanel" class="sidepanel">
+                      <a href="#">About</a>
+                      <a href="download.html">Download</a>
+                      <a href="#">Contact</a>
+                    </div>
 
-        <div id ='info' class="ui container">
+            <div id ='title bar' class="title">
+              <h3>A New Picture of Segregation</h3>
+
+            </div>
+            <div id ='menu-buttons' class="my-button">
+                      <a href="#">About</a>
+                      <a href="download.html">Download</a>
+                      <a href="https://www.urbandataresearchlab.org/">Urban Data Research Lab</a>
+
+            </div>
+                  
+
 
             <!-- Search Bar -->
-            <h5> Search</h5>
-            <div id="my-container" class="ui fluid search mapboxgl-ctrl maplibregl-ctrl">
-             <div id = "searchBar" class="ui fluid search">
-                 <input id="my-input" style="width: 100%;" type="text" placeholder="Search">
-                 <button class="ui basic button">
-                  Ok
-                </button>
-             </div>
-             <div id="my-result-container" class="ui jawg-places-results"></div>
-            </div>
-              
+
+          
+                     <h5>City</h5>
+
+<div id="cityDropdown1" class="ui fluid search selection dropdown">
+  <i class="dropdown icon"></i>
+  <div class="text">Ithaca, NY</div>
+  <div id="cityDropdown" class="menu"></div>
+</div>
             <!-- Toggle Metrics -->
             <h5 >Metric</h5>
             <div id = "censusDropdown1" class="ui fluid search selection dropdown">
@@ -94,12 +136,70 @@
               <div class="text" >Total Experienced Diversity</div>
               <div id='censusDropdown' class="menu"></div>
             </div>
+            <br>
+ <div class="ui divider"></div>
 
 
+  <!--<input type="text" id="cityNameInput" placeholder="Enter City Name" />
+<button id="searchButton">Search</button>-->
+
+
+
+<h5 >Factors</h5>
+
+<button type="button" class="collapsible">Total Population</button>
+<div class="collapsible-content">
+   <div id="Boxplot_totalPop"></div>
+</div>
+<div id="totolPopValue"  class="factors">...</div>
+
+<button type="button" class="collapsible">Percentage of White Population</button>
+<div class="collapsible-content">
+   <div id="Boxplot_White"></div>
+</div>
+<div id="WHPopValue"  class="factors">...</div>
+
+<button type="button" class="collapsible">Percentage of Black Population</button>
+<div class="collapsible-content">
+   <div id="Boxplot_Black"></div>
+</div>
+<div id="BLPopValue"  class="factors">...</div>
+
+<button type="button" class="collapsible">Percentage of Asian Population</button>
+<div class="collapsible-content">
+   <div id="Boxplot_Asian"></div>
+</div>
+<div id="ASPopValue"  class="factors">...</div>
+
+<button type="button" class="collapsible">Percentage of Hispanic Population</button>
+<div class="collapsible-content">
+   <div id="Boxplot_Hisp"></div>
+</div>
+<div id="HIPopValue"  class="factors">...</div>
+
+<button type="button" class="collapsible">Percentage of Other Population</button>
+<div class="collapsible-content">
+   <div id="Boxplot_Other"></div>
+</div>
+<div id="OTPopValue"  class="factors">...</div>
+
+<button type="button" class="collapsible">Higher Education</button>
+<div class="collapsible-content">
+   <div id="Boxplot_2"></div>
+</div>
+<div id="baPercValueDisplay"  class="factors">...</div>
+
+<button type="button" class="collapsible">Median Income</button>
+<div class="collapsible-content">
+   <div id="Boxplot_3"></div>
+</div>
+<div id="medianIncValue"  class="factors">...</div>
+            <!-- histogram -->
+            <h5 >Histogram</h5>
+            <div id="my_histogram"></div>  
             <!-- Legend -->
-                          <div class="ui divider"></div>
+                         
               <div class="item compact disabled legendIcon" data-value="legend">
-
                 <div class='left aligned content censusLegend'>
                   <h5 class="header smallHeader ">
                   <!-- <i class="fa fa-info-circle "></i> -->
@@ -109,15 +209,18 @@
                
                <font size="1px">Source: NHGIS Decennial census and ACS </font>
               </div>
-              
-        </div>
-       
-        
-       
+
+
+
+
+</div>     
+
     </body>
     <footer>
         <script src="js/mapmain.js"></script>
         <script src="js/charts.js"></script>
         <!-- <script src="js/main.js"></script> -->
     </footer>
+
+    
 </html>
