@@ -417,8 +417,8 @@ function updateLegend(category){
     // lng2=bbox[1][0]
     // lat2=bbox[1][1]
 
-    $('.censusLegend').empty();
-    $('.censusLegend').append($(`<h5 class="header smallHeader ">${catDict[category].replace(/\b\w/g, l => l.toUpperCase())}</h5><div class="legendBar"</div>`));
+    $('.legendBar').empty();
+    // $('.censusLegend').append($(`<h5 class="header smallHeader ">${catDict[category].replace(/\b\w/g, l => l.toUpperCase())}</h5><div class="legendBar"></div>`));
         // console.log(censusCatDict_v2[category]);
         // console.log(category);
         var maxRange = (category.includes("total")) ? 0.8:0.25;
