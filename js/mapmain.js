@@ -1,3 +1,10 @@
+/////////////////////////////////
+/////// Accordian ////////
+/////////////////////////////////
+
+$('.ui.accordion')
+  .accordion()
+;
 
 d3.csv("csv/boxplot_summary_national.csv", function(data) {
     for (var i = 0; i < data.length; i++) {
@@ -563,9 +570,11 @@ Papa.parse(csvFileURL, {
   },
 });
 
+
 /////////////////////////////////
 /////// Boxplot Total Pop////////
 /////////////////////////////////
+
 // Set the dimensions and margins of the graph
 var margin = { top: 15, right: 20, bottom: 30, left: 15 },
   width = 300 - margin.left - margin.right,
