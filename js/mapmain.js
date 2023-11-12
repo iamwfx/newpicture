@@ -49,7 +49,8 @@ const censusCatDict = {
                 '#F3F0F8', '#F3F0F8', '#E0C8E3', '#DF93C9', '#E15EA7', '#D33383', '#A52461'
             ],
             "total_diversity_exp": [
-                  '#d53e4f', '#f46d43', '#fdae61', '#fee08b', '#e6f598', '#abdda4', '#66c2a5', '#3288bd'
+                '#440154', '#46327f', '#365c8d', '#277f8e', '#1fa288', '#4ac26d', '#9ed93a', '#fde725'
+                  // '#d53e4f', '#f46d43', '#fdae61', '#fee08b', '#e6f598', '#abdda4', '#66c2a5', '#3288bd'
                 ],
             "total_diversity_resi": [
                   '#440154', '#46327f', '#365c8d', '#277f8e', '#1fa288', '#4ac26d', '#9ed93a', '#fde725'
@@ -94,15 +95,24 @@ const censusCatDict_v2 = {
                                 [0.077, '#E15EA7'],
                                 [0.135, '#D33383'],
                                 [.25, '#A52461']],
-             "total_diversity_exp":  [[0, '#d53e4f'],
-                                [0.071, '#f46d43'],
-                                [0.19, '#fdae61'],
-                                [.282, '#fee08b'],
-                                [0.369, '#ffffbf'],
-                                [0.449, '#e6f598'],
-                                [.524, '#abdda4'],
-                                [0.603, '#66c2a5'],
-                                [0.8, '#3288bd']],
+             "total_diversity_exp":  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+             // [[0, '#d53e4f'],
+             //                    [0.071, '#f46d43'],
+             //                    [0.19, '#fdae61'],
+             //                    [.282, '#fee08b'],
+             //                    [0.369, '#ffffbf'],
+             //                    [0.449, '#e6f598'],
+             //                    [.524, '#abdda4'],
+             //                    [0.603, '#66c2a5'],
+             //                    [0.8, '#3288bd']],
 
             "total_diversity_resi":  [[0, '#440154'],
                                 [0.071, '#440154'],
@@ -183,15 +193,24 @@ const choroplethColors={'white_diversity_exp':{
                          },
                          'total_diversity_exp':{
                             property:'total_diversity_exp',
-                            stops: [[0, '#d53e4f'],
-                                [0.071, '#f46d43'],
-                                [0.19, '#fdae61'],
-                                [.282, '#fee08b'],
-                                [0.369, '#ffffbf'],
-                                [0.449, '#e6f598'],
-                                [.524, '#abdda4'],
-                                [0.603, '#66c2a5'],
-                                [0.8, '#3288bd']],
+                            stops: [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+                            // stops: [[0, '#d53e4f'],
+                            //     [0.071, '#f46d43'],
+                            //     [0.19, '#fdae61'],
+                            //     [.282, '#fee08b'],
+                            //     [0.369, '#ffffbf'],
+                            //     [0.449, '#e6f598'],
+                            //     [.524, '#abdda4'],
+                            //     [0.603, '#66c2a5'],
+                            //     [0.8, '#3288bd']],
                             default: 'gray'
                          }, 
                          'total_diversity_resi':{
@@ -405,7 +424,7 @@ protocol.add(p_county);
 protocol.add(p_CBSA);
 
 const baseWidth = .5
-const baseZoom = 4.2
+const baseZoom = 4.1
 
 ///////////////////////////////////
 ////////// FUNCTIONS //////////////        
@@ -1426,40 +1445,38 @@ p_tract.getHeader().then(h => {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#d53e4f'],
-                                [0.071, '#f46d43'],
-                                [0.19, '#fdae61'],
-                                [.282, '#fee08b'],
-                                [0.369, '#ffffbf'],
-                                [0.449, '#e6f598'],
-                                [.524, '#abdda4'],
-                                [0.603, '#66c2a5'],
-                                [0.8, '#3288bd']],
+                        stops: [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                     default: 'gray',
                          },
 
-                    //'fill-outline-color': 'black',
-                    //'fill-outline-width': 2,
-                    'fill-opacity': [
-                    'interpolate',
+                //     'fill-opacity': [
+                //     'interpolate',
 
-                    ['linear'],
-                    ['zoom'],
-                    // When zoom is 10, buildings will be 100% transparent.
-                    12,
-                                        ['case',
-                    ['boolean', ['feature-state', 'hover'], false],
-                    0.9,
-                    0.7],
-                    // When zoom is 18 or higher, buildings will be 100% opaque.
-                    20,
-                    ['case',
-                    ['boolean', ['feature-state', 'hover'], false],
-                    0.9,
-                    0.1]
+                //     ['linear'],
+                //     ['zoom'],
+                //     // When zoom is 10, buildings will be 100% transparent.
+                //     12,
+                //                         ['case',
+                //     ['boolean', ['feature-state', 'hover'], false],
+                //     0.9,
+                //     0.7],
+                //     // When zoom is 18 or higher, buildings will be 100% opaque.
+                //     20,
+                //     ['case',
+                //     ['boolean', ['feature-state', 'hover'], false],
+                //     0.9,
+                //     0.1]
                     
 
-                ]
+                // ]
                     
                 }
             },firstLineId);
@@ -1472,27 +1489,27 @@ p_tract.getHeader().then(h => {
                     "paint": {
                         "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#d53e4f'],
-                                [0.071, '#f46d43'],
-                                [0.19, '#fdae61'],
-                                [.282, '#fee08b'],
-                                [0.369, '#ffffbf'],
-                                [0.449, '#e6f598'],
-                                [.524, '#abdda4'],
-                                [0.603, '#66c2a5'],
-                                [0.8, '#3288bd']],
+                        stops: [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                         },
 
 
 
-                        'fill-opacity': [
-                              'case',
-                            ['boolean', ['feature-state', 'hover'], false],
-                            0.9,
-                            0.7,
+                        // 'fill-opacity': [
+                        //       'case',
+                        //     ['boolean', ['feature-state', 'hover'], false],
+                        //     0.9,
+                        //     0.7,
 
-                        ]
+                        // ]
                         
                     },
 
