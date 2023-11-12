@@ -405,7 +405,7 @@ protocol.add(p_county);
 protocol.add(p_CBSA);
 
 const baseWidth = .5
-const baseZoom = 4
+const baseZoom = 4.2
 
 ///////////////////////////////////
 ////////// FUNCTIONS //////////////        
@@ -1369,10 +1369,11 @@ p_tract.getHeader().then(h => {
         container: 'map',
         zoom: baseZoom,
         // center: [h.centerLon, h.centerLat],
-        minZoom:3,
+        minZoom:4,
         // zoom: 11,
-        center: [-87.623177, 41.881832],
-        style: 'https://api.maptiler.com/maps/dataviz/style.json?key=is6mQIv8IXor3VbmKwq8',
+        center: [-97.54593, 38.99387],
+        style:'https://api.maptiler.com/maps/5f5a5e3a-bf8e-4515-b05b-423feccaabbd/style.json?key=is6mQIv8IXor3VbmKwq8',
+        // style: 'https://api.maptiler.com/maps/dataviz/style.json?key=is6mQIv8IXor3VbmKwq8',
         // style:"https://tiles.stadiamaps.com/styles/alidade_smooth.json"
        
     });
@@ -1381,6 +1382,20 @@ p_tract.getHeader().then(h => {
 
 
     map.on('load',function(){
+
+        const layers = map.getStyle().layers;
+        console.log(layers);
+// Find the index of the first symbol layer in the map style.
+        let firstLineId;
+
+
+        for (const layer of layers) {
+            if (layer.type === 'line') {
+            firstLineId = layer.id;
+            break;
+            }
+        }
+
         var layer = $("#censusDropdown1 input").val();
 
 
@@ -1447,7 +1462,7 @@ p_tract.getHeader().then(h => {
                 ]
                     
                 }
-            });
+            },firstLineId);
         map.addLayer({
                     "id":"counties",
                     "source": "seg_2_11",
@@ -1491,7 +1506,7 @@ p_tract.getHeader().then(h => {
                         ],
                         },
                         },*/
-        });
+        },firstLineId);
 
          /*map.addLayer({
                     "id":"missing_data_outline",
@@ -1555,7 +1570,7 @@ p_tract.getHeader().then(h => {
                     ]
                                 },
 
-        });
+        },firstLineId);
 
     
         // Change paint on metric change
