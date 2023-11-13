@@ -30,7 +30,7 @@ const catDict1 ={'White Experienced Diversity':'white_diversity_exp',
             "Total Experienced Diversity":'total_diversity_exp',
             'Total Residential Diversity':'total_diversity_resi',
             "Difference":'diff'}
-console.log(catDict)
+
 // Color dict for the legend
 const censusCatDict = {
             "white_diversity_exp":[
@@ -49,7 +49,8 @@ const censusCatDict = {
                 '#F3F0F8', '#F3F0F8', '#E0C8E3', '#DF93C9', '#E15EA7', '#D33383', '#A52461'
             ],
             "total_diversity_exp": [
-                  '#d53e4f', '#f46d43', '#fdae61', '#fee08b', '#e6f598', '#abdda4', '#66c2a5', '#3288bd'
+                '#440154', '#46327f', '#365c8d', '#277f8e', '#1fa288', '#4ac26d', '#9ed93a', '#fde725'
+                  // '#d53e4f', '#f46d43', '#fdae61', '#fee08b', '#e6f598', '#abdda4', '#66c2a5', '#3288bd'
                 ],
             "total_diversity_resi": [
                   '#440154', '#46327f', '#365c8d', '#277f8e', '#1fa288', '#4ac26d', '#9ed93a', '#fde725'
@@ -94,15 +95,24 @@ const censusCatDict_v2 = {
                                 [0.077, '#E15EA7'],
                                 [0.135, '#D33383'],
                                 [.25, '#A52461']],
-             "total_diversity_exp":  [[0, '#d53e4f'],
-                                [0.071, '#f46d43'],
-                                [0.19, '#fdae61'],
-                                [.282, '#fee08b'],
-                                [0.369, '#ffffbf'],
-                                [0.449, '#e6f598'],
-                                [.524, '#abdda4'],
-                                [0.603, '#66c2a5'],
-                                [0.8, '#3288bd']],
+             "total_diversity_exp":  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+             // [[0, '#d53e4f'],
+             //                    [0.071, '#f46d43'],
+             //                    [0.19, '#fdae61'],
+             //                    [.282, '#fee08b'],
+             //                    [0.369, '#ffffbf'],
+             //                    [0.449, '#e6f598'],
+             //                    [.524, '#abdda4'],
+             //                    [0.603, '#66c2a5'],
+             //                    [0.8, '#3288bd']],
 
             "total_diversity_resi":  [[0, '#440154'],
                                 [0.071, '#440154'],
@@ -183,15 +193,24 @@ const choroplethColors={'white_diversity_exp':{
                          },
                          'total_diversity_exp':{
                             property:'total_diversity_exp',
-                            stops: [[0, '#d53e4f'],
-                                [0.071, '#f46d43'],
-                                [0.19, '#fdae61'],
-                                [.282, '#fee08b'],
-                                [0.369, '#ffffbf'],
-                                [0.449, '#e6f598'],
-                                [.524, '#abdda4'],
-                                [0.603, '#66c2a5'],
-                                [0.8, '#3288bd']],
+                            stops: [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+                            // stops: [[0, '#d53e4f'],
+                            //     [0.071, '#f46d43'],
+                            //     [0.19, '#fdae61'],
+                            //     [.282, '#fee08b'],
+                            //     [0.369, '#ffffbf'],
+                            //     [0.449, '#e6f598'],
+                            //     [.524, '#abdda4'],
+                            //     [0.603, '#66c2a5'],
+                            //     [0.8, '#3288bd']],
                             default: 'gray'
                          }, 
                          'total_diversity_resi':{
@@ -405,7 +424,7 @@ protocol.add(p_county);
 protocol.add(p_CBSA);
 
 const baseWidth = .5
-const baseZoom = 4
+const baseZoom = 4.1
 
 ///////////////////////////////////
 ////////// FUNCTIONS //////////////        
@@ -535,9 +554,7 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
 ///////////////////////////
 
 // Define the URL of your hosted CSV file
-const csvFileURL = 'https://gist.githubusercontent.com/acopod/35967e9183f6de7c9db49389aed36681/raw/5885128198a67c7d3000296230962f390c776a69/CBSA_latlong.csv';
-const CBSA_boxplot = 'https://raw.githubusercontent.com/acopod/newpicture-tung/main/csv/boxplot_summary_cbsa_national.csv?token=GHSAT0AAAAAACGMKFTM3D3U5Z4ENR4E4FQ2ZKLXXYQ'
-let cityName; // Declare cityName variable in a broader scope
+const csvFileURL = 'https://raw.githubusercontent.com/acopod/newpicture-tung/main/csv/CBSA_latlong.csv?token=GHSAT0AAAAAACGMKFTMA55IHBW6GN5LKFV2ZKCTDSA';
 
 // Load and parse the CSV from the specified URL
 Papa.parse(csvFileURL, {
@@ -563,46 +580,14 @@ Papa.parse(csvFileURL, {
             zoom: 10,
             essential: true, // this animation is considered essential with respect to prefers-reduced-motion
           });
-
-
-
-
           
         } else {
           console.log(`City '${cityName}' not found.`);
         }
- console.log(`City '${cityName}'`);
-
-              Papa.parse(CBSA_boxplot, {
-            download: true,
-            complete: function (boxplotResults) {
-              const boxplotData = boxplotResults.data;
-              // Process the boxplot data as needed.
-            }
-          });
-
-        const result_boxplot = parsedData.find((row) => row[7] === cityName && row[0] === see);
-
-        if (result_boxplot) {
-          const min = parseFloat(result[1]); // Parse latitude as a float
-          const q1 = parseFloat(result[2]); // Parse longitude as a float
-          const median = parseFloat(result[3]); // Parse longitude as a float
-          const q3 = parseFloat(result[4]); // Parse longitude as a float
-          const max = parseFloat(result[5]); // Parse longitude as a float
-
-
-        };
-
-console.log(`'${max}'`);
-
-
-
       },
     });
   },
 });
-
-
 
 
 /////////////////////////////////
@@ -1394,7 +1379,6 @@ $.each(censusList1, function(k,v) {
 
 updateLegend('total_diversity_exp');
 
-console.log ($("#censusDropdown"));
 /////////////////////////////////
 ///////////// Add map ///////////
 /////////////////////////////////
@@ -1404,10 +1388,11 @@ p_tract.getHeader().then(h => {
         container: 'map',
         zoom: baseZoom,
         // center: [h.centerLon, h.centerLat],
-        minZoom:3,
+        minZoom:4,
         // zoom: 11,
-        center: [-87.623177, 41.881832],
-        style: 'https://api.maptiler.com/maps/dataviz/style.json?key=is6mQIv8IXor3VbmKwq8',
+        center: [-97.54593, 38.99387],
+        style:'https://api.maptiler.com/maps/5f5a5e3a-bf8e-4515-b05b-423feccaabbd/style.json?key=is6mQIv8IXor3VbmKwq8',
+        // style: 'https://api.maptiler.com/maps/dataviz/style.json?key=is6mQIv8IXor3VbmKwq8',
         // style:"https://tiles.stadiamaps.com/styles/alidade_smooth.json"
        
     });
@@ -1416,6 +1401,20 @@ p_tract.getHeader().then(h => {
 
 
     map.on('load',function(){
+
+        const layers = map.getStyle().layers;
+        console.log(layers);
+// Find the index of the first symbol layer in the map style.
+        let firstLineId;
+
+
+        for (const layer of layers) {
+            if (layer.type === 'line') {
+            firstLineId = layer.id;
+            break;
+            }
+        }
+
         var layer = $("#censusDropdown1 input").val();
 
 
@@ -1446,43 +1445,41 @@ p_tract.getHeader().then(h => {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#d53e4f'],
-                                [0.071, '#f46d43'],
-                                [0.19, '#fdae61'],
-                                [.282, '#fee08b'],
-                                [0.369, '#ffffbf'],
-                                [0.449, '#e6f598'],
-                                [.524, '#abdda4'],
-                                [0.603, '#66c2a5'],
-                                [0.8, '#3288bd']],
+                        stops: [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                     default: 'gray',
                          },
 
-                    //'fill-outline-color': 'black',
-                    //'fill-outline-width': 2,
-                    'fill-opacity': [
-                    'interpolate',
+                //     'fill-opacity': [
+                //     'interpolate',
 
-                    ['linear'],
-                    ['zoom'],
-                    // When zoom is 10, buildings will be 100% transparent.
-                    12,
-                                        ['case',
-                    ['boolean', ['feature-state', 'hover'], false],
-                    0.9,
-                    0.7],
-                    // When zoom is 18 or higher, buildings will be 100% opaque.
-                    20,
-                    ['case',
-                    ['boolean', ['feature-state', 'hover'], false],
-                    0.9,
-                    0.1]
+                //     ['linear'],
+                //     ['zoom'],
+                //     // When zoom is 10, buildings will be 100% transparent.
+                //     12,
+                //                         ['case',
+                //     ['boolean', ['feature-state', 'hover'], false],
+                //     0.9,
+                //     0.7],
+                //     // When zoom is 18 or higher, buildings will be 100% opaque.
+                //     20,
+                //     ['case',
+                //     ['boolean', ['feature-state', 'hover'], false],
+                //     0.9,
+                //     0.1]
                     
 
-                ]
+                // ]
                     
                 }
-            });
+            },firstLineId);
         map.addLayer({
                     "id":"counties",
                     "source": "seg_2_11",
@@ -1492,27 +1489,27 @@ p_tract.getHeader().then(h => {
                     "paint": {
                         "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#d53e4f'],
-                                [0.071, '#f46d43'],
-                                [0.19, '#fdae61'],
-                                [.282, '#fee08b'],
-                                [0.369, '#ffffbf'],
-                                [0.449, '#e6f598'],
-                                [.524, '#abdda4'],
-                                [0.603, '#66c2a5'],
-                                [0.8, '#3288bd']],
+                        stops: [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                         },
 
 
 
-                        'fill-opacity': [
-                              'case',
-                            ['boolean', ['feature-state', 'hover'], false],
-                            0.9,
-                            0.7,
+                        // 'fill-opacity': [
+                        //       'case',
+                        //     ['boolean', ['feature-state', 'hover'], false],
+                        //     0.9,
+                        //     0.7,
 
-                        ]
+                        // ]
                         
                     },
 
@@ -1526,7 +1523,7 @@ p_tract.getHeader().then(h => {
                         ],
                         },
                         },*/
-        });
+        },firstLineId);
 
          /*map.addLayer({
                     "id":"missing_data_outline",
@@ -1590,7 +1587,7 @@ p_tract.getHeader().then(h => {
                     ]
                                 },
 
-        });
+        },firstLineId);
 
     
         // Change paint on metric change
@@ -2014,7 +2011,7 @@ svg.selectAll("toto")
 
 // Set the dimensions and margins of the graph for the histogram
 var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
-    histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
+    histogramWidth = 340 - histogramMargin.left - histogramMargin.right,
     histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
 
 // Append the SVG object to the body of the page for the histogram
@@ -2027,60 +2024,42 @@ var histogramSvg = d3.select("#my_histogram")
           "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
 
 
-// Your data
-// Define custom bin ranges and corresponding heights as percentages
-var binRanges = [
-  [0, 0.003719339, 0.3],
-  [0.03125, 0.052152194, 5.2],
-  [0.0625, 0.108444529, 10.8],
-  [0.09375, 0.116602642, 11.6],
-  [0.125, 0.135878049, 13.5],
-  [0.15625, 0.176329257, 17.6],
-  [0.1875, 0.257421711, 25.7],
-  [0.21875, 0.133190351, 13.3],
-  [0.25, 0, 0],
-];
+// get the data
+d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", function(data) {
 
-// Calculate the total percentage
-var totalPercentage = binRanges.reduce((sum, range) => sum + range[2], 0);
-var maxPercentage = d3.max(binRanges, range => range[2]);
+  // X axis: scale and draw:
+  var x = d3.scaleLinear()
+      .domain([0, 1000])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
+      .range([0, histogramWidth]);
+  histogramSvg.append("g")
+      .attr("transform", "translate(0," + histogramHeight + ")")
+      .call(d3.axisBottom(x));
 
-// X axis: scale and draw:
-var x = d3.scaleLinear()
-  .domain([0, 0.25])
-  .range([0, histogramWidth]);
+  // set the parameters for the histogram
+  var histogram = d3.histogram()
+      .value(function(d) { return d.price; })   // I need to give the vector of value
+      .domain(x.domain())  // then the domain of the graphic
+      .thresholds(x.ticks(70)); // then the numbers of bins
 
-var xAxis = d3.axisBottom(x)
-  .tickValues(binRanges.map(range => range[0]))
-  .tickFormat(d3.format(".3f")); // Set the desired precision
+  // And apply this function to data to get the bins
+  var bins = histogram(data);
 
-histogramSvg.append("g")
-  .attr("transform", "translate(0," + histogramHeight + ")")
-  .call(xAxis);
+  // Y axis: scale and draw:
+  var y = d3.scaleLinear()
+      .range([histogramHeight, 0]);
+      y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+  histogramSvg.append("g")
+      .call(d3.axisLeft(y));
 
-// Y axis: scale and draw
-var y = d3.scaleLinear()
-  .range([histogramHeight, 0]) // Adjust the range to start from the bottom
-  .domain([0, maxPercentage]);
+  // append the bar rectangles to the svg element
+  histogramSvg.selectAll("rect")
+      .data(bins)
+      .enter()
+      .append("rect")
+        .attr("x", 1)
+        .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
+        .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
+        .attr("height", function(d) { return histogramHeight - y(d.length); })
+        .style("fill", "#A5DEE4")
 
-histogramSvg.append("g")
-  .call(d3.axisLeft(y).tickFormat(d => d + "%").ticks(maxPercentage / 5)); // Set tick intervals
-
-// Append the bar rectangles to the svg element
-histogramSvg.selectAll("rect")
-  .data(binRanges)
-  .enter()
-  .append("rect")
-  .attr("x", range => x(range[0]))
-  .attr("width", x(binRanges[1][0]) - x(binRanges[0][0]) - 1)
-  .attr("y", range => histogramHeight - (range[2] / maxPercentage) * histogramHeight)
-  .attr("height", range => (range[2] / maxPercentage) * histogramHeight)
-  .style("fill", "#A5DEE4");
-
-
-    var selectedtext = $('#censusDropdown1').find('.text').text();
-    var see = catDict1[selectedtext];
-
-
-
-    console.log (see);
+});

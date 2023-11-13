@@ -175,8 +175,8 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   top:60px;*/
   background: #fff;
 /*  height: calc(100% - 60px);*/
-  /*height:100%;
-  bottom: 0px;*/
+  height:100%;
+/*  bottom: 0px;*/
   padding: 15px;
   width: 340px;
   z-index: 1; /* Stay on top */
