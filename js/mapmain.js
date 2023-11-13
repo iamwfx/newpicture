@@ -6,12 +6,6 @@ $('.ui.accordion')
   .accordion()
 ;
 
-d3.csv("csv/boxplot_summary_national.csv", function(data) {
-    for (var i = 0; i < data.length; i++) {
-
-        console.log(data[i].category);
-    }
-});
 
 //Globals
 const catDict ={'white_diversity_exp':'White Experienced Diversity',
@@ -547,49 +541,6 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
   }
 });
     
-//console.log(baPercValue);
-
-///////////////////////////
-//////////fly to///////////
-///////////////////////////
-
-// Define the URL of your hosted CSV file
-const csvFileURL = 'https://raw.githubusercontent.com/acopod/newpicture-tung/main/csv/CBSA_latlong.csv?token=GHSAT0AAAAAACGMKFTMA55IHBW6GN5LKFV2ZKCTDSA';
-
-// Load and parse the CSV from the specified URL
-Papa.parse(csvFileURL, {
-  download: true, // This option indicates that we're downloading from a URL
-  complete: function (results) {
-    const parsedData = results.data;
-
-    // Add an event listener to the dropdown selection change
-    $('#cityDropdown1').dropdown({
-      onChange: function (value, text, $selectedItem) {
-        const cityName = text;
-
-        // Search for the city name in the "NAME" column (column D) and retrieve "INTPTLAT" (column K) and "INTPTLON" (column L)
-        const result = parsedData.find((row) => row[3] === cityName);
-
-        if (result) {
-          const intptlat = parseFloat(result[10]); // Parse latitude as a float
-          const intptlon = parseFloat(result[11]); // Parse longitude as a float
-
-          // Fly to the selected location
-          map.flyTo({
-            center: [intptlon, intptlat], // Longitude, Latitude
-            zoom: 10,
-            essential: true, // this animation is considered essential with respect to prefers-reduced-motion
-          });
-          
-        } else {
-          console.log(`City '${cityName}' not found.`);
-        }
-      },
-    });
-  },
-});
-
-
 /////////////////////////////////
 /////// Boxplot Total Pop////////
 /////////////////////////////////
@@ -761,8 +712,9 @@ svg.selectAll("toto")
 
 /////////////////////////////////
 //// Black Population///////////
-/////////////////////////////////
+/////////////////////////////////   
 
+ //d3.select("#Boxplot_Black").select("svg").remove();
 // Set the dimensions and margins of the graph
 var margin = { top: 15, right: 20, bottom: 30, left: 15 },
   width = 300 - margin.left - margin.right,
@@ -842,6 +794,23 @@ svg.selectAll("toto")
   .attr("y1", center - height / 2)
   .attr("y2", center + height / 2)
   .attr("stroke", "red"); // You can choose a color for the line
+
+function drawBoxPlot(svg, newData) {
+
+  svg.append("rect")
+    .attr("x", x(newData[0])) // Assuming newData[0] is the lower bound
+    .attr("y", 27.5)
+    .attr("width", x(newData[2]) - x(newData[0]))
+    .attr("height", 15)
+    .attr("stroke", "black")
+    .style("fill", "red");
+
+  // Show median, min, and max vertical lines for the new box
+ console.log(newData[0]);
+ console.log(svg)
+  // Add a red line for the lower bound of the new box
+
+}
 
 /////////////////////////////////
 //// Asian Population///////////
@@ -1265,6 +1234,71 @@ svg.selectAll("toto")
   .attr("stroke", "red"); // You can choose a color for the line
 
 
+//console.log(baPercValue);
+
+///////////////////////////
+//////////fly to///////////
+///////////////////////////
+
+// Define the URL of your hosted CSV file
+const csvFileURL = 'https://gist.githubusercontent.com/acopod/35967e9183f6de7c9db49389aed36681/raw/5885128198a67c7d3000296230962f390c776a69/CBSA_latlong.csv';
+const CBSA_boxplot = 'https://gist.githubusercontent.com/acopod/e8a65ad8156e9caf05625107996bd501/raw/1cb5474175a851ef84a766e9e33ae6eaadaaf443/boxplot_summary_cbsa_national.csv';
+let cityName; // Declare cityName variable in a broader scope
+let min_b;
+
+Papa.parse(csvFileURL, {
+  download: true,
+  complete: function (csvResults) {
+    const csvData = csvResults.data;
+
+    Papa.parse(CBSA_boxplot, {
+      download: true,
+      complete: function (boxplotResults) {
+        const boxplotData = boxplotResults.data;
+
+        // Add an event listener to the dropdown selection change
+        $('#cityDropdown1').dropdown({
+          onChange: function (value, text, $selectedItem) {
+            cityName = text; // Assign the value to the broader-scoped variable cityName
+                        // Process CSV data
+            const result = csvData.find((row) => row[3] === cityName);
+
+            if (result) {
+              const intptlat = parseFloat(result[10]);
+              const intptlon = parseFloat(result[11]);
+
+              // Fly to the selected location
+              map.flyTo({
+                center: [intptlon, intptlat],
+                zoom: 10,
+                essential: true,
+              });
+
+              console.log(`City '${cityName}'`);
+            }
+
+            // Process boxplot data
+            const result_boxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'black_perc');
+
+            if (result_boxplot) {
+  var min_b = parseFloat(result_boxplot[1]);
+  var q1_b = parseFloat(result_boxplot[2]);
+  var median_b = parseFloat(result_boxplot[3]);
+  var q3_b = parseFloat(result_boxplot[4]);
+  var max_b = parseFloat(result_boxplot[5]);
+
+
+  drawBoxPlot(svg, [min_b, q1_b, median_b, q3_b, max_b]);
+}
+ console.log(`'${q1_b}'`);
+          },
+        });
+      },
+    });
+  },
+});
+
+ 
 
         // Get the text
 popUpStr = `<div class='popup'>
@@ -1403,7 +1437,7 @@ p_tract.getHeader().then(h => {
     map.on('load',function(){
 
         const layers = map.getStyle().layers;
-        console.log(layers);
+    // console.log(layers);
 // Find the index of the first symbol layer in the map style.
         let firstLineId;
 
@@ -2002,8 +2036,6 @@ svg.selectAll("toto")
 //   .attr("stroke", "red"); // You can choose a color for the line
 
 
-
-
 /////////////////////////////////
 ///////////// Histogram ///////////
 /////////////////////////////////
@@ -2011,7 +2043,7 @@ svg.selectAll("toto")
 
 // Set the dimensions and margins of the graph for the histogram
 var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
-    histogramWidth = 340 - histogramMargin.left - histogramMargin.right,
+    histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
     histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
 
 // Append the SVG object to the body of the page for the histogram
@@ -2024,42 +2056,60 @@ var histogramSvg = d3.select("#my_histogram")
           "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
 
 
-// get the data
-d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", function(data) {
+// Your data
+// Define custom bin ranges and corresponding heights as percentages
+var binRanges = [
+  [0, 0.003719339, 0.3],
+  [0.03125, 0.052152194, 5.2],
+  [0.0625, 0.108444529, 10.8],
+  [0.09375, 0.116602642, 11.6],
+  [0.125, 0.135878049, 13.5],
+  [0.15625, 0.176329257, 17.6],
+  [0.1875, 0.257421711, 25.7],
+  [0.21875, 0.133190351, 13.3],
+  [0.25, 0, 0],
+];
 
-  // X axis: scale and draw:
-  var x = d3.scaleLinear()
-      .domain([0, 1000])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
-      .range([0, histogramWidth]);
-  histogramSvg.append("g")
-      .attr("transform", "translate(0," + histogramHeight + ")")
-      .call(d3.axisBottom(x));
+// Calculate the total percentage
+var totalPercentage = binRanges.reduce((sum, range) => sum + range[2], 0);
+var maxPercentage = d3.max(binRanges, range => range[2]);
 
-  // set the parameters for the histogram
-  var histogram = d3.histogram()
-      .value(function(d) { return d.price; })   // I need to give the vector of value
-      .domain(x.domain())  // then the domain of the graphic
-      .thresholds(x.ticks(70)); // then the numbers of bins
+// X axis: scale and draw:
+var x = d3.scaleLinear()
+  .domain([0, 0.25])
+  .range([0, histogramWidth]);
 
-  // And apply this function to data to get the bins
-  var bins = histogram(data);
+var xAxis = d3.axisBottom(x)
+  .tickValues(binRanges.map(range => range[0]))
+  .tickFormat(d3.format(".3f")); // Set the desired precision
 
-  // Y axis: scale and draw:
-  var y = d3.scaleLinear()
-      .range([histogramHeight, 0]);
-      y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
-  histogramSvg.append("g")
-      .call(d3.axisLeft(y));
+histogramSvg.append("g")
+  .attr("transform", "translate(0," + histogramHeight + ")")
+  .call(xAxis);
 
-  // append the bar rectangles to the svg element
-  histogramSvg.selectAll("rect")
-      .data(bins)
-      .enter()
-      .append("rect")
-        .attr("x", 1)
-        .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-        .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
-        .attr("height", function(d) { return histogramHeight - y(d.length); })
-        .style("fill", "#A5DEE4")
+// Y axis: scale and draw
+var y = d3.scaleLinear()
+  .range([histogramHeight, 0]) // Adjust the range to start from the bottom
+  .domain([0, maxPercentage]);
 
-});
+histogramSvg.append("g")
+  .call(d3.axisLeft(y).tickFormat(d => d + "%").ticks(maxPercentage / 5)); // Set tick intervals
+
+// Append the bar rectangles to the svg element
+histogramSvg.selectAll("rect")
+  .data(binRanges)
+  .enter()
+  .append("rect")
+  .attr("x", range => x(range[0]))
+  .attr("width", x(binRanges[1][0]) - x(binRanges[0][0]) - 1)
+  .attr("y", range => histogramHeight - (range[2] / maxPercentage) * histogramHeight)
+  .attr("height", range => (range[2] / maxPercentage) * histogramHeight)
+  .style("fill", "#A5DEE4");
+
+
+    var selectedtext = $('#censusDropdown1').find('.text').text();
+    var see = catDict1[selectedtext];
+
+
+
+
