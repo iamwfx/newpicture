@@ -1999,4 +1999,19 @@ histogramSvg.selectAll("rect")
 
 
 
-}
+};
+
+
+window.addEventListener("load", function(){
+    setTimeout(
+        function open(event){
+            document.querySelector(".overlay").style.display = "block"; // Show the overlay
+            document.querySelector(".popupIntro").style.display = "block";
+        },
+        0
+    )
+});
+document.querySelector("#close").addEventListener("click", function(){
+    document.querySelector(".overlay").style.display = "none"; // Hide the overlay
+    document.querySelector(".popupIntro").style.display = "none";
+});

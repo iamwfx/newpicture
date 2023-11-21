@@ -75,21 +75,26 @@
     <body>
       <!-- Menu button -->
              
-      <!-- Intro   -->
+      <!-- Intro          /
         <div class="ui dimmerwrapper ">
           <div class="ui page dimmer active">
             <div class="content ui  very padded  container  introSegment">
               <h1 class="ui header introHeader">A New Picture of Segregation:
               <br>Experienced Diversity Using Cell Phone Location Data</h1>
               <p class="ui  introHeader"> text text text
-              </p>  
-           
+              </p>  -->
 
-      <!-- <div class="ui primary button">Add</div> -->
+
+
+
+
+      <!-- <div class="ui primary button">Add</div>
               <div id='undim'class="ui disabled big basic loading inverted button introButton"><b>Enter</b></div>
             </div>
-          </div>
-          
+          </div> 
+ --> 
+
+
          <div id ='title bar' class="ui secondary pointing  menu menutitle">
            <!-- <div class="search"> -->
 
@@ -114,14 +119,19 @@
               </div> -->
               <!-- </div> -->
 
-          <div class="menu">
-            <h3 class="item">A New Picture of Segregation</h3>
-          </div>
-              <div class="right menu">
-              <a href="#" class="item">About</a>
-              <a href="download.html"class='item'>Download</a>
-              <a href="https://www.urbandataresearchlab.org/" class='item'>Urban Data Research Lab</a>
-              </div>
+<div id="title-bar" class="title">
+    <h3 class="item">A New Picture of Segregation</h3>
+</div>
+<div id="menu-buttons" class="my-button">
+   <!--  <a href="#" class="item">About</a>
+    <a href="download.html" class='item'>Download</a>-->
+    <a href="https://www.urbandataresearchlab.org/" class="logo-link">
+        <img src="jpg/urbanDRL_logo.svg" alt="urbanDRL_logo" class="logo">
+    </a>
+    <a href="https://aap.cornell.edu/" class="logo-link">
+        <img src="jpg/AAP.svg" alt="AAP_logo" class="logo">
+    </a>
+</div>
                   <!-- <div id ='menu-buttons' class="my-button">
                             <a href="#">About</a>
                             <a href="download.html">Download</a>
@@ -337,7 +347,16 @@
 
             
           </div>     
-        </div>
+          <div class="overlay" id="overlay"></div>
+          <div class="popupIntro">
+               
+               <h2>A New Picture of Segregation</h2>
+               <p>
+                   Lorem, ipsum dolor sit amet consectetur adipisicing elit. Expedita distinctio fugiat alias iure qui, commodi minima magni ullam aliquam dignissimos?
+               </p>
+               <img src="jpg/us map.png" alt="Description of the image">
+               <button id="close">Let's Go</button>
+           </div>
 
     </body>
     <footer>
