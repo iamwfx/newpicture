@@ -5,7 +5,9 @@
 $('.ui.accordion')
   .accordion()
 ;
- $('.button').popup()
+ $('.icon').popup({
+    inline: true
+ })
 
 //Globals
 const catDict ={'white_diversity_exp':'White Experienced Diversity',
