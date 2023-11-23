@@ -1814,12 +1814,15 @@ p_tract.getHeader().then(h => {
     var nav = new maplibregl.NavigationControl();
     map.addControl(nav, 'top-right');
 
-    map.addControl(new JawgPlaces.MapLibre({
+    let jawgPlaces = new JawgPlaces.MapLibre({
           container: '#my-container',
           input: '#my-input',
           resultContainer: '#my-result-container',
           searchOnTyping: true,
-        }))
+        })
+
+    map.addControl(jawgPlaces);
+    jawgPlaces.attachMap(map);
 
     });
 
@@ -1856,7 +1859,7 @@ var city='Ithaca, NY';
 
 
 var $cityDropdown = $("#cityDropdown");
-$('#cityDropdown1').dropdown();
+$('#cityDropdown1   ').dropdown();
 
 $cityDropdown.empty();
 $.each(cities, function () {

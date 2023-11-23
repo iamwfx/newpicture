@@ -66,6 +66,8 @@
         <!-- Protomaps -->
         <script src="https://unpkg.com/pmtiles@2.10.0/dist/index.js"></script>
 
+        <!-- Papaparse -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <!-- Scripts -->
         <!-- <script src="js/mapmain.js"></script>
         <script src="js/main.js"></script>
@@ -98,7 +100,7 @@
          <div id ='title bar' class="ui secondary pointing  menu menutitle">
            <!-- <div class="search"> -->
 
-            <div id="my-container"class="ui search mapboxgl-ctrl maplibregl-ctrl">
+            <div id="my-container"class="ui search maplibregl-ctrl">
               <div id = "searchBar" class="ui icon input">
                 <input id="my-input" class="prompt" type="text" placeholder="Search Places">
                 <i class="i search icon"></i>
@@ -166,21 +168,25 @@
             <!-- Search Bar -->
 
           
-            <h5>City</h5>
+            <h5>City </h5>
 
-            <div id="cityDropdown1" class="ui fluid search selection dropdown">
-              <i class="dropdown icon"></i>
-              <div class="text">Ithaca, NY</div>
+            <div id="cityDropdown1" class="ui fluid search selection  dropdown">
               <div id="cityDropdown" class="menu"></div>
+
+              <option value="">Select a city</option>
+              <!-- <div class="text" placeholder='Select a city'></div> -->
+              <i class="dropdown icon"></i>
             </div>
+           
+
             <!-- Toggle Metrics -->
             <h5 >Metric</h5>
             <div id = "censusDropdown1" class="ui fluid search selection dropdown">
               <input type="hidden" value="total_diversity_exp">
               <i class="dropdown icon"></i>
-              <div class="text" >Total Experienced Diversity</div>
+              <div class="text" >Total Experienced Diversity </div>
               <div id='censusDropdown' class="menu"></div>
-            </div>
+            </div> 
             <br>
             <!-- Legend -->
                          
