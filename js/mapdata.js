@@ -9,9 +9,9 @@ var simplemaps_usmap_mapdata={
 		//State defaults
 		state_description: "State description",
     state_color: "lightgray",
-    state_hover_color: "gray",
+    state_hover_color: "#A5DEE4",
     state_url: "https://google.com",
-    border_size: 1.5,
+    border_size: 0.5,
     border_color: "#ffffff",
     all_states_inactive: "no",
     all_states_zoomable: "no",
@@ -72,408 +72,408 @@ var simplemaps_usmap_mapdata={
     images_directory: "default",
     import_labels: "no",
     fade_time: 0.1,
-    link_text: "View Website"
+    link_text: "Download Link"
   },
 
   
   state_specific: {
     HI: {
       name: "Hawaii",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Hawaii.geojson"
     },
     AK: {
       name: "Alaska",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Alaska.geojson"
     },
     FL: {
       name: "Florida",
-      description: "<a href='https://example.com'>Click here to visit Alaska's website</a>",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default",
-      inactive: "no"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Florida.geojson",
+      //inactive: "no"
     },
     NH: {
       name: "New Hampshire",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_New Hampshire.geojson"
     },
     VT: {
       name: "Vermont",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Vermont.geojson"
     },
     ME: {
       name: "Maine",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Maine.geojson"
     },
     RI: {
       name: "Rhode Island",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Rhode Island.geojson"
     },
     NY: {
       name: "New York",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_New York.geojson"
     },
     PA: {
       name: "Pennsylvania",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Pennsylvania.geojson"
     },
     NJ: {
       name: "New Jersey",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_New Jersey.geojson"
     },
     DE: {
       name: "Delaware",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Delaware.geojson"
     },
     MD: {
       name: "Maryland",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Maryland.geojson"
     },
     VA: {
       name: "Virginia",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Virginia.geojson"
     },
     WV: {
       name: "West Virginia",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_West Virginia.geojson"
     },
     OH: {
       name: "Ohio",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Ohio.geojson"
     },
     IN: {
       name: "Indiana",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Indiana.geojson"
     },
     IL: {
       name: "Illinois",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Illinois.geojson"
     },
     CT: {
       name: "Connecticut",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Connecticut.geojson"
     },
     WI: {
       name: "Wisconsin",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Wisconsin.geojson"
     },
     NC: {
       name: "North Carolina",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_North Carolina.geojson"
     },
     DC: {
       name: "District of Columbia",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_District of Columbia.geojson"
     },
     MA: {
       name: "Massachusetts",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Massachusetts.geojson"
     },
     TN: {
       name: "Tennessee",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Tennessee.geojson"
     },
     AR: {
       name: "Arkansas",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Arkansas.geojson"
     },
     MO: {
       name: "Missouri",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Missouri.geojson"
     },
     GA: {
       name: "Georgia",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Georgia.geojson"
     },
     SC: {
       name: "South Carolina",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_South Carolina.geojson"
     },
     KY: {
       name: "Kentucky",
-      description: "default",
+      description: "no",
       color: "default",
       zoomable: "no",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Kentucky.geojson"
     },
     AL: {
       name: "Alabama",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Alabama.geojson"
     },
     LA: {
       name: "Louisiana",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Louisiana.geojson"
     },
     MS: {
       name: "Mississippi",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Mississippi.geojson"
     },
     IA: {
       name: "Iowa",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Iowa.geojson"
     },
     MN: {
       name: "Minnesota",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Minnesota.geojson"
     },
     OK: {
       name: "Oklahoma",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Oklahoma.geojson"
     },
     TX: {
       name: "Texas",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Texas.geojson"
     },
     NM: {
       name: "New Mexico",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_New Mexico.geojson"
     },
     KS: {
       name: "Kansas",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Kansas.geojson"
     },
     NE: {
       name: "Nebraska",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Nebraska.geojson"
     },
     SD: {
       name: "South Dakota",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_South Dakota.geojson"
     },
     ND: {
       name: "North Dakota",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_North Dakota.geojson"
     },
     WY: {
       name: "Wyoming",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Wyoming.geojson"
     },
     MT: {
       name: "Montana",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Montana.geojson"
     },
     CO: {
       name: "Colorado",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Colorado.geojson"
     },
     UT: {
       name: "Utah",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Utah.geojson"
     },
     AZ: {
       name: "Arizona",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Arizona.geojson"
     },
     NV: {
       name: "Nevada",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Nevada.geojson"
     },
     OR: {
       name: "Oregon",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Oregon.geojson"
     },
     WA: {
       name: "Washington",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Washington.geojson"
     },
     CA: {
       name: "California",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_California.geojson"
     },
     MI: {
       name: "Michigan",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Michigan.geojson"
     },
     ID: {
       name: "Idaho",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Idaho.geojson"
     },
     GU: {
       name: "Guam",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default",
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Guam.geojson",
       hide: "yes"
     },
     VI: {
       name: "Virgin Islands",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default",
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Virgin Islands.geojson",
       hide: "yes"
     },
     PR: {
       name: "Puerto Rico",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default",
-      hide: "yes"
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Puerto Rico.geojson",
+      hide: "no"
     },
     AS: {
       name: "American Samoa",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default",
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_American Samoa.geojson",
       hide: "yes"
     },
     MP: {
       name: "Northern Mariana Islands",
-      description: "default",
+      description: "no",
       color: "default",
       hover_color: "default",
-      url: "default",
+      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Northern Mariana Islands.geojson",
       hide: "yes"
     }
   },
