@@ -5,7 +5,7 @@
 $('.ui.accordion')
   .accordion()
 ;
-
+ $('.button').popup()
 
 //Globals
 const catDict ={'white_diversity_exp':'White Experienced Diversity',
@@ -514,7 +514,15 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
         // e.stopPropagation();
         metric = $("#censusDropdown1 input").val();
         var div_score_exp  = e.features[0]['properties'][metric];
-        
+
+        if (e.features[0]['layer']['id']=='counties'){
+            var geom_name = e.features[0]['properties']['NAME']+" "+"County";    
+            var geom_id = e.features[0]['properties']['COUNTYFP10']
+        } else{
+            var geom_name = e.features[0]['properties']['COUNTY'];
+            var geom_id = e.features[0]['properties']['TRACTCE10'];
+        };
+
         // set up factors
         baPercValue = e.features[0]['properties']['ba_perc'];
         totolPopValue = e.features[0]['properties']['total_pop'];
@@ -1313,12 +1321,12 @@ Papa.parse(csvFileURL, {
         // Get the text
         popUpStr = `<div class='popup'>
             <h4>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h4>
-            
+            <p> Place: ${geom_name}</p>
             
         </div>`;
 
         popUp.setHTML(popUpStr);
-        popUp.setLngLat([e.lngLat.lng, e.lngLat.lat*1.001]);
+        popUp.setLngLat([e.lngLat.lng, e.lngLat.lat*1.0005]);
         popUp.addTo(map);
         // if (!popUp.isOpen()) {
         //   popUp.addTo(map);
@@ -1399,91 +1407,91 @@ Papa.parse(national_histogram, {
 
 function drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc){
 // Set the dimensions and margins of the graph for the histogram
-var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
-    histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
-    histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
+        var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
+            histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
+            histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
 
-// Append the SVG object to the body of the page for the histogram
-var histogramSvg = d3.select("#my_histogram")
-  .append("svg")
-    .attr("width", histogramWidth + histogramMargin.left + histogramMargin.right)
-    .attr("height", histogramHeight + histogramMargin.top + histogramMargin.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
-
-
-// Your data
-// Define custom bin ranges and corresponding heights as percentages
-var binRanges = [
-  [bin_0, 0.003719339, bin_0_perc],
-  [bin_1, 0.052152194, bin_1_perc],
-  [bin_2, 0.108444529, bin_2_perc],
-  [bin_3, 0.116602642, bin_3_perc],
-  [bin_4, 0.135878049, bin_4_perc],
-  [bin_5, 0.176329257, bin_5_perc],
-  [bin_6, 0.257421711, bin_6_perc],
-  [bin_7, 0.133190351, bin_7_perc],
-  [bin_8, 0, 0],
-];
-
-// Calculate the total percentage
-var totalPercentage = binRanges.reduce((sum, range) => sum + range[2], 0);
-var maxPercentage = d3.max(binRanges, range => range[2]);
-
-// X axis: scale and draw:
-var x = d3.scaleLinear()
-  .domain([0, 0.25])
-  .range([0, histogramWidth]);
-
-var xAxis = d3.axisBottom(x)
-  .tickValues(binRanges.map(range => range[0]))
-  .tickFormat(d3.format(".3f")); // Set the desired precision
-
-histogramSvg.append("g")
-  .attr("transform", "translate(0," + histogramHeight + ")")
-  .call(xAxis);
-
-// Y axis: scale and draw
-var y = d3.scaleLinear()
-  .range([histogramHeight, 0]) // Adjust the range to start from the bottom
-  .domain([0, maxPercentage]);
-
-histogramSvg.append("g")
-  .call(d3.axisLeft(y).tickFormat(d => d + "%").ticks(maxPercentage / 5)); // Set tick intervals
-
-// Append the bar rectangles to the svg element
-histogramSvg.selectAll("rect")
-  .data(binRanges)
-  .enter()
-  .append("rect")
-  .attr("x", range => x(range[0]))
-  .attr("width", x(binRanges[1][0]) - x(binRanges[0][0]) - 1)
-  .attr("y", range => histogramHeight - (range[2] / maxPercentage) * histogramHeight)
-  .attr("height", range => (range[2] / maxPercentage) * histogramHeight)
-  .style("fill", "#A5DEE4");
+        // Append the SVG object to the body of the page for the histogram
+        var histogramSvg = d3.select("#my_histogram")
+          .append("svg")
+            .attr("width", histogramWidth + histogramMargin.left + histogramMargin.right)
+            .attr("height", histogramHeight + histogramMargin.top + histogramMargin.bottom)
+          .append("g")
+            .attr("transform",
+                  "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
 
 
+        // Your data
+        // Define custom bin ranges and corresponding heights as percentages
+        var binRanges = [
+          [bin_0, 0.003719339, bin_0_perc],
+          [bin_1, 0.052152194, bin_1_perc],
+          [bin_2, 0.108444529, bin_2_perc],
+          [bin_3, 0.116602642, bin_3_perc],
+          [bin_4, 0.135878049, bin_4_perc],
+          [bin_5, 0.176329257, bin_5_perc],
+          [bin_6, 0.257421711, bin_6_perc],
+          [bin_7, 0.133190351, bin_7_perc],
+          [bin_8, 0, 0],
+        ];
 
-}
-    ///// Change the opacity back
-    map.on('mouseleave',layer, event => {
-        
-       
-        if (hoveredStateId) {
-                map.setFeatureState(
-                    {source: layerPopUpInfo[layer]['source'], 
-                        sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
-                    id: hoveredStateId},
-                    {hover: false}
-                );
-            };
-        hoveredStateId = null;
-        map.getCanvas().style.cursor = '';
-        popUp.remove();
+        // Calculate the total percentage
+        var totalPercentage = binRanges.reduce((sum, range) => sum + range[2], 0);
+        var maxPercentage = d3.max(binRanges, range => range[2]);
 
-      
-    });
+        // X axis: scale and draw:
+        var x = d3.scaleLinear()
+          .domain([0, 0.25])
+          .range([0, histogramWidth]);
+
+        var xAxis = d3.axisBottom(x)
+          .tickValues(binRanges.map(range => range[0]))
+          .tickFormat(d3.format(".3f")); // Set the desired precision
+
+        histogramSvg.append("g")
+          .attr("transform", "translate(0," + histogramHeight + ")")
+          .call(xAxis);
+
+        // Y axis: scale and draw
+        var y = d3.scaleLinear()
+          .range([histogramHeight, 0]) // Adjust the range to start from the bottom
+          .domain([0, maxPercentage]);
+
+        histogramSvg.append("g")
+          .call(d3.axisLeft(y).tickFormat(d => d + "%").ticks(maxPercentage / 5)); // Set tick intervals
+
+        // Append the bar rectangles to the svg element
+        histogramSvg.selectAll("rect")
+          .data(binRanges)
+          .enter()
+          .append("rect")
+          .attr("x", range => x(range[0]))
+          .attr("width", x(binRanges[1][0]) - x(binRanges[0][0]) - 1)
+          .attr("y", range => histogramHeight - (range[2] / maxPercentage) * histogramHeight)
+          .attr("height", range => (range[2] / maxPercentage) * histogramHeight)
+          .style("fill", "#A5DEE4");
+
+
+
+        }
+            ///// Change the opacity back
+            map.on('mouseleave',layer, event => {
+                
+               
+                if (hoveredStateId) {
+                        map.setFeatureState(
+                            {source: layerPopUpInfo[layer]['source'], 
+                                sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
+                            id: hoveredStateId},
+                            {hover: false}
+                        );
+                    };
+                hoveredStateId = null;
+                map.getCanvas().style.cursor = '';
+                popUp.remove();
+
+              
+            });
 
  
 }
