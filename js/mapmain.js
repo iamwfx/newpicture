@@ -1543,8 +1543,9 @@ updateLegend('total_diversity_exp');
 /////////////////////////////////
 
 p_tract.getHeader().then(h => {
-    var map = new maplibregl.Map({
+    const map = new maplibregl.Map({
         container: 'map',
+        attributionControl: false,
         zoom: baseZoom,
         // center: [h.centerLon, h.centerLat],
         minZoom:4,
@@ -1553,6 +1554,7 @@ p_tract.getHeader().then(h => {
         style:'https://api.maptiler.com/maps/5f5a5e3a-bf8e-4515-b05b-423feccaabbd/style.json?key=is6mQIv8IXor3VbmKwq8',
         // style: 'https://api.maptiler.com/maps/dataviz/style.json?key=is6mQIv8IXor3VbmKwq8',
         // style:"https://tiles.stadiamaps.com/styles/alidade_smooth.json"
+
        
     });
 
@@ -1562,7 +1564,7 @@ p_tract.getHeader().then(h => {
     map.on('load',function(){
 
         const layers = map.getStyle().layers;
-    // console.log(layers);
+
 // Find the index of the first symbol layer in the map style.
         let firstLineId;
 
