@@ -65,7 +65,7 @@ var simplemaps_usmap_mapdata={
     //popup_anchor: "bottom-left", // Set the anchor to bottom left
 
 		//Advanced settings
-		div: "map",
+		div: "mapDownload",
     auto_load: "yes",
     rotate: "0",
     url_new_tab: "yes",

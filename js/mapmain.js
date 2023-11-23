@@ -2017,3 +2017,30 @@ document.querySelector("#close").addEventListener("click", function(){
     document.querySelector(".overlay").style.display = "none"; // Hide the overlay
     document.querySelector(".popupIntro").style.display = "none";
 });
+
+$(document).ready(function() {
+/////////////////////////////
+///////// Page functions ////
+/////////////////////////////
+
+
+$('.homeIcon').on('click',function(){
+    $('.dimmer').addClass('active');
+})
+
+$('.infoIcon').on('click',function(){
+    $('#infoMessage').transition('fade in');
+})
+
+$('.dataIcon').on('click',function(){
+    $('#dataMessage').transition('fade in');
+})
+$('.message .close')
+  .on('click', function() {
+    $(this)
+      .closest('.message')
+      .transition('fade')
+    ;
+  });
+
+});
