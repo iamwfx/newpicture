@@ -167,6 +167,10 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   width: 30%;
 }*/
 
+.menu{
+    font-family: 'EduDiatypeRounded', Arial, sans-serif;
+
+}
 
 #info {
   position: fixed;
