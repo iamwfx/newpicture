@@ -1318,7 +1318,7 @@ popUpStr = `<div class='popup'>
 </div>`;
 
         popUp.setHTML(popUpStr);
-        popUp.setLngLat([e.lngLat.lng, e.lngLat.lat+.003]);
+        popUp.setLngLat([e.lngLat.lng, e.lngLat.lat*1.0001]);
         popUp.addTo(map);
         // if (!popUp.isOpen()) {
         //   popUp.addTo(map);
