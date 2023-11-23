@@ -7,7 +7,7 @@
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
         <!-- PapaParse -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+        <script src="https:// cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
         <!-- Fonts -->
         <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
@@ -75,21 +75,26 @@
     <body>
       <!-- Menu button -->
              
-      <!-- Intro   -->
+      <!-- Intro          /
         <div class="ui dimmerwrapper ">
           <div class="ui page dimmer active">
             <div class="content ui  very padded  container  introSegment">
               <h1 class="ui header introHeader">A New Picture of Segregation:
               <br>Experienced Diversity Using Cell Phone Location Data</h1>
               <p class="ui  introHeader"> text text text
-              </p>  
-           
+              </p>  -->
 
-      <!-- <div class="ui primary button">Add</div> -->
+
+
+
+
+      <!-- <div class="ui primary button">Add</div>
               <div id='undim'class="ui disabled big basic loading inverted button introButton"><b>Enter</b></div>
             </div>
-          </div>
-          
+          </div> 
+ --> 
+
+
          <div id ='title bar' class="ui secondary pointing  menu menutitle">
            <!-- <div class="search"> -->
 
@@ -114,6 +119,7 @@
               </div> -->
               <!-- </div> -->
 
+
           <div class="menu">
             <div class="item">
             <h2>A New Picture of Segregation</h2>
@@ -129,10 +135,18 @@
                 <div class="item">
 
 
-                  <a href="https://www.urbandataresearchlab.org/"><img src = "UDRL-Logo-233.svg"/></a>
+                  <a href="https://www.urbandataresearchlab.org/" class="logo-link">
+                      <img src="jpg/urbanDRL_logo.svg" alt="urbanDRL_logo" class="logo">
+                  </a>
+                </div>
+                 <div class="item">
+                  <a href="https://aap.cornell.edu/" class="logo-link">
+                      <img src="jpg/AAP.svg" alt="AAP_logo" class="logo">
+                  </a>
                 </div>
               
               </div>
+
                   <!-- <div id ='menu-buttons' class="my-button">
                             <a href="#">About</a>
                             <a href="download.html">Download</a>
@@ -348,7 +362,16 @@
 
             
           </div>     
-        </div>
+          <div class="overlay" id="overlay"></div>
+          <div class="popupIntro">
+               
+               <h2>A New Picture of Segregation</h2>
+               <p>
+                   Lorem, ipsum dolor sit amet consectetur adipisicing elit. Expedita distinctio fugiat alias iure qui, commodi minima magni ullam aliquam dignissimos?
+               </p>
+               <img src="jpg/us map.png" alt="Description of the image">
+               <button id="close">Let's Go</button>
+           </div>
 
     </body>
     <footer>
