@@ -1311,14 +1311,14 @@ Papa.parse(csvFileURL, {
  
 
         // Get the text
-popUpStr = `<div class='popup'>
-    <h4>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h4>
-    <
-    
-</div>`;
+        popUpStr = `<div class='popup'>
+            <h4>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h4>
+            
+            
+        </div>`;
 
         popUp.setHTML(popUpStr);
-        popUp.setLngLat([e.lngLat.lng, e.lngLat.lat]);
+        popUp.setLngLat([e.lngLat.lng, e.lngLat.lat*1.001]);
         popUp.addTo(map);
         // if (!popUp.isOpen()) {
         //   popUp.addTo(map);
@@ -1730,26 +1730,57 @@ p_tract.getHeader().then(h => {
         });*/
 
 
-         map.addLayer({
+        map.addLayer({
                     "id":"tracts_outline",
                     "source": "seg_10_13",
                     "source-layer":"segregation_allfgb",
                     "type": "line",
                     "paint": {
-                        'line-color': 'lightgray',
-                    'line-width': [
-                        'interpolate',
-                        ['linear'],
-                        ['zoom'],
-                        // When zoom is 10, set the line width to 0.5 units.
-                        12, 0.5,
-                        // When zoom is 20, set the line width to 3 units.
-                        30, 20,
-                    ]
+                        'line-color': 'red',
+                    'line-width':[
+                            'case',
+                            ['boolean', ['feature-state', 'hover'], false],
+                            4,
+                            0
+                            ]
+                    //  [
+                    //     'interpolate',
+                    //     ['linear'],
+                    //     ['zoom'],
+                    //     // When zoom is 10, set the line width to 0.5 units.
+                    //     12, 0.5,
+                    //     // When zoom is 20, set the line width to 3 units.
+                    //     30, 20,
+                    // ]
                                 },
 
         },firstLineId);
 
+        map.addLayer({
+                    "id":"county_outline",
+                    "source": "seg_2_11",
+                    "source-layer":"segregation_all_countiesfgb",
+                    "type": "line",
+                    "paint": {
+                        'line-color': 'red',
+                    'line-width':[
+                            'case',
+                            ['boolean', ['feature-state', 'hover'], false],
+                            4,
+                            0
+                            ]
+                    //  [
+                    //     'interpolate',
+                    //     ['linear'],
+                    //     ['zoom'],
+                    //     // When zoom is 10, set the line width to 0.5 units.
+                    //     12, 0.5,
+                    //     // When zoom is 20, set the line width to 3 units.
+                    //     30, 20,
+                    // ]
+                                },
+
+        },firstLineId);
     
         // Change paint on metric change
         
@@ -1826,8 +1857,9 @@ p_tract.getHeader().then(h => {
                 flyCurve: 1.42
               },
             adminArea: {
-                
+                fillColor: 'rgba(172,59,246, 0.0)',
                 outlineColor: 'rgb(172,59,246)',
+                outlineWidth: '2',
                 show: true,
               },
               sources: 'wof'
