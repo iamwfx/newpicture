@@ -242,6 +242,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   border-bottom: 0px !important;
 /*  padding-top: 1%;*/
   padding-block: .75%;
+  height: 5%;
 }
 /*
 .title{
@@ -264,7 +265,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
     position: fixed;
     right: 0%;
     top: 0px;
-    padding: 0px 0px 0px 15px;
+    /*padding: 0px 0px 0px 15px;*/
     width: 400px;
     height: 60px;
     z-index: 8;
@@ -274,9 +275,14 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
     display: flex;
     align-items: center;
     font-family: 'EduDiatypeRounded', Arial, sans-serif;
-    justify-content: space-evenly;
+    justify-content: flex-end;
+     margin-right: 10px;
 
 
+}
+
+.my-button a {
+    margin-right: 10px; /* Add right margin to create space between buttons */
 }
 
 .openbtn:hover {
@@ -311,4 +317,72 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   display: none;
   overflow: hidden;
   background-color: white;
+}
+
+.popupIntro{
+    background-color: #ffffff;
+    width: 600px;
+    padding: 30px 50px 20px 50px;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    left: 50%;
+    top: 50%;
+    border-radius: 8px;
+    font-family: "Poppins",sans-serif;
+    display: none;
+    text-align: center;
+    z-index: 2;
+}
+
+
+
+.popupIntro p{
+    font-size: 14px;
+    text-align: justify;
+    margin: 20px 0;
+    line-height: 25px;
+    
+}
+
+.popupIntro button{
+    display: block;
+    width: 100px;
+    position: relative;
+    margin: 5px auto;
+    border-radius: 8px;
+    text-align: center;
+    background-color: #A5DEE4;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 0;
+    cursor: pointer;
+    border-width: 0px; /* Adjust this value as needed */
+       border-style: solid; /* Ensures the border is displayed */
+}
+
+.popupIntro img {
+    max-width: 100%; /* Ensure the image doesn't exceed the container width */
+    height: auto; /* Maintain the aspect ratio */
+    border-radius: 8px; /* Apply border radius to the image if needed */
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Dark gray background with opacity */
+    display: none; /* Initially hidden */
+    z-index: 1;
+}
+
+img.logo {
+  /* Change color */
+  fill: #000000; /* For SVG images that use the fill attribute */
+  /* Adjust size */
+
+  width: 100px; /* Set the width */
+  height: 100px; /* Set the height */
+  /* Additional styles as needed */
 }

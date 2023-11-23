@@ -6,12 +6,6 @@ $('.ui.accordion')
   .accordion()
 ;
 
-d3.csv("csv/boxplot_summary_national.csv", function(data) {
-    for (var i = 0; i < data.length; i++) {
-
-        console.log(data[i].category);
-    }
-});
 
 //Globals
 const catDict ={'white_diversity_exp':'White Experienced Diversity',
@@ -547,49 +541,6 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
   }
 });
     
-//console.log(baPercValue);
-
-///////////////////////////
-//////////fly to///////////
-///////////////////////////
-
-// Define the URL of your hosted CSV file
-const csvFileURL = 'https://raw.githubusercontent.com/acopod/newpicture-tung/main/csv/CBSA_latlong.csv?token=GHSAT0AAAAAACGMKFTMA55IHBW6GN5LKFV2ZKCTDSA';
-
-// Load and parse the CSV from the specified URL
-Papa.parse(csvFileURL, {
-  download: true, // This option indicates that we're downloading from a URL
-  complete: function (results) {
-    const parsedData = results.data;
-
-    // Add an event listener to the dropdown selection change
-    $('#cityDropdown1').dropdown({
-      onChange: function (value, text, $selectedItem) {
-        const cityName = text;
-
-        // Search for the city name in the "NAME" column (column D) and retrieve "INTPTLAT" (column K) and "INTPTLON" (column L)
-        const result = parsedData.find((row) => row[3] === cityName);
-
-        if (result) {
-          const intptlat = parseFloat(result[10]); // Parse latitude as a float
-          const intptlon = parseFloat(result[11]); // Parse longitude as a float
-
-          // Fly to the selected location
-          map.flyTo({
-            center: [intptlon, intptlat], // Longitude, Latitude
-            zoom: 10,
-            essential: true, // this animation is considered essential with respect to prefers-reduced-motion
-          });
-          
-        } else {
-          console.log(`City '${cityName}' not found.`);
-        }
-      },
-    });
-  },
-});
-
-
 /////////////////////////////////
 /////// Boxplot Total Pop////////
 /////////////////////////////////
@@ -761,8 +712,9 @@ svg.selectAll("toto")
 
 /////////////////////////////////
 //// Black Population///////////
-/////////////////////////////////
-
+/////////////////////////////////   
+function drawBoxPlot(svg, newData) {
+ //d3.select("#Boxplot_Black").select("svg").remove();
 // Set the dimensions and margins of the graph
 var margin = { top: 15, right: 20, bottom: 30, left: 15 },
   width = 300 - margin.left - margin.right,
@@ -842,6 +794,33 @@ svg.selectAll("toto")
   .attr("y1", center - height / 2)
   .attr("y2", center + height / 2)
   .attr("stroke", "red"); // You can choose a color for the line
+
+                            svg.append("rect")
+                            .attr("x", x(newData[0])) // Assuming newData[0] is the lower bound
+                            .attr("y", 30)
+                            .attr("width", x(newData[2]) - x(newData[0]))
+                            .attr("height", 10)
+                            .attr("stroke", "red")
+                            
+
+
+}
+                        /*function drawBoxPlot(svg, newData) {
+
+                          svg.append("rect")
+                            .attr("x", x(newData[0])) // Assuming newData[0] is the lower bound
+                            .attr("y", 27.5)
+                            .attr("width", x(newData[2]) - x(newData[0]))
+                            .attr("height", 15)
+                            .attr("stroke", "black")
+                            .style("fill", "red");
+
+                          // Show median, min, and max vertical lines for the new box
+                         console.log(newData[0]);
+                         console.log(svg)
+                          // Add a red line for the lower bound of the new box
+
+                        }*/
 
 /////////////////////////////////
 //// Asian Population///////////
@@ -1265,6 +1244,71 @@ svg.selectAll("toto")
   .attr("stroke", "red"); // You can choose a color for the line
 
 
+//console.log(baPercValue);
+
+///////////////////////////
+//////////fly to///////////
+///////////////////////////
+
+// Define the URL of your hosted CSV file
+const csvFileURL = 'https://gist.githubusercontent.com/acopod/35967e9183f6de7c9db49389aed36681/raw/5885128198a67c7d3000296230962f390c776a69/CBSA_latlong.csv';
+const CBSA_boxplot = 'https://gist.githubusercontent.com/acopod/e8a65ad8156e9caf05625107996bd501/raw/1cb5474175a851ef84a766e9e33ae6eaadaaf443/boxplot_summary_cbsa_national.csv';
+let cityName; // Declare cityName variable in a broader scope
+let min_b;
+
+Papa.parse(csvFileURL, {
+  download: true,
+  complete: function (csvResults) {
+    const csvData = csvResults.data;
+
+    Papa.parse(CBSA_boxplot, {
+      download: true,
+      complete: function (boxplotResults) {
+        const boxplotData = boxplotResults.data;
+
+        // Add an event listener to the dropdown selection change
+        $('#cityDropdown1').dropdown({
+          onChange: function (value, text, $selectedItem) {
+            cityName = text; // Assign the value to the broader-scoped variable cityName
+                        // Process CSV data
+            const result = csvData.find((row) => row[3] === cityName);
+
+            if (result) {
+              const intptlat = parseFloat(result[10]);
+              const intptlon = parseFloat(result[11]);
+
+              // Fly to the selected location
+              map.flyTo({
+                center: [intptlon, intptlat],
+                zoom: 10,
+                essential: true,
+              });
+
+              console.log(`City '${cityName}'`);
+            }
+
+            // Process boxplot data
+            const result_boxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'black_perc');
+
+            if (result_boxplot) {
+  var min_b = parseFloat(result_boxplot[1]);
+  var q1_b = parseFloat(result_boxplot[2]);
+  var median_b = parseFloat(result_boxplot[3]);
+  var q3_b = parseFloat(result_boxplot[4]);
+  var max_b = parseFloat(result_boxplot[5]);
+
+
+  drawBoxPlot(svg, [min_b, q1_b, median_b, q3_b, max_b]);
+}
+ console.log(`'${q1_b}'`);
+          },
+        });
+      },
+    });
+  },
+});
+
+ 
 
         // Get the text
 popUpStr = `<div class='popup'>
@@ -1306,7 +1350,122 @@ popUpStr = `<div class='popup'>
             
     });
 
+const national_histogram = 'https://gist.githubusercontent.com/acopod/32a8afe3dddb034f477ecce19961f4c7/raw/54fca9757905899fd4882384a72ab503f555f7c5/histogram_summary_national.csv';
 
+Papa.parse(national_histogram, {
+  download: true,
+  complete: function (histogramResults) {
+    const historgramData = histogramResults.data;
+
+    //var selectedcensus = $('#censusDropdown1').find('.text').text();
+    //var selectedtext_translated = catDict1[selectedcensus];
+
+    // Add an event listener to the dropdown selection change
+    $('#censusDropdown1').dropdown({
+      onChange: function (value, text, $selectedItem) {
+        var selectedcensus = text;
+        var selectedtext_translated = catDict1[selectedcensus];
+        const result_hitogram = historgramData.find((row) => row[0] === selectedtext_translated);
+
+        if (result_hitogram) {
+  var bin_0 = parseFloat(result_hitogram[1]);
+  var bin_1 = parseFloat(result_hitogram[2]);
+  var bin_2 = parseFloat(result_hitogram[3]);
+  var bin_3 = parseFloat(result_hitogram[4]);
+  var bin_4 = parseFloat(result_hitogram[5]);
+  var bin_5 = parseFloat(result_hitogram[6]);
+  var bin_6 = parseFloat(result_hitogram[7]);
+  var bin_7 = parseFloat(result_hitogram[8]);
+  var bin_8 = parseFloat(result_hitogram[9]);
+  var bin_0_perc = parseFloat(result_hitogram[11] * 100);
+  var bin_1_perc = parseFloat(result_hitogram[12] * 100);
+  var bin_2_perc = parseFloat(result_hitogram[13] * 100);
+  var bin_3_perc = parseFloat(result_hitogram[14] * 100);
+  var bin_4_perc = parseFloat(result_hitogram[15] * 100);
+  var bin_5_perc = parseFloat(result_hitogram[16] * 100);
+  var bin_6_perc = parseFloat(result_hitogram[17] * 100);
+  var bin_7_perc = parseFloat(result_hitogram[18] * 100);
+
+
+
+  drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc);
+}
+ console.log(`'${bin_0}'`);
+          },
+        });
+      },
+    });
+
+
+function drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc){
+// Set the dimensions and margins of the graph for the histogram
+var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
+    histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
+    histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
+
+// Append the SVG object to the body of the page for the histogram
+var histogramSvg = d3.select("#my_histogram")
+  .append("svg")
+    .attr("width", histogramWidth + histogramMargin.left + histogramMargin.right)
+    .attr("height", histogramHeight + histogramMargin.top + histogramMargin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
+
+
+// Your data
+// Define custom bin ranges and corresponding heights as percentages
+var binRanges = [
+  [bin_0, 0.003719339, bin_0_perc],
+  [bin_1, 0.052152194, bin_1_perc],
+  [bin_2, 0.108444529, bin_2_perc],
+  [bin_3, 0.116602642, bin_3_perc],
+  [bin_4, 0.135878049, bin_4_perc],
+  [bin_5, 0.176329257, bin_5_perc],
+  [bin_6, 0.257421711, bin_6_perc],
+  [bin_7, 0.133190351, bin_7_perc],
+  [bin_8, 0, 0],
+];
+
+// Calculate the total percentage
+var totalPercentage = binRanges.reduce((sum, range) => sum + range[2], 0);
+var maxPercentage = d3.max(binRanges, range => range[2]);
+
+// X axis: scale and draw:
+var x = d3.scaleLinear()
+  .domain([0, 0.25])
+  .range([0, histogramWidth]);
+
+var xAxis = d3.axisBottom(x)
+  .tickValues(binRanges.map(range => range[0]))
+  .tickFormat(d3.format(".3f")); // Set the desired precision
+
+histogramSvg.append("g")
+  .attr("transform", "translate(0," + histogramHeight + ")")
+  .call(xAxis);
+
+// Y axis: scale and draw
+var y = d3.scaleLinear()
+  .range([histogramHeight, 0]) // Adjust the range to start from the bottom
+  .domain([0, maxPercentage]);
+
+histogramSvg.append("g")
+  .call(d3.axisLeft(y).tickFormat(d => d + "%").ticks(maxPercentage / 5)); // Set tick intervals
+
+// Append the bar rectangles to the svg element
+histogramSvg.selectAll("rect")
+  .data(binRanges)
+  .enter()
+  .append("rect")
+  .attr("x", range => x(range[0]))
+  .attr("width", x(binRanges[1][0]) - x(binRanges[0][0]) - 1)
+  .attr("y", range => histogramHeight - (range[2] / maxPercentage) * histogramHeight)
+  .attr("height", range => (range[2] / maxPercentage) * histogramHeight)
+  .style("fill", "#A5DEE4");
+
+
+
+}
     ///// Change the opacity back
     map.on('mouseleave',layer, event => {
         
@@ -1403,7 +1562,7 @@ p_tract.getHeader().then(h => {
     map.on('load',function(){
 
         const layers = map.getStyle().layers;
-        console.log(layers);
+    // console.log(layers);
 // Find the index of the first symbol layer in the map style.
         let firstLineId;
 
@@ -1721,297 +1880,61 @@ for (i = 0; i < coll.length; i++) {
 };
 
 
-
-/////////////////////////////////
-///////////// Boxplot ///////////
-/////////////////////////////////
-function updateBoxplot(category) {
-  // Extract data from the selected category in the legend
-  var legendData = censusCatDict_v2[category].map(function (d) {
-    return d[0];
-  });
-
-  // Update the X scale domain based on the legend data (swap x and y)
-  x.domain([d3.min(legendData), d3.max(legendData)]);
-
-  // Select the boxplot elements and update their positions and sizes
-  svg.select("line")
-    .attr("x1", x(d3.min(legendData)))
-    .attr("x2", x(d3.max(legendData)));
-
-  svg.select("rect")
-    .attr("x", x(d3.quantile(legendData, .25)))
-    .attr("width", x(d3.quantile(legendData, .75)) - x(d3.quantile(legendData, .25)));
-
-  svg.selectAll("line.toto")
-    .data([d3.min(legendData), d3.median(legendData), d3.max(legendData)])
-    .attr("x1", function (d) { return x(d); })
-    .attr("x2", function (d) { return x(d); });
-}
-
-$('#censusDropdown1').on('change', function () {
-  var selectedCategory = $("#censusDropdown1 input").val();
-  updateBoxplot(selectedCategory);
-});
-
-// Set the dimensions and margins of the graph
-var margin = { top: 10, right: 10, bottom: 30, left: 10 },
-  width = 310 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
-
-// Append the SVG object to the body of the page
-var svg = d3.select("#Boxplot_totalPop")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-    "translate(" + margin.left + "," + margin.top + ")");
-
-// Create dummy data
-var data = censusCatDict_v2['white_diversity_exp'].map(function (d) {
-  return d[0];
-});
-
-// Compute summary statistics used for the box:
-var data_sorted = data.sort(d3.ascending)
-var q1 = d3.quantile(data_sorted, .25)
-var median = d3.quantile(data_sorted, .5)
-var q3 = d3.quantile(data_sorted, .75)
-var interQuantileRange = q3 - q1
-var min = q1 - 1.5 * interQuantileRange
-var max = q1 + 1.5 * interQuantileRange
-
-// Show the X scale (swap x and y)
-var x = d3.scaleLinear()
-  .domain([d3.min(data), d3.max(data)]) // Adjust the domain based on your legend data
-  .range([0, width]);
-svg.call(d3.axisBottom(x)); // Update to use axisBottom
-
-var center =  35 ; // Adjust as needed
-var height =  10  ; // Adjust as needed
-
-// Show the main horizontal line (swap x and y)
-svg.append("line")
-  .attr("x1", x(d3.min(data)))
-  .attr("x2", x(d3.max(data)))
-  .attr("y1", center) // Swap y1 and x1
-  .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
-// Show the box (swap x and y)
-svg.append("rect")
-  .attr("x", x(d3.quantile(data, .25)))
-  .attr("y", center - height / 2) // Swap x and y
-  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
-  .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
-
-// Show median, min, and max vertical lines (swap x and y)
-svg.selectAll("toto")
-  .data([d3.min(data), d3.median(data), d3.max(data)])
-  .enter()
-  .append("line")
-  .attr("x1", function (d) { return x(d); })
-  .attr("x2", function (d) { return x(d); })
-  .attr("y1", center - height / 2) // Swap x1 and y1
-  .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
-
-/////////////////////////////////
-///////////// Boxplot school ///////////
-/////////////////////////////////
-function updateBoxplot(category) {
-  // Extract data from the selected category in the legend
-  var legendData = censusCatDict_v2[category].map(function (d) {
-    return d[0];
-  });
-
-  // Update the X scale domain based on the legend data (swap x and y)
-  x.domain([d3.min(legendData), d3.max(legendData)]);
-
-  // Select the boxplot elements and update their positions and sizes
-  svg.select("line")
-    .attr("x1", x(d3.min(legendData)))
-    .attr("x2", x(d3.max(legendData)));
-
-  svg.select("rect")
-    .attr("x", x(d3.quantile(legendData, .25)))
-    .attr("width", x(d3.quantile(legendData, .75)) - x(d3.quantile(legendData, .25)));
-
-  svg.selectAll("line.toto")
-    .data([d3.min(legendData), d3.median(legendData), d3.max(legendData)])
-    .attr("x1", function (d) { return x(d); })
-    .attr("x2", function (d) { return x(d); });
-}
-
-$('#censusDropdown1').on('change', function () {
-  var selectedCategory = $("#censusDropdown1 input").val();
-  updateBoxplot(selectedCategory);
-});
-
-// Set the dimensions and margins of the graph
-var margin = { top: 10, right: 10, bottom: 30, left: 10 },
-  width = 310 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
-
-// Append the SVG object to the body of the page
-var svg = d3.select("#Boxplot_1")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-    "translate(" + margin.left + "," + margin.top + ")");
-
-// Create dummy data
-var data = censusCatDict_v2['white_diversity_exp'].map(function (d) {
-  return d[0];
-});
-
-// Compute summary statistics used for the box:
-var data_sorted = data.sort(d3.ascending)
-var q1 = d3.quantile(data_sorted, .25)
-var median = d3.quantile(data_sorted, .5)
-var q3 = d3.quantile(data_sorted, .75)
-var interQuantileRange = q3 - q1
-var min = q1 - 1.5 * interQuantileRange
-var max = q1 + 1.5 * interQuantileRange
-
-// Show the X scale (swap x and y)
-var x = d3.scaleLinear()
-  .domain([d3.min(data), d3.max(data)]) // Adjust the domain based on your legend data
-  .range([0, width]);
-svg.call(d3.axisBottom(x)); // Update to use axisBottom
-
-var center =  35 ; // Adjust as needed
-var height =  10  ; // Adjust as needed
-
-// Show the main horizontal line (swap x and y)
-svg.append("line")
-  .attr("x1", x(d3.min(data)))
-  .attr("x2", x(d3.max(data)))
-  .attr("y1", center) // Swap y1 and x1
-  .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
-// Show the box (swap x and y)
-svg.append("rect")
-  .attr("x", x(d3.quantile(data, .25)))
-  .attr("y", center - height / 2) // Swap x and y
-  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
-  .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
-
-// Show median, min, and max vertical lines (swap x and y)
-svg.selectAll("toto")
-  .data([d3.min(data), d3.median(data), d3.max(data)])
-  .enter()
-  .append("line")
-  .attr("x1", function (d) { return x(d); })
-  .attr("x2", function (d) { return x(d); })
-  .attr("y1", center - height / 2) // Swap x1 and y1
-  .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
-
-//   /////////////////////////////////
-// ///////////// Boxplot Education///////////
-// /////////////////////////////////
-
-// // Set the dimensions and margins of the graph
-// var margin = { top: 10, right: 10, bottom: 30, left: 10 },
-//   width = 310 - margin.left - margin.right,
-//   height = 60 - margin.top - margin.bottom;
-
-// // Append the SVG object to the body of the page
-// var svg = d3.select("#Boxplot_2")
-//   .append("svg")
-//   .attr("width", width + margin.left + margin.right)
-//   .attr("height", height + margin.top + margin.bottom)
-//   .append("g")
-//   .attr("transform",
-//     "translate(" + margin.left + "," + margin.top + ")");
-
-// // Create dummy data
-// var data = [0.079879014,0.130764853,0.218333871,0.370618273,0.546269361]
-
-
-// // Compute summary statistics used for the box:
-// var data_sorted = data.sort(d3.ascending)
-// var q1 = d3.quantile(data_sorted, .25)
-// var median = d3.quantile(data_sorted, .5)
-// var q3 = d3.quantile(data_sorted, .75)
-// var interQuantileRange = q3 - q1
-// var min = q1 - 1.5 * interQuantileRange
-// var max = q1 + 1.5 * interQuantileRange
-
-// // Show the X scale (swap x and y)
-// var x = d3.scaleLinear()
-//   .domain([d3.min(data), d3.max(data)]) // Adjust the domain based on your legend data
-//   .range([0, width]);
-// svg.call(d3.axisBottom(x)); // Update to use axisBottom
-
-// var center =  35 ; // Adjust as needed
-// var height =  10  ; // Adjust as needed
-
-// // Show the main horizontal line (swap x and y)
-// svg.append("line")
-//   .attr("x1", x(d3.min(data)))
-//   .attr("x2", x(d3.max(data)))
-//   .attr("y1", center) // Swap y1 and x1
-//   .attr("y2", center) // Swap y2 and x2
-//   .attr("stroke", "black");
-
-
-// // Show the box (swap x and y)
-// svg.append("rect")
-//   .attr("x", x(d3.quantile(data, .25)))
-//   .attr("y", center - height / 2) // Swap x and y
-//   .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
-//   .attr("height", height) // Swap width and height
-//   .attr("stroke", "black")
-//   .style("fill", "#A5DEE4");
-
-// // Show median, min, and max vertical lines (swap x and y)
-// svg.selectAll("toto")
-//   .data([d3.min(data), d3.median(data), d3.max(data)])
-//   .enter()
-//   .append("line")
-//   .attr("x1", function (d) { return x(d); })
-//   .attr("x2", function (d) { return x(d); })
-//   .attr("y1", center - height / 2) // Swap x1 and y1
-//   .attr("y2", center + height / 2) // Swap x2 and y2
-//   .attr("stroke", "black");
-
-
-
-//   svg.append("line")
-//   .attr("x1", x(0.3333333333333333333))
-//   .attr("x2", x(0.3333333333333333333))
-//   .attr("y1", center - height / 2)
-//   .attr("y2", center + height / 2)
-//   .attr("stroke", "red"); // You can choose a color for the line
-
-//   svg.append("line")
-//   .attr("x1", x(baPercValue))
-//   .attr("x2", x(baPercValue))
-//   .attr("y1", center - height / 2)
-//   .attr("y2", center + height / 2)
-//   .attr("stroke", "red"); // You can choose a color for the line
-
-
-
-
 /////////////////////////////////
 ///////////// Histogram ///////////
 /////////////////////////////////
 
+const national_histogram = 'https://gist.githubusercontent.com/acopod/32a8afe3dddb034f477ecce19961f4c7/raw/54fca9757905899fd4882384a72ab503f555f7c5/histogram_summary_national.csv';
 
+Papa.parse(national_histogram, {
+  download: true,
+  complete: function (histogramResults) {
+    const historgramData = histogramResults.data;
+
+    //var selectedcensus = $('#censusDropdown1').find('.text').text();
+    //var selectedtext_translated = catDict1[selectedcensus];
+
+    // Add an event listener to the dropdown selection change
+    $('#censusDropdown1').dropdown({
+      onChange: function (value, text, $selectedItem) {
+        var selectedcensus = text;
+        var selectedtext_translated = catDict1[selectedcensus];
+        const result_hitogram = historgramData.find((row) => row[0] === selectedtext_translated);
+
+        if (result_hitogram) {
+  var bin_0 = parseFloat(result_hitogram[1]);
+  var bin_1 = parseFloat(result_hitogram[2]);
+  var bin_2 = parseFloat(result_hitogram[3]);
+  var bin_3 = parseFloat(result_hitogram[4]);
+  var bin_4 = parseFloat(result_hitogram[5]);
+  var bin_5 = parseFloat(result_hitogram[6]);
+  var bin_6 = parseFloat(result_hitogram[7]);
+  var bin_7 = parseFloat(result_hitogram[8]);
+  var bin_8 = parseFloat(result_hitogram[9]);
+  var bin_0_perc = parseFloat(result_hitogram[11] * 100);
+  var bin_1_perc = parseFloat(result_hitogram[12] * 100);
+  var bin_2_perc = parseFloat(result_hitogram[13] * 100);
+  var bin_3_perc = parseFloat(result_hitogram[14] * 100);
+  var bin_4_perc = parseFloat(result_hitogram[15] * 100);
+  var bin_5_perc = parseFloat(result_hitogram[16] * 100);
+  var bin_6_perc = parseFloat(result_hitogram[17] * 100);
+  var bin_7_perc = parseFloat(result_hitogram[18] * 100);
+
+
+
+  drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc);
+}
+ console.log(`'${bin_0}'`);
+          },
+        });
+      },
+    });
+
+
+function drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc){
 // Set the dimensions and margins of the graph for the histogram
 var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
-    histogramWidth = 340 - histogramMargin.left - histogramMargin.right,
+    histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
     histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
 
 // Append the SVG object to the body of the page for the histogram
@@ -2024,43 +1947,71 @@ var histogramSvg = d3.select("#my_histogram")
           "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
 
 
-// get the data
-d3.csv("https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/1_OneNum.csv", function(data) {
+// Your data
+// Define custom bin ranges and corresponding heights as percentages
+var binRanges = [
+  [bin_0, 0.003719339, bin_0_perc],
+  [bin_1, 0.052152194, bin_1_perc],
+  [bin_2, 0.108444529, bin_2_perc],
+  [bin_3, 0.116602642, bin_3_perc],
+  [bin_4, 0.135878049, bin_4_perc],
+  [bin_5, 0.176329257, bin_5_perc],
+  [bin_6, 0.257421711, bin_6_perc],
+  [bin_7, 0.133190351, bin_7_perc],
+  [bin_8, 0, 0],
+];
 
-  // X axis: scale and draw:
-  var x = d3.scaleLinear()
-      .domain([0, 1000])     // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
-      .range([0, histogramWidth]);
-  histogramSvg.append("g")
-      .attr("transform", "translate(0," + histogramHeight + ")")
-      .call(d3.axisBottom(x));
+// Calculate the total percentage
+var totalPercentage = binRanges.reduce((sum, range) => sum + range[2], 0);
+var maxPercentage = d3.max(binRanges, range => range[2]);
 
-  // set the parameters for the histogram
-  var histogram = d3.histogram()
-      .value(function(d) { return d.price; })   // I need to give the vector of value
-      .domain(x.domain())  // then the domain of the graphic
-      .thresholds(x.ticks(70)); // then the numbers of bins
+// X axis: scale and draw:
+var x = d3.scaleLinear()
+  .domain([0, 0.25])
+  .range([0, histogramWidth]);
 
-  // And apply this function to data to get the bins
-  var bins = histogram(data);
+var xAxis = d3.axisBottom(x)
+  .tickValues(binRanges.map(range => range[0]))
+  .tickFormat(d3.format(".3f")); // Set the desired precision
 
-  // Y axis: scale and draw:
-  var y = d3.scaleLinear()
-      .range([histogramHeight, 0]);
-      y.domain([0, d3.max(bins, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
-  histogramSvg.append("g")
-      .call(d3.axisLeft(y));
+histogramSvg.append("g")
+  .attr("transform", "translate(0," + histogramHeight + ")")
+  .call(xAxis);
 
-  // append the bar rectangles to the svg element
-  histogramSvg.selectAll("rect")
-      .data(bins)
-      .enter()
-      .append("rect")
-        .attr("x", 1)
-        .attr("transform", function(d) { return "translate(" + x(d.x0) + "," + y(d.length) + ")"; })
-        .attr("width", function(d) { return x(d.x1) - x(d.x0) -1 ; })
-        .attr("height", function(d) { return histogramHeight - y(d.length); })
-        .style("fill", "#A5DEE4")
+// Y axis: scale and draw
+var y = d3.scaleLinear()
+  .range([histogramHeight, 0]) // Adjust the range to start from the bottom
+  .domain([0, maxPercentage]);
 
+histogramSvg.append("g")
+  .call(d3.axisLeft(y).tickFormat(d => d + "%").ticks(maxPercentage / 5)); // Set tick intervals
+
+// Append the bar rectangles to the svg element
+histogramSvg.selectAll("rect")
+  .data(binRanges)
+  .enter()
+  .append("rect")
+  .attr("x", range => x(range[0]))
+  .attr("width", x(binRanges[1][0]) - x(binRanges[0][0]) - 1)
+  .attr("y", range => histogramHeight - (range[2] / maxPercentage) * histogramHeight)
+  .attr("height", range => (range[2] / maxPercentage) * histogramHeight)
+  .style("fill", "#A5DEE4");
+
+
+
+};
+
+
+window.addEventListener("load", function(){
+    setTimeout(
+        function open(event){
+            document.querySelector(".overlay").style.display = "block"; // Show the overlay
+            document.querySelector(".popupIntro").style.display = "block";
+        },
+        0
+    )
 });
-
+document.querySelector("#close").addEventListener("click", function(){
+    document.querySelector(".overlay").style.display = "none"; // Hide the overlay
+    document.querySelector(".popupIntro").style.display = "none";
+});
