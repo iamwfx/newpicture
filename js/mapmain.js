@@ -1313,12 +1313,12 @@ Papa.parse(csvFileURL, {
         // Get the text
 popUpStr = `<div class='popup'>
     <h4>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h4>
-    
+    <
     
 </div>`;
 
         popUp.setHTML(popUpStr);
-        popUp.setLngLat([e.lngLat.lng, e.lngLat.lat*1.0001]);
+        popUp.setLngLat([e.lngLat.lng, e.lngLat.lat]);
         popUp.addTo(map);
         // if (!popUp.isOpen()) {
         //   popUp.addTo(map);
@@ -1811,18 +1811,31 @@ p_tract.getHeader().then(h => {
 
     })
 
-    var nav = new maplibregl.NavigationControl();
-    map.addControl(nav, 'top-right');
+   
+    map.addControl(new maplibregl.NavigationControl(), 'bottom-left');
+    map.addControl(new maplibregl.AttributionControl(), 'bottom-right')
 
     let jawgPlaces = new JawgPlaces.MapLibre({
           container: '#my-container',
           input: '#my-input',
           resultContainer: '#my-result-container',
           searchOnTyping: true,
-        })
+                   transition: {
+                type: 'fly',
+                flySpeed: 1.2,
+                flyCurve: 1.42
+              },
+            adminArea: {
+                
+                outlineColor: 'rgb(172,59,246)',
+                show: true,
+              },
+              sources: 'wof'
+                })
 
-    map.addControl(jawgPlaces);
+    map.addControl(jawgPlaces,'top-right');
     jawgPlaces.attachMap(map);
+    jawgPlaces.close();
 
     });
 

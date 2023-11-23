@@ -87,9 +87,9 @@ body{
 }
 #my-container{
 /*  width:100%;*/
-  position: relative;
+/*  position: relative;*/
 /*  top: calc(0.1vw + 36px);*/
-  left: calc(100vw - 700px);
+/*  left: calc(100vw - 700px);*/
   z-index: 100;
 /*  height:100%;*/
 /*  top: vw;*/
@@ -159,7 +159,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   right: 0px;
 /*  top: 60px;*/
 /*  height:calc(100% - 60px);*/
-  height:100%;
+  height:95%;
   width:calc(100% - 340px);
 }   
 
