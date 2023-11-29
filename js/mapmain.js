@@ -723,9 +723,11 @@ svg.selectAll("toto")
 /////////////////////////////////
 //// Black Population///////////
 /////////////////////////////////   
+
 function drawBoxPlot(svg, newData) {
- //d3.select("#Boxplot_Black").select("svg").remove();
-// Set the dimensions and margins of the graph
+
+  d3.select("#Boxplot_Black").select("svg").remove();
+
 var margin = { top: 15, right: 20, bottom: 30, left: 15 },
   width = 300 - margin.left - margin.right,
   height = 60 - margin.top - margin.bottom;
@@ -810,11 +812,14 @@ svg.selectAll("toto")
                             .attr("y", 30)
                             .attr("width", x(newData[2]) - x(newData[0]))
                             .attr("height", 10)
-                            .attr("stroke", "red")
+                            //.attr("stroke", "black")
+                            .attr("fill", "red")
+                            .attr("fill-opacity", .5)
                             
 
 
 }
+drawBoxPlot("#Boxplot_Black", [0, 0, 0, 0, 0]);
                         /*function drawBoxPlot(svg, newData) {
 
                           svg.append("rect")
@@ -1409,6 +1414,8 @@ Papa.parse(national_histogram, {
 
 function drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc){
 // Set the dimensions and margins of the graph for the histogram
+
+  d3.select("#my_histogram").select("svg").remove();
         var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
             histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
             histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
@@ -1943,8 +1950,13 @@ for (i = 0; i < coll.length; i++) {
 /////////////////////////////////
 ///////////// Histogram ///////////
 /////////////////////////////////
+function loadInitialHistogramData(selectedtext_translated) {
+
+    
 
 const national_histogram = 'https://gist.githubusercontent.com/acopod/32a8afe3dddb034f477ecce19961f4c7/raw/54fca9757905899fd4882384a72ab503f555f7c5/histogram_summary_national.csv';
+
+
 
 Papa.parse(national_histogram, {
   download: true,
@@ -1955,13 +1967,13 @@ Papa.parse(national_histogram, {
     //var selectedtext_translated = catDict1[selectedcensus];
 
     // Add an event listener to the dropdown selection change
-    $('#censusDropdown1').dropdown({
-      onChange: function (value, text, $selectedItem) {
-        var selectedcensus = text;
-        var selectedtext_translated = catDict1[selectedcensus];
-        const result_hitogram = historgramData.find((row) => row[0] === selectedtext_translated);
+  $('#censusDropdown1').dropdown({
+        onChange: function (value, text, $selectedItem) {
+          var selectedcensus = text;
+          var selectedtext_translated = catDict1[selectedcensus];
+          const result_histogram = histogramData.find((row) => row[0] === selectedtext_translated);
 
-        if (result_hitogram) {
+      if (result_hitogram) {
   var bin_0 = parseFloat(result_hitogram[1]);
   var bin_1 = parseFloat(result_hitogram[2]);
   var bin_2 = parseFloat(result_hitogram[3]);
@@ -2059,7 +2071,20 @@ histogramSvg.selectAll("rect")
 
 
 
-};
+}};
+
+
+
+loadInitialHistogramData('total_diversity_exp');
+
+
+
+
+
+
+/////////////////////////////////
+///////////// Intro /////////////
+/////////////////////////////////
 
 
 window.addEventListener("load", function(){
