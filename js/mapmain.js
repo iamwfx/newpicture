@@ -2071,10 +2071,23 @@ window.addEventListener("load", function(){
         0
     )
 });
+
+function openOverlay() {
+    document.querySelector(".overlay").style.display = "block"; // Show the overlay
+    document.querySelector(".popupIntro").style.display = "block";
+}
+
+// Event listener for the About button
+document.querySelector("#aboutText").addEventListener("click", function(event) {
+    openOverlay(); // Calls the function to open the overlay and popupIntro
+});
+
 document.querySelector("#close").addEventListener("click", function(){
     document.querySelector(".overlay").style.display = "none"; // Hide the overlay
     document.querySelector(".popupIntro").style.display = "none";
 });
+
+
 
 $(document).ready(function() {
 /////////////////////////////
@@ -2093,6 +2106,7 @@ $('.infoIcon').on('click',function(){
 $('.dataIcon').on('click',function(){
     $('#dataMessage').transition('fade in');
 })
+
 $('.message .close')
   .on('click', function() {
     $(this)
