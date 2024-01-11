@@ -77,6 +77,7 @@
 
         <script src="js/mapdata.js"></script>
         <script src="js/usmap.js"></script>
+
     </head>
     <body>
       <!-- Menu button -->
@@ -101,7 +102,7 @@
  --> 
 
 
-         <div id ='title bar' class="ui secondary pointing menu menutitle">
+         <div id ='title bar' class="ui vertical borderless small pointing secondary menu menutitle">
            <!-- <div class="search"> -->
 
             <div id="my-container"class="ui search maplibregl-ctrl">
@@ -126,24 +127,20 @@
               <!-- </div> -->
 
             <div class="item">
-            <h3>A New Picture of Segregation</h3>
+            
             </div>
               <div class="right menu rightmenu">
+                  <a class="item" id="aboutText">About</a>
+                  <a class="item" href="download.html">Download</a>
+                  
+              </div>
 
-                <a class="item" href="download.html">
-                  Download
-                </a>
-
-                 <a class="item" id="aboutText">
-                About
-                </a>
-
-                <a class="item infoIcon">
-                Download 
-                </a>
-                  </div>
-
-               
+               <a href="https://www.urbandataresearchlab.org/">
+                      <img src="jpg/urbanDRL_logo.svg" alt="urbanDRL_logo" width="150" height="75" class="rotate-90">
+                  </a>
+                  <a href="https://aap.cornell.edu/">
+                      <img src="jpg/AAP.svg" alt="AAP_logo" width="150" height="75" class="rotate-90">
+                  </a>
               
               </div>
 
@@ -165,24 +162,23 @@
               </div> -->
             <!-- Search Bar -->
 
-          
+             <h2>A New Picture of Segregation</h2>
             <h5>City
             
             </h5>
 
-            <div id="cityDropdown1" class="ui fluid search selection  dropdown">
-              <div id="cityDropdown" class="menu"></div>
-
-              <option value="">Select a city</option>
-              <!-- <div class="text" placeholder='Select a city'></div> -->
+            <div id = "cityDropdown1" class="ui fluid search selection dropdown">
+              <input type="hidden" value="city">
               <i class="dropdown icon"></i>
-            </div>
+              <div class="text">Select a city</div>
+              <div id='cityDropdown' class="menu"></div>
+            </div> 
            
-
             <!-- Toggle Metrics -->
             <h5 >Metric
               <i class="small grey circle info icon link" data-content="test test" data-variation="mini"></i>
             </h5>
+
             <div id = "censusDropdown1" class="ui fluid search selection dropdown">
               <input type="hidden" value="total_diversity_exp">
               <i class="dropdown icon"></i>
@@ -190,6 +186,7 @@
               <div id='censusDropdown' class="menu"></div>
             </div> 
             <br>
+
             <!-- Legend -->
                          
               <div class="item compact disabled legendIcon" data-value="legend">
@@ -375,7 +372,7 @@
 
             
           </div>  
-                     <div id='logoContainer'>
+                     <!--<div id='logoContainer'>
              
                   <a href="https://www.urbandataresearchlab.org/" class="logo-link">
                       <img src="jpg/urbanDRL_logo.svg" alt="urbanDRL_logo" class="logo">
@@ -386,7 +383,7 @@
                       <img src="jpg/AAP.svg" alt="AAP_logo" class="logo">
                   </a>
                 
-          </div>   
+          </div>   -->
 
 
 

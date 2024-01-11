@@ -91,15 +91,15 @@ const censusCatDict_v2 = {
                                 [0.077, '#E15EA7'],
                                 [0.135, '#D33383'],
                                 [.25, '#A52461']],
-             "total_diversity_exp":  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
+             "total_diversity_exp": [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
              // [[0, '#d53e4f'],
              //                    [0.071, '#f46d43'],
              //                    [0.19, '#fdae61'],
@@ -189,15 +189,15 @@ const choroplethColors={'white_diversity_exp':{
                          },
                          'total_diversity_exp':{
                             property:'total_diversity_exp',
-                            stops: [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
+                            stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
                             // stops: [[0, '#d53e4f'],
                             //     [0.071, '#f46d43'],
                             //     [0.19, '#fdae61'],
@@ -492,7 +492,14 @@ function updateLegend(category){
 
 ///////////////pop//////////////
 
+let totolPopValue = null;
+let WHPopValue = null;
+let BLPopValue = null;
+let ASPopValue = null;
+let HIPopValue = null;
+let OTPopValue = null;
 let baPercValue = null;
+let medianIncValue = null;
 
 
 function createPopUp(popUp,layer,map,hoveredStateId,svg){
@@ -507,10 +514,9 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
             'source':'seg_10_13'
             }
     }
-    
 
     ///// Change the opacity of the highlighted HOLC zone 
-    map.on('mousemove',layer, e => {
+    map.on('click',layer, e => {
 //mousemove
         map.getCanvas().style.cursor = 'pointer';
         // e.stopPropagation();
@@ -544,21 +550,90 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
         $('#medianIncValue').text(' ' + d3.format(".0f")(medianIncValue));
         $('#totolPopValue').text(' ' + d3.format(".1f")(totolPopValue));
 
-["#Boxplot_White","#Boxplot_Black","#Boxplot_Asian","#Boxplot_Hisp","#Boxplot_Other","#Boxplot_2", "#Boxplot_3", "#Boxplot_totalPop"].forEach(function(id) {
+/*["#Boxplot_White","#Boxplot_Black","#Boxplot_Asian","#Boxplot_Hisp","#Boxplot_Other","#Boxplot_2", "#Boxplot_3", "#Boxplot_totalPop"].forEach(function(id) {
   var existingBoxplot = d3.select(id).select("svg");
   if (!existingBoxplot.empty()) {
     existingBoxplot.remove();
   }
-});
+});*/
+
+drawTPBoxPlot(svg, newTPData, totolPopValue);
+drawWHBoxPlot(svg, newWHData, WHPopValue);
+drawBLBoxPlot(svg, newBLData, BLPopValue);
+drawASBoxPlot(svg, newASData, ASPopValue);
+drawHIBoxPlot(svg, newHIData, HIPopValue);
+drawOTBoxPlot(svg, newOTData, OTPopValue);
+drawHEBoxPlot(svg, newHEData, baPercValue);
+drawMIBoxPlot(svg, newMIData, medianIncValue);
+//console.log(baPercValue);
+
+        const currentZoom = map.getZoom();
+    let popupDistanceMultiplier = 0.1;
+
+    // Adjust the distance multiplier based on zoom level
+    if (currentZoom >= 10 && currentZoom < 15) {
+        popupDistanceMultiplier = 0.005;
+    } else if (currentZoom >= 15 && currentZoom < 18) {
+        popupDistanceMultiplier = 0.002;
+    } else if (currentZoom >= 18) {
+        popupDistanceMultiplier = 0.001;
+    }
     
+        // Get the text
+        popUpStr = `<div class='popup'>
+            <h4>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h4>
+            <p> Place: ${geom_name}</p>
+            
+        </div>`;
+
+        popUp.setHTML(popUpStr);
+        popUp.setLngLat([e.lngLat.lng, e.lngLat.lat + (popupDistanceMultiplier)]);
+        popUp.addTo(map);
+        // if (!popUp.isOpen()) {
+        //   popUp.addTo(map);
+        // }
+        // else {
+        // popUp.remove();
+        // }
+
+
+        // Change the opacity
+        if (e.features.length > 0) {               
+
+                if (hoveredStateId) {
+                    map.removeFeatureState(
+                        {source: layerPopUpInfo[layer]['source'], 
+                        sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
+                        id: hoveredStateId}
+                    );
+                }
+
+                hoveredStateId = e.features[0].id;
+                map.setFeatureState(
+                    {source: layerPopUpInfo[layer]['source'], 
+                    sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
+                    id: hoveredStateId},
+                    {hover: true}
+                );
+            }
+            
+    });
+///////////////////////////////////////////////////////////////////////////////////////////////
+/////// Boxplot functions//////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 /////////////////////////////////
 /////// Boxplot Total Pop////////
 /////////////////////////////////
 
+
+function drawTPBoxPlot(svg, newTPData, totolPopValue) {
+        d3.select("#Boxplot_totalPop").select("svg").remove();
+
 // Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
-  width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
+var margin = { top: 10, right: 20, bottom: 10, left: 15 },
+    width = 300 - margin.left - margin.right,
+    height = 40 - margin.top - margin.bottom;
 
 // Append the SVG object to the body of the page
 var svg = d3.select("#Boxplot_totalPop")
@@ -586,7 +661,7 @@ var x = d3.scaleLinear()
   .domain([0, 10000]) // Adjust the domain based on your data
   .range([0, width]);
 
-var formatTicks = d3.format(".0s"); // Define the format function correctly
+var formatTicks = d3.format(".1s"); // Define the format function correctly
 
 var xAxis = d3.axisBottom(x)
   .ticks(5)
@@ -594,9 +669,9 @@ var xAxis = d3.axisBottom(x)
     return formatTicks(d); // Use the correct format function
   });
 
-svg.call(xAxis);
+//svg.call(xAxis);
 
-var center =  35 ; // Adjust as needed
+var center =  10 ; // Adjust as needed
 var height =  10  ; // Adjust as needed
 
 // Show the main horizontal line (swap x and y)
@@ -605,8 +680,7 @@ svg.append("line")
   .attr("x2", x(d3.max(data)))
   .attr("y1", center) // Swap y1 and x1
   .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
+  .attr("stroke", "#555");
 
 // Show the box (swap x and y)
 svg.append("rect")
@@ -614,8 +688,8 @@ svg.append("rect")
   .attr("y", center - height / 2) // Swap x and y
   .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
   .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
+  .attr("stroke", "#555")
+  .style("fill", "#f7b285");
 
 // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -626,23 +700,65 @@ svg.selectAll("toto")
   .attr("x2", function (d) { return x(d); })
   .attr("y1", center - height / 2) // Swap x1 and y1
   .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
+  .attr("stroke", "#555");
 
-  svg.append("line")
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 +5)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+ 
+
+      svg.append("rect")
+    .attr("x", x(newTPData[0])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2) // Swap x and y
+    .attr("width", x(newTPData[2]) - x(newTPData[0]))
+    .attr("height", height)
+    .attr("stroke", "black")
+    .attr("fill", "gray")
+    .attr("fill-opacity", 0.5);
+
+ svg.append("line")
   .attr("x1", x(totolPopValue))
   .attr("x2", x(totolPopValue))
   .attr("y1", center - height / 2)
   .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
+
+}
 
 /////////////////////////////////
-//// White Population///////////
+/////// Boxplot White Pop////////
 /////////////////////////////////
 
-// Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
-  width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
+function drawWHBoxPlot(svg, newWHData, WHPopValue) {
+        d3.select("#Boxplot_White").select("svg").remove();
+
+        // Set the dimensions and margins of the graph
+var margin = { top: 10, right: 20, bottom: 10, left: 15 },
+    width = 300 - margin.left - margin.right,
+    height = 40 - margin.top - margin.bottom;
 
 // Append the SVG object to the body of the page
 var svg = d3.select("#Boxplot_White")
@@ -678,9 +794,9 @@ var xAxis = d3.axisBottom(x)
     return formatTicks(d); // Use the correct format function
   });
 
-svg.call(xAxis);
+//svg.call(xAxis);
 
-var center =  35 ; // Adjust as needed
+var center =  10 ; // Adjust as needed
 var height =  10  ; // Adjust as needed
 
 // Show the main horizontal line (swap x and y)
@@ -689,8 +805,7 @@ svg.append("line")
   .attr("x2", x(d3.max(data)))
   .attr("y1", center) // Swap y1 and x1
   .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
+  .attr("stroke", "#555");
 
 // Show the box (swap x and y)
 svg.append("rect")
@@ -698,8 +813,8 @@ svg.append("rect")
   .attr("y", center - height / 2) // Swap x and y
   .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
   .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
+  .attr("stroke", "#555")
+  .style("fill", "#f7b285");
 
 // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -710,27 +825,70 @@ svg.selectAll("toto")
   .attr("x2", function (d) { return x(d); })
   .attr("y1", center - height / 2) // Swap x1 and y1
   .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
+  .attr("stroke", "#555");
 
-  svg.append("line")
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 +5)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+
+
+    svg.append("rect")
+    .attr("x", x(newWHData[0])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2) // Swap x and y
+    .attr("width", x(newWHData[2]) - x(newWHData[0]))
+    .attr("height", height)
+    .attr("stroke", "black")
+    .attr("fill", "gray")
+    .attr("fill-opacity", 0.5)
+
+      svg.append("line")
   .attr("x1", x(WHPopValue))
   .attr("x2", x(WHPopValue))
   .attr("y1", center - height / 2)
   .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
+}
 
 
 /////////////////////////////////
 //// Black Population///////////
 /////////////////////////////////   
 
-function drawBoxPlot(svg, newData) {
 
-  d3.select("#Boxplot_Black").select("svg").remove();
 
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
-  width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
+function drawBLBoxPlot(svg, newBLData, BLPopValue) {
+        d3.select("#Boxplot_Black").select("svg").remove();
+
+
+ // d3.select("#Boxplot_Black").select("svg").remove();
+
+var margin = { top: 10, right: 20, bottom: 10, left: 15 },
+    width = 300 - margin.left - margin.right,
+    height = 40 - margin.top - margin.bottom;
 
 // Append the SVG object to the body of the page
 var svg = d3.select("#Boxplot_Black")
@@ -766,9 +924,9 @@ var xAxis = d3.axisBottom(x)
     return formatTicks(d); // Use the correct format function
   });
 
-svg.call(xAxis);
+//svg.call(xAxis);
 
-var center =  35 ; // Adjust as needed
+var center =  10 ; // Adjust as needed
 var height =  10  ; // Adjust as needed
 
 // Show the main horizontal line (swap x and y)
@@ -777,8 +935,7 @@ svg.append("line")
   .attr("x2", x(d3.max(data)))
   .attr("y1", center) // Swap y1 and x1
   .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
+  .attr("stroke", "#555");
 
 // Show the box (swap x and y)
 svg.append("rect")
@@ -786,8 +943,8 @@ svg.append("rect")
   .attr("y", center - height / 2) // Swap x and y
   .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
   .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
+  .attr("stroke", "#555")
+  .style("fill", "#f7b285");
 
 // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -798,53 +955,65 @@ svg.selectAll("toto")
   .attr("x2", function (d) { return x(d); })
   .attr("y1", center - height / 2) // Swap x1 and y1
   .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
+  .attr("stroke", "#555");
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 +5)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+    svg.append("rect")
+    .attr("x", x(newBLData[0])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2) // Swap x and y
+    .attr("width", x(newBLData[2]) - x(newBLData[0]))
+    .attr("height", height)
+    .attr("stroke", "black")
+
+    .attr("fill-opacity", 0)
 
   svg.append("line")
   .attr("x1", x(BLPopValue))
   .attr("x2", x(BLPopValue))
   .attr("y1", center - height / 2)
   .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
-                            svg.append("rect")
-                            .attr("x", x(newData[0])) // Assuming newData[0] is the lower bound
-                            .attr("y", 30)
-                            .attr("width", x(newData[2]) - x(newData[0]))
-                            .attr("height", 10)
-                            //.attr("stroke", "black")
-                            .attr("fill", "red")
-                            .attr("fill-opacity", .5)
-                            
-
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
 
 }
-drawBoxPlot("#Boxplot_Black", [0, 0, 0, 0, 0]);
-                        /*function drawBoxPlot(svg, newData) {
 
-                          svg.append("rect")
-                            .attr("x", x(newData[0])) // Assuming newData[0] is the lower bound
-                            .attr("y", 27.5)
-                            .attr("width", x(newData[2]) - x(newData[0]))
-                            .attr("height", 15)
-                            .attr("stroke", "black")
-                            .style("fill", "red");
-
-                          // Show median, min, and max vertical lines for the new box
-                         console.log(newData[0]);
-                         console.log(svg)
-                          // Add a red line for the lower bound of the new box
-
-                        }*/
 
 /////////////////////////////////
 //// Asian Population///////////
 /////////////////////////////////
 
+function drawASBoxPlot(svg, newASData, ASPopValue) {
+        d3.select("#Boxplot_Asian").select("svg").remove();
+
 // Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
+var margin = { top: 10, right: 20, bottom: 10, left: 15 },
   width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
+  height = 40 - margin.top - margin.bottom;
 
 // Append the SVG object to the body of the page
 var svg = d3.select("#Boxplot_Asian")
@@ -879,10 +1048,9 @@ var xAxis = d3.axisBottom(x)
   .tickFormat(function (d) {
     return formatTicks(d); // Use the correct format function
   });
+//svg.call(xAxis);
 
-svg.call(xAxis);
-
-var center =  35 ; // Adjust as needed
+var center =  10 ; // Adjust as needed
 var height =  10  ; // Adjust as needed
 
 // Show the main horizontal line (swap x and y)
@@ -891,8 +1059,7 @@ svg.append("line")
   .attr("x2", x(d3.max(data)))
   .attr("y1", center) // Swap y1 and x1
   .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
+  .attr("stroke", "#555");
 
 // Show the box (swap x and y)
 svg.append("rect")
@@ -900,8 +1067,8 @@ svg.append("rect")
   .attr("y", center - height / 2) // Swap x and y
   .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
   .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
+  .attr("stroke", "#555")
+  .style("fill", "#f7b285");
 
 // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -912,23 +1079,62 @@ svg.selectAll("toto")
   .attr("x2", function (d) { return x(d); })
   .attr("y1", center - height / 2) // Swap x1 and y1
   .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
+  .attr("stroke", "#555");
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 +5)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+    svg.append("rect")
+    .attr("x", x(newASData[0])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2) // Swap x and y
+    .attr("width", x(newASData[2]) - x(newASData[0]))
+    .attr("height", height)
+    .attr("stroke", "black")
+    .attr("fill", "gray")
+    .attr("fill-opacity", 0.5)
 
   svg.append("line")
   .attr("x1", x(ASPopValue))
   .attr("x2", x(ASPopValue))
   .attr("y1", center - height / 2)
   .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);  
+}
 /////////////////////////////////
 //// Hispanic Population///////////
 /////////////////////////////////
 
+function drawHIBoxPlot(svg, newHIData, HIPopValue) {
+        d3.select("#Boxplot_Hisp").select("svg").remove();
+
 // Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
+var margin = { top: 10, right: 20, bottom: 10, left: 15 },
   width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
+  height = 40 - margin.top - margin.bottom;
 
 // Append the SVG object to the body of the page
 var svg = d3.select("#Boxplot_Hisp")
@@ -964,9 +1170,9 @@ var xAxis = d3.axisBottom(x)
     return formatTicks(d); // Use the correct format function
   });
 
-svg.call(xAxis);
+//svg.call(xAxis);
 
-var center =  35 ; // Adjust as needed
+var center =  10 ; // Adjust as needed
 var height =  10  ; // Adjust as needed
 
 // Show the main horizontal line (swap x and y)
@@ -975,8 +1181,7 @@ svg.append("line")
   .attr("x2", x(d3.max(data)))
   .attr("y1", center) // Swap y1 and x1
   .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
+  .attr("stroke", "#555");
 
 // Show the box (swap x and y)
 svg.append("rect")
@@ -984,8 +1189,8 @@ svg.append("rect")
   .attr("y", center - height / 2) // Swap x and y
   .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
   .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
+  .attr("stroke", "#555")
+  .style("fill", "#f7b285");
 
 // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -996,23 +1201,63 @@ svg.selectAll("toto")
   .attr("x2", function (d) { return x(d); })
   .attr("y1", center - height / 2) // Swap x1 and y1
   .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
+  .attr("stroke", "#555");
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 +5)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+   
+    svg.append("rect")
+    .attr("x", x(newHIData[0])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2) // Swap x and y
+    .attr("width", x(newHIData[2]) - x(newHIData[0]))
+    .attr("height", height)
+    .attr("stroke", "black")
+    .attr("fill", "gray")
+    .attr("fill-opacity", 0.5)
 
   svg.append("line")
   .attr("x1", x(HIPopValue))
   .attr("x2", x(HIPopValue))
   .attr("y1", center - height / 2)
   .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
+}
 /////////////////////////////////
 //// Other Population///////////
 /////////////////////////////////
 
+
+function drawOTBoxPlot(svg, newOTData, OTPopValue) {
+        d3.select("#Boxplot_Other").select("svg").remove();
+
 // Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
+var margin = { top: 10, right: 20, bottom: 10, left: 15 },
   width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
+  height = 40 - margin.top - margin.bottom;
 
 // Append the SVG object to the body of the page
 var svg = d3.select("#Boxplot_Other")
@@ -1048,10 +1293,10 @@ var xAxis = d3.axisBottom(x)
     return formatTicks(d); // Use the correct format function
   });
 
-svg.call(xAxis);
+//svg.call(xAxis);
 
-var center = 35; // Adjust as needed
-var height = 10; // Adjust as needed
+var center =  10 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
 
 // Show the main horizontal line (swap x and y)
 svg.append("line")
@@ -1059,8 +1304,7 @@ svg.append("line")
   .attr("x2", x(d3.max(data)))
   .attr("y1", center) // Swap y1 and x1
   .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
+  .attr("stroke", "#555");
 
 // Show the box (swap x and y)
 svg.append("rect")
@@ -1068,8 +1312,8 @@ svg.append("rect")
   .attr("y", center - height / 2) // Swap x and y
   .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
   .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
+  .attr("stroke", "#555")
+  .style("fill", "#f7b285");
 
 // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -1080,23 +1324,63 @@ svg.selectAll("toto")
   .attr("x2", function (d) { return x(d); })
   .attr("y1", center - height / 2) // Swap x1 and y1
   .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
+  .attr("stroke", "#555");
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 +5)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+    svg.append("rect")
+    .attr("x", x(newOTData[0])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2) // Swap x and y
+    .attr("width", x(newOTData[2]) - x(newOTData[0]))
+    .attr("height", height)
+    .attr("stroke", "black")
+
+    .attr("fill-opacity", 0)
+
 
   svg.append("line")
   .attr("x1", x(OTPopValue))
   .attr("x2", x(OTPopValue))
   .attr("y1", center - height / 2)
   .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
+}
 /////////////////////////////////
 //// Boxplot Education///////////
 /////////////////////////////////
 
+function drawHEBoxPlot(svg, newHEData, baPercValue) {
+        d3.select("#Boxplot_2").select("svg").remove();
+
 // Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
+var margin = { top: 10, right: 20, bottom: 10, left: 15 },
   width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
+  height = 40 - margin.top - margin.bottom;
 
 // Append the SVG object to the body of the page
 var svg = d3.select("#Boxplot_2")
@@ -1132,9 +1416,9 @@ var xAxis = d3.axisBottom(x)
     return formatTicks(d); // Use the correct format function
   });
 
-svg.call(xAxis);
+//svg.call(xAxis);
 
-var center =  35 ; // Adjust as needed
+var center =  10 ; // Adjust as needed
 var height =  10  ; // Adjust as needed
 
 // Show the main horizontal line (swap x and y)
@@ -1143,8 +1427,7 @@ svg.append("line")
   .attr("x2", x(d3.max(data)))
   .attr("y1", center) // Swap y1 and x1
   .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
+  .attr("stroke", "#555");
 
 // Show the box (swap x and y)
 svg.append("rect")
@@ -1152,8 +1435,8 @@ svg.append("rect")
   .attr("y", center - height / 2) // Swap x and y
   .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
   .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
+  .attr("stroke", "#555")
+  .style("fill", "#f7b285");
 
 // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -1164,24 +1447,63 @@ svg.selectAll("toto")
   .attr("x2", function (d) { return x(d); })
   .attr("y1", center - height / 2) // Swap x1 and y1
   .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
+  .attr("stroke", "#555");
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 +5)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+    svg.append("rect")
+    .attr("x", x(newHEData[0])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2) // Swap x and y
+    .attr("width", x(newHEData[2]) - x(newHEData[0]))
+    .attr("height", height)
+    .attr("stroke", "black")
+    .attr("fill-opacity", 0)
 
   svg.append("line")
   .attr("x1", x(baPercValue))
   .attr("x2", x(baPercValue))
   .attr("y1", center - height / 2)
   .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);  
+  }
 
 /////////////////////////////////
 //////// Boxplot Income//////////
 /////////////////////////////////
 
 
+function drawMIBoxPlot(svg, newMIData, medianIncValue) {
+        d3.select("#Boxplot_3").select("svg").remove();
+
 // Set the dimensions and margins of the graph
-var margin = { top: 10, right: 10, bottom: 30, left: 10 },
+var margin = { top: 10, right: 10, bottom: 10, left: 10 },
   width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
+  height = 40 - margin.top - margin.bottom;
 
 // Append the SVG object to the body of the page
 var svg = d3.select("#Boxplot_3")
@@ -1193,10 +1515,10 @@ var svg = d3.select("#Boxplot_3")
     "translate(" + margin.left + "," + margin.top + ")");
 
 //Create dummy data
-var incData = [27306,36806,49375,67313,90296.8]
+var data = [27306,36806,49375,67313,90296.8]
 
 // Compute summary statistics used for the box:
-var data_sorted = incData.sort(d3.ascending)
+var data_sorted = data.sort(d3.ascending)
 var q1 = d3.quantile(data_sorted, .25)
 var median = d3.quantile(data_sorted, .5)
 var q3 = d3.quantile(data_sorted, .75)
@@ -1209,57 +1531,90 @@ var x = d3.scaleLinear()
   .domain([20000, 100000]) // Adjust the domain based on your legend data
   .range([0, width]);
 
-var formatTick = d3.format(".0s");
+var formatTicks = d3.format(".0s"); // Define the format function correctly
 
 var xAxis = d3.axisBottom(x)
               .ticks(5)
               .tickFormat(function (d) {
                             return formatTick(d);
   });; // Change the number of ticks as needed
+//svg.call(xAxis);
 
-svg.call(xAxis);
-
-var center =  35 ; // Adjust as needed
+var center =  10 ; // Adjust as needed
 var height =  10  ; // Adjust as needed
 
 // Show the main horizontal line (swap x and y)
 svg.append("line")
-  .attr("x1", x(d3.min(incData)))
-  .attr("x2", x(d3.max(incData)))
+  .attr("x1", x(d3.min(data)))
+  .attr("x2", x(d3.max(data)))
   .attr("y1", center) // Swap y1 and x1
   .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
+  .attr("stroke", "#555");
 
 // Show the box (swap x and y)
 svg.append("rect")
-  .attr("x", x(d3.quantile(incData, .25)))
+  .attr("x", x(d3.quantile(data, .25)))
   .attr("y", center - height / 2) // Swap x and y
-  .attr("width", x(d3.quantile(incData, .75)) - x(d3.quantile(incData, .25)))
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
   .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
+  .attr("stroke", "#555")
+  .style("fill", "#f7b285");
 
 // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
-  .data([d3.min(incData), d3.median(incData), d3.max(incData)])
+  .data([d3.min(data), d3.median(data), d3.max(data)])
   .enter()
   .append("line")
   .attr("x1", function (d) { return x(d); })
   .attr("x2", function (d) { return x(d); })
   .attr("y1", center - height / 2) // Swap x1 and y1
   .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
+  .attr("stroke", "#555");
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 +5)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+    svg.append("rect")
+    .attr("x", x(newMIData[0])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2) // Swap x and y
+    .attr("width", x(newMIData[2]) - x(newMIData[0]))
+    .attr("height", height)
+    .attr("stroke", "black")
+    .attr("fill", "gray")
+    .attr("fill-opacity", 0.5)
+
 
   svg.append("line")
   .attr("x1", x(medianIncValue))
   .attr("x2", x(medianIncValue))
   .attr("y1", center - height / 2)
   .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
-
-//console.log(baPercValue);
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
+}
 
 ///////////////////////////
 //////////fly to///////////
@@ -1268,9 +1623,18 @@ svg.selectAll("toto")
 // Define the URL of your hosted CSV file
 const csvFileURL = 'https://gist.githubusercontent.com/acopod/35967e9183f6de7c9db49389aed36681/raw/5885128198a67c7d3000296230962f390c776a69/CBSA_latlong.csv';
 const CBSA_boxplot = 'https://gist.githubusercontent.com/acopod/e8a65ad8156e9caf05625107996bd501/raw/1cb5474175a851ef84a766e9e33ae6eaadaaf443/boxplot_summary_cbsa_national.csv';
+const CBSA_histogram = 'https://gist.githubusercontent.com/acopod/ad35eca551b3d3d86efe6ceb7553f94e/raw/a9f070cc22b285ad810230552e8179e3c56412ca/histogram_summary_cbsa_national.csv';
 let cityName; // Declare cityName variable in a broader scope
 let min_b;
-
+let newTPData = [];
+let newWHData = [];
+let newBLData = [];
+let newASData = [];
+let newHIData = [];
+let newOTData = [];
+let newHEData = [];
+let newMIData = [];
+let wHhistoRanges = [];
 Papa.parse(csvFileURL, {
   download: true,
   complete: function (csvResults) {
@@ -1281,91 +1645,267 @@ Papa.parse(csvFileURL, {
       complete: function (boxplotResults) {
         const boxplotData = boxplotResults.data;
 
+        Papa.parse(CBSA_histogram, {
+          download: true,
+          complete: function (histogramResults) {
+            const histogramData = histogramResults.data;
+
         // Add an event listener to the dropdown selection change
         $('#cityDropdown1').dropdown({
           onChange: function (value, text, $selectedItem) {
             cityName = text; // Assign the value to the broader-scoped variable cityName
                         // Process CSV data
             const result = csvData.find((row) => row[3] === cityName);
+            $('#cityDropdown1').dropdown('hide');
+                            if (result) {
+                              const intptlat = parseFloat(result[10]);
+                              const intptlon = parseFloat(result[11]);
 
-            if (result) {
-              const intptlat = parseFloat(result[10]);
-              const intptlon = parseFloat(result[11]);
+                              // Fly to the selected location
+                              map.flyTo({
+                                center: [intptlon, intptlat],
+                                zoom: 10,
+                                essential: true,
+                              });
 
-              // Fly to the selected location
-              map.flyTo({
-                center: [intptlon, intptlat],
-                zoom: 10,
-                essential: true,
-              });
-
-              console.log(`City '${cityName}'`);
-            }
+                              console.log(`City '${cityName}'`);
+                            }
 
             // Process boxplot data
-            const result_boxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'black_perc');
+              const result_TPboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'total_pop');
 
-            if (result_boxplot) {
-  var min_b = parseFloat(result_boxplot[1]);
-  var q1_b = parseFloat(result_boxplot[2]);
-  var median_b = parseFloat(result_boxplot[3]);
-  var q3_b = parseFloat(result_boxplot[4]);
-  var max_b = parseFloat(result_boxplot[5]);
+              if (result_TPboxplot) {
+              var min_b = parseFloat(result_TPboxplot[1]);
+              var q1_b = parseFloat(result_TPboxplot[2]);
+              var median_b = parseFloat(result_TPboxplot[3]);
+              var q3_b = parseFloat(result_TPboxplot[4]);
+              var max_b = parseFloat(result_TPboxplot[5]);
+              var newTPData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawTPBoxPlot(svg, newTPData, totolPopValue);
+            }
+
+              const result_WHboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'white_perc');
+
+              if (result_WHboxplot) {
+              var min_b = parseFloat(result_WHboxplot[1]);
+              var q1_b = parseFloat(result_WHboxplot[2]);
+              var median_b = parseFloat(result_WHboxplot[3]);
+              var q3_b = parseFloat(result_WHboxplot[4]);
+              var max_b = parseFloat(result_WHboxplot[5]);
+              var newWHData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawWHBoxPlot(svg, newWHData, WHPopValue);
+            }
+
+              const result_BLboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'black_perc');
+
+              if (result_BLboxplot) {
+              var min_b = parseFloat(result_BLboxplot[1]);
+              var q1_b = parseFloat(result_BLboxplot[2]);
+              var median_b = parseFloat(result_BLboxplot[3]);
+              var q3_b = parseFloat(result_BLboxplot[4]);
+              var max_b = parseFloat(result_BLboxplot[5]);
+              var newBLData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawBLBoxPlot(svg, newBLData, BLPopValue);
+            }
+
+              const result_ASboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'asian_perc');
+
+              if (result_ASboxplot) {
+              var min_b = parseFloat(result_ASboxplot[1]);
+              var q1_b = parseFloat(result_ASboxplot[2]);
+              var median_b = parseFloat(result_ASboxplot[3]);
+              var q3_b = parseFloat(result_ASboxplot[4]);
+              var max_b = parseFloat(result_ASboxplot[5]);
+              var newASData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawASBoxPlot(svg, newASData, ASPopValue);
+            }
+
+              const result_HIboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'hispanic_perc');
+
+              if (result_HIboxplot) {
+              var min_b = parseFloat(result_HIboxplot[1]);
+              var q1_b = parseFloat(result_HIboxplot[2]);
+              var median_b = parseFloat(result_HIboxplot[3]);
+              var q3_b = parseFloat(result_HIboxplot[4]);
+              var max_b = parseFloat(result_HIboxplot[5]);
+              var newHIData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawHIBoxPlot(svg, newHIData, HIPopValue);
+            }
+
+              const result_OTboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'other_perc');
+
+              if (result_OTboxplot) {
+              var min_b = parseFloat(result_OTboxplot[1]);
+              var q1_b = parseFloat(result_OTboxplot[2]);
+              var median_b = parseFloat(result_OTboxplot[3]);
+              var q3_b = parseFloat(result_OTboxplot[4]);
+              var max_b = parseFloat(result_OTboxplot[5]);
+              var newOTData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawOTBoxPlot(svg, newOTData, OTPopValue);
+            }
+
+              const result_HEboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'ba_higher_perc');
+
+              if (result_HEboxplot) {
+              var min_b = parseFloat(result_HEboxplot[1]);
+              var q1_b = parseFloat(result_HEboxplot[2]);
+              var median_b = parseFloat(result_HEboxplot[3]);
+              var q3_b = parseFloat(result_HEboxplot[4]);
+              var max_b = parseFloat(result_HEboxplot[5]);
+              var newHEData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawHEBoxPlot(svg, newHEData, baPercValue);
+            }
+
+              const result_MIboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'median_inc');
+
+              if (result_MIboxplot) {
+              var min_b = parseFloat(result_MIboxplot[1]);
+              var q1_b = parseFloat(result_MIboxplot[2]);
+              var median_b = parseFloat(result_MIboxplot[3]);
+              var q3_b = parseFloat(result_MIboxplot[4]);
+              var max_b = parseFloat(result_MIboxplot[5]);
+              var newMIData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawMIBoxPlot(svg, newMIData, medianIncValue);
+            }
 
 
-  drawBoxPlot(svg, [min_b, q1_b, median_b, q3_b, max_b]);
-}
- console.log(`'${q1_b}'`);
+              console.log(`'${q1_b}'`);
+
+             // Pass newData to a callback function
+              updateNewTPData(newTPData);
+              updateNewWHData(newWHData);
+              updateNewBLData(newBLData);
+              updateNewASData(newASData);
+              updateNewHIData(newHIData);
+              updateNewOTData(newOTData);
+              updateNewHEData(newHEData);              
+              updateNewMIData(newMIData);
+              
+                const result_WHhistogram = histogramData.find((row) => row[1] === cityName && row[3] === 'white_diversity_exp');
+
+                if (result_WHhistogram) {
+                      var CBSAbin_0 = parseFloat(result_WHhistogram[4]);
+                      var CBSAbin_1 = parseFloat(result_WHhistogram[5]);
+                      var CBSAbin_2 = parseFloat(result_WHhistogram[6]);
+                      var CBSAbin_3 = parseFloat(result_WHhistogram[7]);
+                      var CBSAbin_4 = parseFloat(result_WHhistogram[8]);
+                      var CBSAbin_5 = parseFloat(result_WHhistogram[9]);
+                      var CBSAbin_6 = parseFloat(result_WHhistogram[10]);
+                      var CBSAbin_7 = parseFloat(result_WHhistogram[11]);
+                      var CBSAbin_8 = parseFloat(result_WHhistogram[12]);
+                      var CBSAbin_0_perc = parseFloat(result_WHhistogram[13] * 100);
+                      var CBSAbin_1_perc = parseFloat(result_WHhistogram[14] * 100);
+                      var CBSAbin_2_perc = parseFloat(result_WHhistogram[15] * 100);
+                      var CBSAbin_3_perc = parseFloat(result_WHhistogram[16] * 100);
+                      var CBSAbin_4_perc = parseFloat(result_WHhistogram[17] * 100);
+                      var CBSAbin_5_perc = parseFloat(result_WHhistogram[18] * 100);
+                      var CBSAbin_6_perc = parseFloat(result_WHhistogram[19] * 100);
+                      var CBSAbin_7_perc = parseFloat(result_WHhistogram[20] * 100);
+                      
+                      var wHhistoRanges = [
+                          [CBSAbin_0,  CBSAbin_0_perc],
+                          [CBSAbin_1,  CBSAbin_1_perc],
+                          [CBSAbin_2,  CBSAbin_2_perc],
+                          [CBSAbin_3,  CBSAbin_3_perc],
+                          [CBSAbin_4,  CBSAbin_4_perc],
+                          [CBSAbin_5,  CBSAbin_5_perc],
+                          [CBSAbin_6,  CBSAbin_6_perc],
+                          [CBSAbin_7,  CBSAbin_7_perc],
+                          [CBSAbin_8, 10000],
+                        ];
+
+                      drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc, wHhistoRanges);
+                }
+
+
+               updatewHhistoRanges(wHhistoRanges);
+
+               console.log(`'${CBSAbin_2}'`);
+               console.log(`'${bin_7_perc}'`);
+
+
+
+
+
+
           },
         });
       },
     });
+ },
+        });
   },
 });
 
- 
 
-        // Get the text
-        popUpStr = `<div class='popup'>
-            <h4>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h4>
-            <p> Place: ${geom_name}</p>
-            
-        </div>`;
+// Callback function to receive and handle newData
+function updateNewTPData(updatedData) {
+  newTPData = updatedData;
+}
+function updateNewWHData(updatedData) {
+  newWHData = updatedData;
+}
+function updateNewBLData(updatedData) {
+  newBLData = updatedData;
+}
+function updateNewASData(updatedData) {
+  newASData = updatedData;
+}
+function updateNewHIData(updatedData) {
+  newHIData = updatedData;
+}
+function updateNewOTData(updatedData) {
+  newOTData = updatedData;
+}
+function updateNewHEData(updatedData) {
+  newHEData = updatedData;
+}
+function updateNewMIData(updatedData) {
+  newMIData = updatedData;
+}
+function updatewHhistoRanges(updatedData) {
+  wHhistoRanges = updatedData;
+}
 
-        popUp.setHTML(popUpStr);
-        popUp.setLngLat([e.lngLat.lng, e.lngLat.lat*1.0005]);
-        popUp.addTo(map);
-        // if (!popUp.isOpen()) {
-        //   popUp.addTo(map);
-        // }
-        // else {
-        // popUp.remove();
-        // }
+
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//////////////////////////////////////////////
 
 
-        // Change the opacity
-        if (e.features.length > 0) {               
 
-                if (hoveredStateId) {
-                    map.removeFeatureState(
-                        {source: layerPopUpInfo[layer]['source'], 
-                        sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
-                        id: hoveredStateId}
-                    );
-                }
 
-                hoveredStateId = e.features[0].id;
-                map.setFeatureState(
-                    {source: layerPopUpInfo[layer]['source'], 
-                    sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
-                    id: hoveredStateId},
-                    {hover: true}
-                );
-            }
-            
-    });
 
 const national_histogram = 'https://gist.githubusercontent.com/acopod/32a8afe3dddb034f477ecce19961f4c7/raw/54fca9757905899fd4882384a72ab503f555f7c5/histogram_summary_national.csv';
+let bin_0 = 0.0;
+let bin_1 = 0.03125;
+let bin_2 =     0.0625;
+let bin_3 = 0.09375;
+let bin_4 = 0.125;
+let bin_5 = 0.15625;
+let bin_6 = 0.1875;
+let bin_7 = 0.21875;
+let bin_8 = 0.25;
+let bin_0_perc = 0.0037193392064504742;
+let bin_1_perc = 0.052152194274389496;
+let bin_2_perc = 0.10844452890632424;
+let bin_3_perc = 0.11660264154529042;
+let bin_4_perc = 0.1358780491115666;
+let bin_5_perc = 0.17632925653938564;
+let bin_6_perc = 0.17632925653938564;
+let bin_7_perc = 0.1331903514368323;
+
+
+
 
 Papa.parse(national_histogram, {
   download: true,
@@ -1392,27 +1932,109 @@ Papa.parse(national_histogram, {
   var bin_6 = parseFloat(result_hitogram[7]);
   var bin_7 = parseFloat(result_hitogram[8]);
   var bin_8 = parseFloat(result_hitogram[9]);
-  var bin_0_perc = parseFloat(result_hitogram[11] * 100);
-  var bin_1_perc = parseFloat(result_hitogram[12] * 100);
-  var bin_2_perc = parseFloat(result_hitogram[13] * 100);
-  var bin_3_perc = parseFloat(result_hitogram[14] * 100);
-  var bin_4_perc = parseFloat(result_hitogram[15] * 100);
-  var bin_5_perc = parseFloat(result_hitogram[16] * 100);
-  var bin_6_perc = parseFloat(result_hitogram[17] * 100);
-  var bin_7_perc = parseFloat(result_hitogram[18] * 100);
+  var bin_0_perc = parseFloat(result_hitogram[10] * 100);
+  var bin_1_perc = parseFloat(result_hitogram[11] * 100);
+  var bin_2_perc = parseFloat(result_hitogram[12] * 100);
+  var bin_3_perc = parseFloat(result_hitogram[13] * 100);
+  var bin_4_perc = parseFloat(result_hitogram[14] * 100);
+  var bin_5_perc = parseFloat(result_hitogram[15] * 100);
+  var bin_6_perc = parseFloat(result_hitogram[16] * 100);
+  var bin_7_perc = parseFloat(result_hitogram[17] * 100);
 
 
+  
 
   drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc);
 }
- console.log(`'${bin_0}'`);
+    updatebin_0(bin_0);
+    updatebin_1(bin_1);
+    updatebin_2(bin_2);
+    updatebin_3(bin_3);
+    updatebin_4(bin_4);
+    updatebin_5(bin_5);
+    updatebin_6(bin_6);
+    updatebin_7(bin_7);
+    updatebin_8(bin_8);
+    updatebin_0_perc(bin_0_perc);
+    updatebin_1_perc(bin_1_perc);
+    updatebin_2_perc(bin_2_perc);
+    updatebin_3_perc(bin_3_perc);
+    updatebin_4_perc(bin_4_perc);
+    updatebin_5_perc(bin_5_perc);
+    updatebin_6_perc(bin_6_perc);
+    updatebin_7_perc(bin_7_perc);
+
+ console.log(`'${bin_0_perc}'`);
           },
         });
       },
     });
 
 
-function drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc){
+function updatebin_0(updatedData) {
+  bin_0 = updatedData;
+}
+function updatebin_1(updatedData) {
+  bin_1 = updatedData;
+}
+function updatebin_2(updatedData) {
+  bin_2 = updatedData;
+}
+function updatebin_3(updatedData) {
+  bin_3 = updatedData;
+}
+function updatebin_4(updatedData) {
+  bin_4 = updatedData;
+}
+function updatebin_5(updatedData) {
+  bin_5 = updatedData;
+}
+function updatebin_6(updatedData) {
+  bin_6 = updatedData;
+}
+function updatebin_7(updatedData) {
+  bin_7 = updatedData;
+}
+function updatebin_8(updatedData) {
+  bin_8 = updatedData;
+}
+function updatebin_0_perc(updatedData) {
+  bin_0_perc = updatedData;
+}
+function updatebin_1_perc(updatedData) {
+  bin_1_perc = updatedData;
+}
+
+function updatebin_2_perc(updatedData) {
+  bin_2_perc = updatedData;
+}
+
+function updatebin_3_perc(updatedData) {
+  bin_3_perc = updatedData;
+}
+
+function updatebin_4_perc(updatedData) {
+  bin_4_perc = updatedData;
+}
+
+function updatebin_5_perc(updatedData) {
+  bin_5_perc = updatedData;
+}
+
+function updatebin_6_perc(updatedData) {
+  bin_6_perc = updatedData;
+}
+
+function updatebin_7_perc(updatedData) {
+  bin_7_perc = updatedData;
+}
+
+
+
+
+
+
+function drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc, wHhistoRanges){
 // Set the dimensions and margins of the graph for the histogram
 
   d3.select("#my_histogram").select("svg").remove();
@@ -1429,33 +2051,38 @@ function drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin
             .attr("transform",
                   "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
 
-
         // Your data
         // Define custom bin ranges and corresponding heights as percentages
         var binRanges = [
-          [bin_0, 0.003719339, bin_0_perc],
-          [bin_1, 0.052152194, bin_1_perc],
-          [bin_2, 0.108444529, bin_2_perc],
-          [bin_3, 0.116602642, bin_3_perc],
-          [bin_4, 0.135878049, bin_4_perc],
-          [bin_5, 0.176329257, bin_5_perc],
-          [bin_6, 0.257421711, bin_6_perc],
-          [bin_7, 0.133190351, bin_7_perc],
-          [bin_8, 0, 0],
+          [bin_0,  bin_0_perc],
+          [bin_1,  bin_1_perc],
+          [bin_2,  bin_2_perc],
+          [bin_3,  bin_3_perc],
+          [bin_4,  bin_4_perc],
+          [bin_5,  bin_5_perc],
+          [bin_6,  bin_6_perc],
+          [bin_7,  bin_7_perc],
+          [bin_8,  0],
         ];
 
+        var wHhistoRanges = wHhistoRanges;
+        console.log(binRanges);
+
+        console.log(wHhistoRanges);
+
         // Calculate the total percentage
-        var totalPercentage = binRanges.reduce((sum, range) => sum + range[2], 0);
-        var maxPercentage = d3.max(binRanges, range => range[2]);
+        var maxPercentage = d3.max([bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc]);
+        var minPercentage = d3.min([bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc]);
+
 
         // X axis: scale and draw:
         var x = d3.scaleLinear()
-          .domain([0, 0.25])
+          .domain([bin_0, bin_8])
           .range([0, histogramWidth]);
 
         var xAxis = d3.axisBottom(x)
           .tickValues(binRanges.map(range => range[0]))
-          .tickFormat(d3.format(".3f")); // Set the desired precision
+          .tickFormat(d3.format(".2f")); // Set the desired precision
 
         histogramSvg.append("g")
           .attr("transform", "translate(0," + histogramHeight + ")")
@@ -1466,21 +2093,32 @@ function drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin
           .range([histogramHeight, 0]) // Adjust the range to start from the bottom
           .domain([0, maxPercentage]);
 
+          var tickvalue = d3.ticks(minPercentage, maxPercentage, 5)
         histogramSvg.append("g")
-          .call(d3.axisLeft(y).tickFormat(d => d + "%").ticks(maxPercentage / 5)); // Set tick intervals
+          .call(d3.axisLeft(y).tickFormat(d => d + "%").tickValues(tickvalue));
 
         // Append the bar rectangles to the svg element
         histogramSvg.selectAll("rect")
           .data(binRanges)
           .enter()
           .append("rect")
-          .attr("x", range => x(range[0]))
-          .attr("width", x(binRanges[1][0]) - x(binRanges[0][0]) - 1)
-          .attr("y", range => histogramHeight - (range[2] / maxPercentage) * histogramHeight)
-          .attr("height", range => (range[2] / maxPercentage) * histogramHeight)
-          .style("fill", "#A5DEE4");
+          .attr("x", range => x(range[0])+2.5)
+          .attr("width", x(binRanges[1][0]) - x(binRanges[0][0]) - 5)
+          .attr("y", range => histogramHeight - (range[1] / maxPercentage) * histogramHeight)
+          .attr("height", range => (range[1] / maxPercentage) * histogramHeight)
+          .style("fill", "#f7b285");
 
-
+      if (wHhistoRanges !== undefined ) {
+            histogramSvg.selectAll("circle")
+              .data(wHhistoRanges)
+              .enter()
+              .append("circle")
+              .attr("cx", range => x(range[0]) + ((x(wHhistoRanges[1][0]) - x(wHhistoRanges[0][0])) / 2))
+              .attr("cy", range => histogramHeight - (range[1] / maxPercentage) * histogramHeight)
+              .attr("r", 2.5)
+              .style("fill", "white")
+              .attr("stroke", "black");
+          }
 
         }
             ///// Change the opacity back
@@ -1555,6 +2193,20 @@ $.each(censusList1, function(k,v) {
 
 updateLegend('total_diversity_exp');
 
+
+/////////////////////////////////
+// initialize city dropdown /////
+/////////////////////////////////
+
+
+var $cityDropdown = $("#cityDropdown");
+$('#cityDropdown1').dropdown();
+
+$cityDropdown.empty();
+$.each(cities, function () {
+$cityDropdown.append($('<div class="item" data-value="' + this + '">' + this + '</div>'));});
+
+
 /////////////////////////////////
 ///////////// Add map ///////////
 /////////////////////////////////
@@ -1623,7 +2275,16 @@ p_tract.getHeader().then(h => {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#440154'],
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        /*stops: [[0, '#440154'],
                                 [0.071, '#440154'],
                                 [0.19, '#46327f'],
                                 [.282, '#365c8d'],
@@ -1631,7 +2292,7 @@ p_tract.getHeader().then(h => {
                                 [0.449, '#1fa288'],
                                 [.524, '#4ac26d'],
                                 [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
+                                [0.8, '#fde725']],*/
                     default: 'gray',
                          },
 
@@ -1667,15 +2328,15 @@ p_tract.getHeader().then(h => {
                     "paint": {
                         "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
                         default: 'gray',
                         },
 
@@ -1907,31 +2568,10 @@ p_tract.getHeader().then(h => {
 
 
 /////////////////////////////////
-//////// initial parameters /////
-/////////////////////////////////
-
-/// Definite the initial category parameters
-var city='Ithaca, NY';
-
-
-
-/////////////////////////////////
-// initialize city dropdown /////
-/////////////////////////////////
-
-
-var $cityDropdown = $("#cityDropdown");
-$('#cityDropdown1   ').dropdown();
-
-$cityDropdown.empty();
-$.each(cities, function () {
-$cityDropdown.append($('<div class="item" data-value="' + this + '">' + this + '</div>'));});
-
-/////////////////////////////////
 ////// collapsible-content //////
 /////////////////////////////////
 
-var coll = document.getElementsByClassName("collapsible");
+/*var coll = document.getElementsByClassName("collapsible");
 var i;
 
 for (i = 0; i < coll.length; i++) {
@@ -1944,139 +2584,7 @@ for (i = 0; i < coll.length; i++) {
       content.style.display = "block";
     }
   });
-};
-
-
-/////////////////////////////////
-///////////// Histogram ///////////
-/////////////////////////////////
-function loadInitialHistogramData(selectedtext_translated) {
-
-    
-
-const national_histogram = 'https://gist.githubusercontent.com/acopod/32a8afe3dddb034f477ecce19961f4c7/raw/54fca9757905899fd4882384a72ab503f555f7c5/histogram_summary_national.csv';
-
-
-
-Papa.parse(national_histogram, {
-  download: true,
-  complete: function (histogramResults) {
-    const historgramData = histogramResults.data;
-
-    //var selectedcensus = $('#censusDropdown1').find('.text').text();
-    //var selectedtext_translated = catDict1[selectedcensus];
-
-    // Add an event listener to the dropdown selection change
-  $('#censusDropdown1').dropdown({
-        onChange: function (value, text, $selectedItem) {
-          var selectedcensus = text;
-          var selectedtext_translated = catDict1[selectedcensus];
-          const result_histogram = histogramData.find((row) => row[0] === selectedtext_translated);
-
-      if (result_hitogram) {
-  var bin_0 = parseFloat(result_hitogram[1]);
-  var bin_1 = parseFloat(result_hitogram[2]);
-  var bin_2 = parseFloat(result_hitogram[3]);
-  var bin_3 = parseFloat(result_hitogram[4]);
-  var bin_4 = parseFloat(result_hitogram[5]);
-  var bin_5 = parseFloat(result_hitogram[6]);
-  var bin_6 = parseFloat(result_hitogram[7]);
-  var bin_7 = parseFloat(result_hitogram[8]);
-  var bin_8 = parseFloat(result_hitogram[9]);
-  var bin_0_perc = parseFloat(result_hitogram[11] * 100);
-  var bin_1_perc = parseFloat(result_hitogram[12] * 100);
-  var bin_2_perc = parseFloat(result_hitogram[13] * 100);
-  var bin_3_perc = parseFloat(result_hitogram[14] * 100);
-  var bin_4_perc = parseFloat(result_hitogram[15] * 100);
-  var bin_5_perc = parseFloat(result_hitogram[16] * 100);
-  var bin_6_perc = parseFloat(result_hitogram[17] * 100);
-  var bin_7_perc = parseFloat(result_hitogram[18] * 100);
-
-
-
-  drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc);
-}
- console.log(`'${bin_0}'`);
-          },
-        });
-      },
-    });
-
-
-function drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc){
-// Set the dimensions and margins of the graph for the histogram
-var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
-    histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
-    histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
-
-// Append the SVG object to the body of the page for the histogram
-var histogramSvg = d3.select("#my_histogram")
-  .append("svg")
-    .attr("width", histogramWidth + histogramMargin.left + histogramMargin.right)
-    .attr("height", histogramHeight + histogramMargin.top + histogramMargin.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
-
-
-// Your data
-// Define custom bin ranges and corresponding heights as percentages
-var binRanges = [
-  [bin_0, 0.003719339, bin_0_perc],
-  [bin_1, 0.052152194, bin_1_perc],
-  [bin_2, 0.108444529, bin_2_perc],
-  [bin_3, 0.116602642, bin_3_perc],
-  [bin_4, 0.135878049, bin_4_perc],
-  [bin_5, 0.176329257, bin_5_perc],
-  [bin_6, 0.257421711, bin_6_perc],
-  [bin_7, 0.133190351, bin_7_perc],
-  [bin_8, 0, 0],
-];
-
-// Calculate the total percentage
-var totalPercentage = binRanges.reduce((sum, range) => sum + range[2], 0);
-var maxPercentage = d3.max(binRanges, range => range[2]);
-
-// X axis: scale and draw:
-var x = d3.scaleLinear()
-  .domain([0, 0.25])
-  .range([0, histogramWidth]);
-
-var xAxis = d3.axisBottom(x)
-  .tickValues(binRanges.map(range => range[0]))
-  .tickFormat(d3.format(".3f")); // Set the desired precision
-
-histogramSvg.append("g")
-  .attr("transform", "translate(0," + histogramHeight + ")")
-  .call(xAxis);
-
-// Y axis: scale and draw
-var y = d3.scaleLinear()
-  .range([histogramHeight, 0]) // Adjust the range to start from the bottom
-  .domain([0, maxPercentage]);
-
-histogramSvg.append("g")
-  .call(d3.axisLeft(y).tickFormat(d => d + "%").ticks(maxPercentage / 5)); // Set tick intervals
-
-// Append the bar rectangles to the svg element
-histogramSvg.selectAll("rect")
-  .data(binRanges)
-  .enter()
-  .append("rect")
-  .attr("x", range => x(range[0]))
-  .attr("width", x(binRanges[1][0]) - x(binRanges[0][0]) - 1)
-  .attr("y", range => histogramHeight - (range[2] / maxPercentage) * histogramHeight)
-  .attr("height", range => (range[2] / maxPercentage) * histogramHeight)
-  .style("fill", "#A5DEE4");
-
-
-
-}};
-
-
-
-loadInitialHistogramData('total_diversity_exp');
-
+};*/
 
 
 

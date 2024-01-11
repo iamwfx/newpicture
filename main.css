@@ -23,13 +23,32 @@ body * {
   height:100%;
   width: 100%;
 }
-a{
-  color: black;
+
+div::-webkit-scrollbar{
+  display: none;
+
 }
 
-h3 {
-  font-size: 1.5em;
+
+
+
+
+
+h2 {
+  font-size: 1.8em;
   text-align: left;
+  margin: 0em !important;
+}
+
+
+a {
+  font-size: 1.1em !important;
+  text-align: left;
+  color: white !important;
+  writing-mode: vertical-rl;
+}
+h5 {
+  margin: 1em 0em 1em 0em !important;
 }
 
 
@@ -99,7 +118,7 @@ body{
 
 #my-input {
   width: 270px;
-  border: 1px solid #A5DEE4;
+  border: 1px solid #lightgray;
 /*  border-right: none;*/
   
   height: 36px;
@@ -116,7 +135,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
 #my-result-container {
-/*  border: 1px solid # A5DEE4;*/
+/*  border: 1px solid # f97c29;*/
   border-right: none;
   position: relative;
     z-index: 100;
@@ -131,7 +150,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 .searchButton {
   width: 40px;
   height: 36px;
-  border: 1px solid #A5DEE4;
+  border: 1px solid #f97c29;
   background: white;
   text-align: center;
 /*  position: relative;*/
@@ -145,7 +164,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 
 .ui.fluid.search.selection.dropdown {
   width: 100%;
-  border: 1px solid #A5DEE4;
+  border: 1px solid #lightgray;
   padding: 10px;
   height: 36px;
   border-radius: 5px 5px 5px 5px;
@@ -158,8 +177,8 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   right: 0px;
 /*  top: 60px;*/
 /*  height:calc(100% - 60px);*/
-  height:95%;
-  width:calc(100% - 340px);
+  height:100%;
+  width:calc(100% - 340px - 6.5rem);
 }   
 
 
@@ -178,15 +197,15 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 
 #info {
   position: fixed;
-  left: 0px;
-  border-right: 1px solid gray;
+  left:6.5rem;
+  border-right: 1px solid lightgray;
   /*left:0px;
   top:60px;*/
   background: #fff;
 /*  height: calc(100% - 60px);*/
-  height:90%;
+  height:100%;
 /*  bottom: 0px;*/
-  padding: 15px;
+  padding:  15px 15px 100px 15px;
   width: 340px;
   z-index: 1; /* Stay on top */
   overflow-x: hidden; /* Disable horizontal scroll */
@@ -202,7 +221,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   height: 7.5%;
   top: 0;
   left: 0;
-  background-color: #A5DEE4;
+  background-color: #f97c29;
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 5px;
@@ -234,7 +253,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   height: 50px;
   z-index: 3;
   cursor: pointer;
-  background-color: #A5DEE4;
+  background-color: #f97c29;
   color: #1C2526;
   /*padding: 10px 15px;*/
   border: none;
@@ -243,14 +262,19 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   justify-content: center;
 }
 .menutitle{
-  background-color: #A5DEE4 !important;
+  background-color: #f97c29 !important;
+  border-right: 0.1px solid lightgray !important;
+  position: fixed;
   font-family: 'EduDiatypeRounded', Arial, sans-serif;
-  z-index: 8;
+  display: flex !important;
+  z-index: 8!important;
   margin-top: 0px !important;
   margin-bottom: 0px !important;
   border-bottom: 0px !important;
-  height: 6%;
+  height: 100%;
   align-items: center;
+  width: 6.5rem !important;
+  align-items: flex-end;
 }
 
 .rightmenu{
@@ -265,7 +289,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   width: 100%;
   height: 60px;
   z-index: 8;
-  background-color: #A5DEE4 !important;
+  background-color: #f97c29 !important;
   color: #1C2526;
   border: none;
   display: flex;
@@ -273,25 +297,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   font-family: 'EduDiatypeRounded', Arial, sans-serif;
 }*/
 
-.my-button{
-    position: fixed;
-    right: 0%;
-    top: 0px;
-    /*padding: 0px 0px 0px 15px;*/
-    width: 400px;
-    height: 60px;
-    z-index: 8;
-    /* background-color: #A5DEE4; */
-    color: #1C2526;
-    border: none;
-    display: flex;
-    align-items: center;
-    font-family: 'EduDiatypeRounded', Arial, sans-serif;
-    justify-content: flex-end;
-     margin-right: 10px;
 
-
-}
 
 .my-button a {
     margin-right: 10px; /* Add right margin to create space between buttons */
@@ -363,7 +369,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
     margin: 5px auto;
     border-radius: 8px;
     text-align: center;
-    background-color: #A5DEE4;
+    background-color: #f97c29;
     color: #ffffff;
     text-decoration: none;
     padding: 10px 0;
@@ -408,7 +414,7 @@ img.logo {
 /*  height: calc(100% - 60px);*/
   height: 10%;
 /*  bottom: 0px;*/
-  padding: 0px 0px 0px 15px;
+  padding: 15px 0px 0px 15px;
   width: 340px;
   z-index: 1; /* Stay on top */
   overflow-x: hidden; /* Disable horizontal scroll */
@@ -453,3 +459,67 @@ tr:nth-child(even) {
     background-color: #f2f2f2;
 }
 
+
+.leftpanel  {
+  width: 100%;
+  position: fixed;
+  z-index: 4;
+  padding: 15%;
+  height: 100%;
+  left: 0;
+  background-color: white;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 5px;
+  font-family: 
+}
+
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.box {
+  font: 10px sans-serif;
+}
+
+.box line,
+.box rect,
+.box circle {
+  fill: steelblue;
+  stroke: #000;
+  stroke-width: 1px;
+}
+
+.box .center {
+  stroke-dasharray: 3,3;
+}
+
+.box .outlier {
+  fill: none;
+  stroke: #000;
+}
+
+.axis {
+  font: 12px sans-serif;
+}
+ 
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ 
+.x.axis path { 
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+
+    .rotate-90 {
+        transform: rotate(90deg);
+        filter: brightness(0) invert(1);
+
+    }
