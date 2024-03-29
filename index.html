@@ -16,15 +16,15 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100;300;400;500;600&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+
 
         <!-- Semantic -->
-        <!-- <script src="semantic/dist/semantic.min.js"></script> -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.js" integrity="sha512-Xo0Jh8MsOn72LGV8kU5LsclG7SUzJsWGhXbWcYs2MAmChkQzwiW/yTQwdJ8w6UA9C6EVG18GHb/TrYpYCjyAQw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <!-- <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css"> -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css" integrity="sha512-KXol4x3sVoO+8ZsWPFI/r5KBVB/ssCGB5tsv2nVOKwLg33wTFP3fmnXa47FdSVIshVTgsYk/1734xSk9aFIa4A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-        <!-- <script src="semantic/dist/components/dropdown.js"></script> -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/components/dropdown.min.js" integrity="sha512-PD2QRjH0s7TFz8Oicpi4UFJBdKP0vFeYpmNPsEoNDHfG3QcGLTs8XUrkXWEQXX2Q0g+1oEwvow27TM2VfPdTxw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
+<script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
 
         <!-- <link rel="stylesheet" type="text/css" href="semantic/dist/components/dropdown.min.css"> -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/components/dropdown.min.css" integrity="sha512-tdyzfjYDk2OR9L10jvzzuGUB0Rvl5fyMW/Z8yfbYyyENfuXxtcDtEq7d/PdiA0hzQzXjWwvZasjEp8Joli2tkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -126,22 +126,28 @@
               </div> -->
               <!-- </div> -->
 
-            <div class="item">
-            
-            </div>
-              <div class="right menu rightmenu">
-                  <a class="item" id="aboutText">About</a>
-                  <a class="item" href="download.html">Download</a>
-                  
-              </div>
+          
+              <!-- <div class="right menu rightmenu">>-->
+                  <!--<a class="item" id="aboutText">About</a>-->
+                  <i class="inverted big link info circle icon" id="aboutText"></i>
+                  <i class="inverted big sliders horizontal link icon" id="toggleButton"></i>
 
-               <a href="https://www.urbandataresearchlab.org/">
-                      <img src="jpg/urbanDRL_logo.svg" alt="urbanDRL_logo" width="150" height="75" class="rotate-90">
-                  </a>
-                  <a href="https://aap.cornell.edu/">
-                      <img src="jpg/AAP.svg" alt="AAP_logo" width="150" height="75" class="rotate-90">
-                  </a>
-              
+                  <!--<a class="item" href="download.html">Download</a>-->
+                  <a href="download.html">
+                  <i class="inverted big link download icon"></i>
+
+
+
+              <!--</div>-->
+
+              <div class="ui container">
+            <div id="icons">
+                <a href="https://www.urbandataresearchlab.org/"><img src="jpg/urbanDRL_logo.svg" alt="urbanDRL_logo" width="150" height="75" class="rotate-90">
+                </a>
+                <a href="https://aap.cornell.edu/"><img src="jpg/AAP.svg" alt="AAP_logo" width="150" height="75" class="rotate-90">
+                </a>
+             </div> 
+          </div> 
               </div>
 
                   <!-- <div id ='menu-buttons' class="my-button">
@@ -149,9 +155,10 @@
                             <a href="download.html">Download</a>
                             <a href="https://www.urbandataresearchlab.org/">Urban Data Research Lab</a>
           </div> -->
-        </div>
-        <div class='ui container'>
-          <div id="map"></div>          
+              
+
+          <div id="map"></div>  
+
           <div id ='info'>
             <!--<button class="openbtn" onclick="toggleNav()"><i class="gg-menu"></i></button>  -->
              <!--  <div id="mySidepanel" class="sidepanel">
@@ -385,236 +392,51 @@
                 
           </div>   -->
 
+<div id="functions" class="hidden">
+    <button id="mapStyle1" class="ui tiny button">
+        Satellite
+    </button>
+    <button id="mapStyle2" class=" tiny ui  button">
+        Basic
+    </button>
+
+<!--<<button class="ui tiny toggle button" id="tgl">Weekday</button> -->
+        
+<div class="ui tiny icon buttons">
+  <button class="ui button" onclick="changeInterval('morning')"><i class="align left icon"></i></button>
+  <button class="ui button" onclick="changeInterval('late night')"><i class="align center icon"></i></button>
+  <button class="ui button" onclick="changeInterval('late evening')"><i class="align right icon"></i></button>
+  <button class="ui button" onclick="changeInterval('evening')"><i class="align justify icon"></i></button>
+  <button class="ui button" onclick="changeInterval('afternoon')"><i class="align justify icon"></i></button>
+</div>
+
+<div class="ui tiny icon buttons">
+  <button class="ui button" onclick="changeDow(0)">Sun</button>
+  <button class="ui button" onclick="changeDow(1)">Mon</button>
+  <button class="ui button" onclick="changeDow(2)">Tue</button>
+  <button class="ui button" onclick="changeDow(3)">Wed</button>
+  <button class="ui button" onclick="changeDow(4)">Thu</button>
+  <button class="ui button" onclick="changeDow(5)">Fri</button>
+  <button class="ui button" onclick="changeDow(6)">Sat</button>
+</div>
 
 
+  <br>
+
+<div class="ui slider" id="slider-1"></div>
+
+
+</div>
+          </div> 
+
+          
       <div class="ui message floating transition hidden infoSegment" id='infoMessage'>
         <i class="large close red icon"></i>
-                              <h4>Data download</h4>
 
 
-      <!-- Paragraph 1: Lorem Ipsum -->
-      <h5>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-
-      </h5>
-      <h4>Licience</h4>
-      <!-- Paragraph 2: Lorem Ipsum -->
-      <h5>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. 
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-        velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint
-        occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-        mollit anim id est laborum.
-      </h5>
-      <h4>Citation</h4>
-      <!-- Paragraph 3: Lorem Ipsum -->
-      <h5>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.
-      </h5>
-       <h4>Data Dictionary</h4>
-    
-    <table>
-
-        <tr>
-            <td>Column</td>
-            <td>Description</td>
-        <tr>
-            <td>STATEFP10</td>
-            <td>2010 Census state FIPS code</td>
-
-        </tr>        <tr>
-            <td>COUNTYFP10</td>
-            <td>2010 Census county FIPS code</td>
-
-        </tr>        <tr>
-            <td>TRACTCE10</td>
-            <td>2010 Census census tract code</td>
-
-        </tr>        <tr>
-            <td>GEOID10</td>
-            <td>Census tract identifier; a concatenation of 2010 Census state FIPS code, county FIPS code, and census tract code</td>
-
-        </tr>        <tr>
-            <td>STATE</td>
-            <td>State Name</td>
-
-        </tr>        <tr>
-            <td>COUNTY</td>
-            <td>County Name</td>
-
-        </tr>
-        <tr>
-            <td>Metro</td>
-            <td>Metropolitan Statistical Area, Micropolitan Statistical Area, or neither</td>
-
-        </tr>
-        <tr>
-            <td>MSA Code</td>
-            <td>?</td>
-
-        </tr>
-        <tr>
-            <td>total_pop</td>
-            <td>Total Population in 2020</td>
-
-        </tr>
-        <tr>
-            <td>white_perc</td>
-            <td>Percentage Non-Hispanic White Alone in 2020</td>
-
-        </tr>
-        <tr>
-            <td>black_perc</td>
-            <td>Percentage Non-Hispanic Black Alone in 2020</td>
-
-        </tr>
-        <tr>
-            <td>indigenous_perc</td>
-            <td>Percentage Non-Hispanic American Indian and Alaska Native alone in 2020</td>
-
-        </tr>
-        <tr>
-            <td>asian_perc</td>
-            <td>Percentage Non-Hispanic Asian alone in 2020</td>
-
-        </tr>
-        <tr>
-            <td>pac_isl_perc</td>
-            <td>Percentage Non-Hispanic Native Hawaiian and Other Pacific Islander Alone in 2020</td>
-
-        </tr>
-        <tr>
-            <td>other_perc</td>
-            <td>Percentage Non-Hispanic Some Other Race Alone in 2020</td>
-
-        </tr>
-        <tr>
-            <td>two_more_perc</td>
-            <td>Percentage Non-Hispanic Two or More Races in 2020</td>
-
-        </tr>
-        <tr>
-            <td>hispanic_perc</td>
-            <td>Percentage Hispanic in 2020</td>
-
-        </tr>
-        <tr>
-            <td>total_scho</td>
-            <td>Population 25 years and over in 2020</td>
-
-        </tr>
-        <tr>
-            <td>ba_perc</td>
-            <td>Percentage Bachelor's Degree in 2020</td>
-
-        </tr>
-        <tr>
-            <td>ma_perc</td>
-            <td>Percentage Master's Degree in 2020</td>
-
-        </tr>
-        <tr>
-            <td>prof_perc</td>
-            <td>Percentage Professional School Degree in 2020</td>
-
-        </tr>
-        <tr>
-            <td>phd_perc</td>
-            <td>Percentage Doctorate Degree in 2020</td>
-
-        </tr>
-        <tr>
-            <td>ba_higher_perc</td>
-            <td>Percentage Bachelors Degree or Higher in 2020</td>
-
-        </tr>
-        <tr>
-            <td>median_inc</td>
-            <td>Median household income in the past 12 months (in 2021 inflation-adjusted dollars)</td>
-
-        </tr>
-        <tr>
-            <td>white_exp_exposure</td>
-            <td>White Experienced Diversity in 2022</td>
-
-        </tr>
-        <tr>
-            <td>black_exp_diversity</td>
-            <td>Black Experienced Diversity in 2022</td>
-
-        </tr>
-        <tr>
-            <td>asian_exp_diversity</td>
-            <td>Asian Experienced Diversity in 2022</td>
-
-        </tr>
-        <tr>
-            <td>hispanic_exp_diversity</td>
-            <td>Hispanic Experienced Exposure in 2022</td>
-
-        </tr>
-        <tr>
-            <td>other_exp_diversity</td>
-            <td>Some Other Race Alone Experienced Diversity in 2022</td>
-
-        </tr>
-        <tr>
-            <td>total_exp_diversity</td>
-            <td>Total Experienced Diversity in 2022</td>
-
-        </tr>
-        <tr>
-            <td>residential_diversity</td>
-            <td>Residential Diversity Based on 2020 Census</td>
-
-        </tr>
-        <tr>
-            <td>diff</td>
-            <td>Difference in Percentage between Total Experienced Diversity and Residential Diversity</td>
-
-        </tr>
-
-        </tr>
-
-    </table>
-<h4>Download</h4>
-        <div style="max-width: 1200px"> <!-- Keep map above fold -->
-           <div style="padding: 30px 30px 5px 30px">
-        <div id="mapDownload"></div>
-      </div>
-
-                    </div>
               </div>
               
-          </div>
+
         </div>
 
 
@@ -640,3 +462,4 @@
 
     
 </html>
+
