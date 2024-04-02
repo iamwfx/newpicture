@@ -574,7 +574,7 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
         OTPopValue = e.features[0]['properties']['other_perc'];  
         medianIncValue = e.features[0]['properties']['median_inc'];
         metro  = e.features[0]['properties']['CBSA Title'];          
-        //console.log(metro)
+        console.log(metro)
         //console.log(div_score_exp)
 
         $('#baPercValueDisplay').text(' ' + d3.format(",.1%")(baPercValue));     
@@ -585,6 +585,131 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
         $('#OTPopValue').text(' ' + d3.format(",.1%")(OTPopValue));
         $('#medianIncValue').text(' ' + d3.format(".0f")(medianIncValue));
         $('#totolPopValue').text(' ' + d3.format(".1f")(totolPopValue));
+
+    Papa.parse(CBSA_boxplot, {
+      download: true,
+      complete: function (boxplotResults) {
+        const boxplotData = boxplotResults.data;
+            newTPData = [];
+            newWHData = [];
+            newBLData = [];
+            newASData = [];
+            newHIData = [];
+            newOTData = [];
+            newHEData = [];
+            newMIData = [];
+            const result_TPboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'total_pop');
+
+              if (result_TPboxplot) {
+              var min_b = parseFloat(result_TPboxplot[1]);
+              var q1_b = parseFloat(result_TPboxplot[2]);
+              var median_b = parseFloat(result_TPboxplot[3]);
+              var q3_b = parseFloat(result_TPboxplot[4]);
+              var max_b = parseFloat(result_TPboxplot[5]);
+              var newTPData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              console.log(newTPData)
+            }
+
+                          const result_WHboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'white_perc');
+
+              if (result_WHboxplot) {
+              var min_b = parseFloat(result_WHboxplot[1]);
+              var q1_b = parseFloat(result_WHboxplot[2]);
+              var median_b = parseFloat(result_WHboxplot[3]);
+              var q3_b = parseFloat(result_WHboxplot[4]);
+              var max_b = parseFloat(result_WHboxplot[5]);
+              var newWHData = [min_b, q1_b, median_b, q3_b, max_b]
+
+            }
+
+              const result_BLboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'black_perc');
+
+              if (result_BLboxplot) {
+              var min_b = parseFloat(result_BLboxplot[1]);
+              var q1_b = parseFloat(result_BLboxplot[2]);
+              var median_b = parseFloat(result_BLboxplot[3]);
+              var q3_b = parseFloat(result_BLboxplot[4]);
+              var max_b = parseFloat(result_BLboxplot[5]);
+              var newBLData = [min_b, q1_b, median_b, q3_b, max_b]
+
+            }
+
+
+              const result_ASboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'asian_perc');
+
+              if (result_ASboxplot) {
+              var min_b = parseFloat(result_ASboxplot[1]);
+              var q1_b = parseFloat(result_ASboxplot[2]);
+              var median_b = parseFloat(result_ASboxplot[3]);
+              var q3_b = parseFloat(result_ASboxplot[4]);
+              var max_b = parseFloat(result_ASboxplot[5]);
+              var newASData = [min_b, q1_b, median_b, q3_b, max_b]
+
+            }
+
+              const result_HIboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'hispanic_perc');
+
+              if (result_HIboxplot) {
+              var min_b = parseFloat(result_HIboxplot[1]);
+              var q1_b = parseFloat(result_HIboxplot[2]);
+              var median_b = parseFloat(result_HIboxplot[3]);
+              var q3_b = parseFloat(result_HIboxplot[4]);
+              var max_b = parseFloat(result_HIboxplot[5]);
+              var newHIData = [min_b, q1_b, median_b, q3_b, max_b]
+
+            }
+
+              const result_OTboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'other_perc');
+
+              if (result_OTboxplot) {
+              var min_b = parseFloat(result_OTboxplot[1]);
+              var q1_b = parseFloat(result_OTboxplot[2]);
+              var median_b = parseFloat(result_OTboxplot[3]);
+              var q3_b = parseFloat(result_OTboxplot[4]);
+              var max_b = parseFloat(result_OTboxplot[5]);
+              var newOTData = [min_b, q1_b, median_b, q3_b, max_b]
+
+            }
+
+              const result_HEboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'ba_higher_perc');
+
+              if (result_HEboxplot) {
+              var min_b = parseFloat(result_HEboxplot[1]);
+              var q1_b = parseFloat(result_HEboxplot[2]);
+              var median_b = parseFloat(result_HEboxplot[3]);
+              var q3_b = parseFloat(result_HEboxplot[4]);
+              var max_b = parseFloat(result_HEboxplot[5]);
+              var newHEData = [min_b, q1_b, median_b, q3_b, max_b]
+
+            }
+
+              const result_MIboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'median_inc');
+
+              if (result_MIboxplot) {
+              var min_b = parseFloat(result_MIboxplot[1]);
+              var q1_b = parseFloat(result_MIboxplot[2]);
+              var median_b = parseFloat(result_MIboxplot[3]);
+              var q3_b = parseFloat(result_MIboxplot[4]);
+              var max_b = parseFloat(result_MIboxplot[5]);
+              var newMIData = [min_b, q1_b, median_b, q3_b, max_b]
+
+             
+            }
+
+drawTPBoxPlot(svg, newTPData, totolPopValue);
+drawWHBoxPlot(svg, newWHData, WHPopValue);
+drawBLBoxPlot(svg, newBLData, BLPopValue);
+drawASBoxPlot(svg, newASData, ASPopValue);
+drawHIBoxPlot(svg, newHIData, HIPopValue);
+drawOTBoxPlot(svg, newOTData, OTPopValue);
+drawHEBoxPlot(svg, newHEData, baPercValue);
+drawMIBoxPlot(svg, newMIData, medianIncValue);
+
+
+}
+});
+
 
         Papa.parse(CBSA_histogram, {
           download: true,
@@ -676,26 +801,6 @@ if (currentZoom < zoomThreshold) {
 },
 });
 
-/*["#Boxplot_White","#Boxplot_Black","#Boxplot_Asian","#Boxplot_Hisp","#Boxplot_Other","#Boxplot_2", "#Boxplot_3", "#Boxplot_totalPop"].forEach(function(id) {
-  var existingBoxplot = d3.select(id).select("svg");
-  if (!existingBoxplot.empty()) {
-    existingBoxplot.remove();
-  }
-});*/
-
-drawTPBoxPlot(svg, newTPData, totolPopValue);
-drawWHBoxPlot(svg, newWHData, WHPopValue);
-drawBLBoxPlot(svg, newBLData, BLPopValue);
-drawASBoxPlot(svg, newASData, ASPopValue);
-drawHIBoxPlot(svg, newHIData, HIPopValue);
-drawOTBoxPlot(svg, newOTData, OTPopValue);
-drawHEBoxPlot(svg, newHEData, baPercValue);
-drawMIBoxPlot(svg, newMIData, medianIncValue);
-//drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc, CBSAbin_0,  CBSAbin_0_perc, CBSAbin_1,  CBSAbin_1_perc,CBSAbin_2,  CBSAbin_2_perc, CBSAbin_3,  CBSAbin_3_perc, CBSAbin_4,  CBSAbin_4_perc, CBSAbin_5,  CBSAbin_5_perc, CBSAbin_6,  CBSAbin_6_perc, CBSAbin_7,  CBSAbin_7_perc, CBSAbin_8);
-
-
-//console.log(baPercValue);
-
         const currentZoom = map.getZoom();
     let popupDistanceMultiplier = 0.1;
 
@@ -757,7 +862,8 @@ drawMIBoxPlot(svg, newMIData, medianIncValue);
 
 
 function drawTPBoxPlot(svg, newTPData, totolPopValue) {
-        d3.select("#Boxplot_totalPop").select("svg").remove();
+
+d3.select("#Boxplot_totalPop").select("svg").remove();
 
 // Set the dimensions and margins of the graph
 var margin = { top: 10, right: 20, bottom: 10, left: 15 },
@@ -857,7 +963,7 @@ svg.selectAll("toto")
   .attr("stroke", "#555");
   }
 
-if (newTPData.length === 0){
+if (newTPData.length === 0 ){
 
 svg.selectAll(".whisker-label")
   .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
@@ -958,6 +1064,7 @@ svg.selectAll(".whisker-label_below")
 
 }
 
+
  svg.append("line")
   .attr("x1", x(totolPopValue))
   .attr("x2", x(totolPopValue))
@@ -965,6 +1072,7 @@ svg.selectAll(".whisker-label_below")
   .attr("y2", center + height / 2)
   .attr("stroke", "red") // You can choose a color for the line
   .style("stroke-width", 2);
+
 
 }
 
@@ -2492,15 +2600,15 @@ const CBSA_boxplot = 'https://gist.githubusercontent.com/acopod/e8a65ad8156e9caf
 const CBSA_histogram = 'https://gist.githubusercontent.com/acopod/ad35eca551b3d3d86efe6ceb7553f94e/raw/a9f070cc22b285ad810230552e8179e3c56412ca/histogram_summary_cbsa_national.csv';
 let cityName; // Declare cityName variable in a broader scope
 let min_b;
-let newTPData = [];
-let newWHData = [];
-let newBLData = [];
-let newASData = [];
-let newHIData = [];
-let newOTData = [];
-let newHEData = [];
-let newMIData = [];
-let wHhistoRanges = [];
+newTPData = [];
+newWHData = [];
+newBLData = [];
+newASData = [];
+newHIData = [];
+newOTData = [];
+newHEData = [];
+newMIData = [];
+wHhistoRanges = [];
 
 Papa.parse(csvFileURL, {
   download: true,
@@ -2554,6 +2662,8 @@ Papa.parse(csvFileURL, {
               var q3_b = parseFloat(result_TPboxplot[4]);
               var max_b = parseFloat(result_TPboxplot[5]);
               var newTPData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              console.log(newTPData)
 
               drawTPBoxPlot(svg, newTPData, totolPopValue);
             }
@@ -2913,6 +3023,8 @@ var binRanges = [
                            {bin: CBSAbin_7, value: CBSAbin_7_perc},
                            {bin: CBSAbin_8, value: 0},]
 
+                            console.log(CBSAbinRanges);
+
                       drawHistogram(CBSAbinRanges);};
                         }
 });
@@ -2921,7 +3033,7 @@ var binRanges = [
         });
 
 
-               console.log(`'${CBSAbin_2}'`);
+               console.log(`'${CBSAbin_3}'`);
                console.log(`'${bin_7_perc}'`);
 
 
@@ -3838,30 +3950,6 @@ document.getElementById('mapStyle2').addEventListener('click', function() {
             
             isSidePanelOpen = !isSidePanelOpen;
         };
-
-
-/////////////////////////////////
-////// collapsible-content //////
-/////////////////////////////////
-
-/*var coll = document.getElementsByClassName("collapsible");
-var i;
-
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.display === "block") {
-      content.style.display = "none";
-    } else {
-      content.style.display = "block";
-    }
-  });
-};*/
-
-
-
-
 
 /////////////////////////////////
 ///////////// Intro /////////////
