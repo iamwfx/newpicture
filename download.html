@@ -6,28 +6,82 @@
     <script src="js/mapdata.js"></script>
     <script src="js/usmap.js"></script>
     <!-- Importing External Stylesheets -->
-    <!--<link rel="stylesheet" href="./global.css" />-->
-    <link rel="stylesheet" href="./index.css" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap"
-    />
+            <!-- jQuery -->
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <!-- PapaParse -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+        <!-- Fonts -->
+        <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100;300;400;500;600&display=swap" rel="stylesheet">
+
+        <!-- Semantic -->
+        <!-- <script src="semantic/dist/semantic.min.js"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.js" integrity="sha512-Xo0Jh8MsOn72LGV8kU5LsclG7SUzJsWGhXbWcYs2MAmChkQzwiW/yTQwdJ8w6UA9C6EVG18GHb/TrYpYCjyAQw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <!-- <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css"> -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css" integrity="sha512-KXol4x3sVoO+8ZsWPFI/r5KBVB/ssCGB5tsv2nVOKwLg33wTFP3fmnXa47FdSVIshVTgsYk/1734xSk9aFIa4A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <!-- <script src="semantic/dist/components/dropdown.js"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/components/dropdown.min.js" integrity="sha512-PD2QRjH0s7TFz8Oicpi4UFJBdKP0vFeYpmNPsEoNDHfG3QcGLTs8XUrkXWEQXX2Q0g+1oEwvow27TM2VfPdTxw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <!-- <link rel="stylesheet" type="text/css" href="semantic/dist/components/dropdown.min.css"> -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/components/dropdown.min.css" integrity="sha512-tdyzfjYDk2OR9L10jvzzuGUB0Rvl5fyMW/Z8yfbYyyENfuXxtcDtEq7d/PdiA0hzQzXjWwvZasjEp8Joli2tkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+        <!-- Custom Stylesheet -->
+        <link rel="stylesheet" type="text/css" href="main.css">
+
+        <!-- Maplibre -->
+        <script src="https://unpkg.com/maplibre-gl@3.0.1/dist/maplibre-gl.js" crossorigin="anonymous"></script>
+        <link
+          href="https://unpkg.com/maplibre-gl@3.0.1/dist/maplibre-gl.css"
+          rel="stylesheet"/>
+
   </head>
   <body>
     <!-- Main Web Content Container -->
-    <div class="donwloadpage">
+                 <div id ='title bar' class="ui vertical borderless small pointing secondary menu menutitle">
+           <!-- <div class="search"> -->
 
+
+
+              <!-- <div id="my-container" class="ui fluid search mapboxgl-ctrl maplibregl-ctrl">
+                 <div id = "searchBar" class="ui fluid search">
+                    <input id="my-input" type="text" placeholder="Search Places">
+                    <input type="text"  id="searchTerm" placeholder="What are you looking for?">
+                    <button type="submit" class="searchButton">
+                    <i class="fa fa-search"></i>
+                    </button>
+                  </div>
+                    <div id="my-result-container" class="ui jawg-places-results"></div>
+              </div> -->
+              <!-- </div> -->
+
+          
+              <!-- <div class="right menu rightmenu">>-->
+                  <!--<a class="item" id="aboutText">About</a>-->
+                  <i class="inverted big link info circle icon" id="aboutText"></i>
+                  <!--<a class="item" href="download.html">Download</a>-->
+                  <a href="index.html">
+                  <i class="inverted big link map icon"></i>
                   
-                      <div id="mytitle" class="title">  
-                      <h3>A New Picture of Segregation</h3>
-                      </div>
-            <div id ='menu-buttons' class="my-button">
-                      <a href="#">About</a>
-                      <a href="index.html">Map</a>
-                      <a href="https://www.urbandataresearchlab.org/">Urban Data Research Lab</a>
+              <!--</div>-->
 
-            </div>
+              <div class="ui container">
+            <div id="icons">
+                <a href="https://www.urbandataresearchlab.org/"><img src="jpg/urbanDRL_logo.svg" alt="urbanDRL_logo" width="150" height="75" class="rotate-90">
+                </a>
+                <a href="https://aap.cornell.edu/"><img src="jpg/AAP.svg" alt="AAP_logo" width="150" height="75" class="rotate-90">
+                </a>
+             </div> 
+          </div> 
+              </div>
+
                     <div id="leftpanel" class="leftpanel">
+                           <h2>A New Picture of Segregation</h2>
                       <h4>Data download</h4>
 
 
@@ -247,7 +301,7 @@
 <h4>Download</h4>
         <div style="max-width: 1200px"> <!-- Keep map above fold -->
            <div style="padding: 30px 30px 5px 30px">
-        <div id="map"></div>
+        <div id="mapDownload"></div>
       </div>
 
                     </div>

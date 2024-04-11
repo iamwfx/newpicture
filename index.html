@@ -3,12 +3,12 @@
     <head>
         <title>A New Picture of Segregation</title>
         <meta charset="utf-8"/>
+        <meta name="viewport" content="initial-scale=1, width=device-width" />
         <!-- jQuery -->
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
         <!-- PapaParse -->
-        <script src="https:// cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
         <!-- Fonts -->
         <link href='https://fonts.googleapis.com/css?family=Lato:300,400,700' rel='stylesheet' type='text/css'>
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600" rel="stylesheet">
@@ -16,15 +16,15 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100;300;400;500;600&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+
 
         <!-- Semantic -->
-        <!-- <script src="semantic/dist/semantic.min.js"></script> -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.js" integrity="sha512-Xo0Jh8MsOn72LGV8kU5LsclG7SUzJsWGhXbWcYs2MAmChkQzwiW/yTQwdJ8w6UA9C6EVG18GHb/TrYpYCjyAQw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-        <!-- <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css"> -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css" integrity="sha512-KXol4x3sVoO+8ZsWPFI/r5KBVB/ssCGB5tsv2nVOKwLg33wTFP3fmnXa47FdSVIshVTgsYk/1734xSk9aFIa4A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-        <!-- <script src="semantic/dist/components/dropdown.js"></script> -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/components/dropdown.min.js" integrity="sha512-PD2QRjH0s7TFz8Oicpi4UFJBdKP0vFeYpmNPsEoNDHfG3QcGLTs8XUrkXWEQXX2Q0g+1oEwvow27TM2VfPdTxw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
+<script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
 
         <!-- <link rel="stylesheet" type="text/css" href="semantic/dist/components/dropdown.min.css"> -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/components/dropdown.min.css" integrity="sha512-tdyzfjYDk2OR9L10jvzzuGUB0Rvl5fyMW/Z8yfbYyyENfuXxtcDtEq7d/PdiA0hzQzXjWwvZasjEp8Joli2tkw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -73,6 +73,11 @@
         <script src="js/main.js"></script>
         -->    
 
+        <!-- Us Download map -->
+
+        <script src="js/mapdata.js"></script>
+        <script src="js/usmap.js"></script>
+
     </head>
     <body>
       <!-- Menu button -->
@@ -97,7 +102,7 @@
  --> 
 
 
-         <div id ='title bar' class="ui secondary pointing  menu menutitle">
+         <div id ='title bar' class="ui vertical borderless small pointing secondary menu menutitle">
            <!-- <div class="search"> -->
 
             <div id="my-container"class="ui search maplibregl-ctrl">
@@ -121,32 +126,28 @@
               </div> -->
               <!-- </div> -->
 
+          
+              <!-- <div class="right menu rightmenu">>-->
+                  <!--<a class="item" id="aboutText">About</a>-->
+                  <i class="inverted big link info circle icon" id="aboutText"></i>
+                  <i class="inverted big sliders horizontal link icon" id="toggleButton"></i>
 
-          <div class="menu">
-            <div class="item">
-            <h2>A New Picture of Segregation</h2>
-            </div>
-          </div>
-              <div class="right menu">
-                <div class="item">
-                  <a href="#">About</a>
-                </div>
-                <div class="item">
-                  <a href="download.html">Download</a>
-                </div>
-                <div class="item">
+                  <!--<a class="item" href="download.html">Download</a>-->
+                  <a href="download.html">
+                  <i class="inverted big link download icon"></i>
 
 
-                  <a href="https://www.urbandataresearchlab.org/" class="logo-link">
-                      <img src="jpg/urbanDRL_logo.svg" alt="urbanDRL_logo" class="logo">
-                  </a>
-                </div>
-                 <div class="item">
-                  <a href="https://aap.cornell.edu/" class="logo-link">
-                      <img src="jpg/AAP.svg" alt="AAP_logo" class="logo">
-                  </a>
-                </div>
-              
+
+              <!--</div>-->
+
+              <div class="ui container">
+            <div id="icons">
+                <a href="https://www.urbandataresearchlab.org/"><img src="jpg/urbanDRL_logo.svg" alt="urbanDRL_logo" width="150" height="75" class="rotate-90">
+                </a>
+                <a href="https://aap.cornell.edu/"><img src="jpg/AAP.svg" alt="AAP_logo" width="150" height="75" class="rotate-90">
+                </a>
+             </div> 
+          </div> 
               </div>
 
                   <!-- <div id ='menu-buttons' class="my-button">
@@ -154,9 +155,10 @@
                             <a href="download.html">Download</a>
                             <a href="https://www.urbandataresearchlab.org/">Urban Data Research Lab</a>
           </div> -->
-        </div>
-        <div class='ui container'>
-          <div id="map"></div>          
+              
+
+          <div id="map"></div>  
+
           <div id ='info'>
             <!--<button class="openbtn" onclick="toggleNav()"><i class="gg-menu"></i></button>  -->
              <!--  <div id="mySidepanel" class="sidepanel">
@@ -167,24 +169,23 @@
               </div> -->
             <!-- Search Bar -->
 
-          
+             <h2>A New Picture of Segregation</h2>
             <h5>City
             
             </h5>
 
-            <div id="cityDropdown1" class="ui fluid search selection  dropdown">
-              <div id="cityDropdown" class="menu"></div>
-
-              <option value="">Select a city</option>
-              <!-- <div class="text" placeholder='Select a city'></div> -->
+            <div id = "cityDropdown1" class="ui fluid search selection dropdown">
+              <input type="hidden" value="city">
               <i class="dropdown icon"></i>
-            </div>
+              <div class="text">Select a city</div>
+              <div id='cityDropdown' class="menu"></div>
+            </div> 
            
-
             <!-- Toggle Metrics -->
             <h5 >Metric
               <i class="small grey circle info icon link" data-content="test test" data-variation="mini"></i>
             </h5>
+
             <div id = "censusDropdown1" class="ui fluid search selection dropdown">
               <input type="hidden" value="total_diversity_exp">
               <i class="dropdown icon"></i>
@@ -192,6 +193,7 @@
               <div id='censusDropdown' class="menu"></div>
             </div> 
             <br>
+
             <!-- Legend -->
                          
               <div class="item compact disabled legendIcon" data-value="legend">
@@ -376,7 +378,70 @@
             </div>
 
             
-          </div>     
+          </div>  
+                     <!--<div id='logoContainer'>
+             
+                  <a href="https://www.urbandataresearchlab.org/" class="logo-link">
+                      <img src="jpg/urbanDRL_logo.svg" alt="urbanDRL_logo" class="logo">
+                  </a>
+              
+                
+                  <a href="https://aap.cornell.edu/" class="logo-link">
+                      <img src="jpg/AAP.svg" alt="AAP_logo" class="logo">
+                  </a>
+                
+          </div>   -->
+
+<div id="functions" class="hidden">
+    <button id="mapStyle1" class="ui tiny button">
+        Satellite
+    </button>
+    <button id="mapStyle2" class=" tiny ui  button">
+        Basic
+    </button>
+
+<!--<<button class="ui tiny toggle button" id="tgl">Weekday</button> -->
+        
+<div class="ui tiny icon buttons">
+  <button class="ui button" onclick="changeInterval('morning')"><i class="align left icon"></i></button>
+  <button class="ui button" onclick="changeInterval('late night')"><i class="align center icon"></i></button>
+  <button class="ui button" onclick="changeInterval('late evening')"><i class="align right icon"></i></button>
+  <button class="ui button" onclick="changeInterval('evening')"><i class="align justify icon"></i></button>
+  <button class="ui button" onclick="changeInterval('afternoon')"><i class="align justify icon"></i></button>
+</div>
+
+<div class="ui tiny icon buttons">
+  <button class="ui button" onclick="changeDow(0)">Sun</button>
+  <button class="ui button" onclick="changeDow(1)">Mon</button>
+  <button class="ui button" onclick="changeDow(2)">Tue</button>
+  <button class="ui button" onclick="changeDow(3)">Wed</button>
+  <button class="ui button" onclick="changeDow(4)">Thu</button>
+  <button class="ui button" onclick="changeDow(5)">Fri</button>
+  <button class="ui button" onclick="changeDow(6)">Sat</button>
+</div>
+
+
+  <br>
+
+<div class="ui slider" id="slider-1"></div>
+
+
+</div>
+          </div> 
+
+          
+      <div class="ui message floating transition hidden infoSegment" id='infoMessage'>
+        <i class="large close red icon"></i>
+
+
+              </div>
+              
+
+        </div>
+
+
+
+
           <div class="overlay" id="overlay"></div>
           <div class="popupIntro">
                
@@ -385,8 +450,8 @@
                    Lorem, ipsum dolor sit amet consectetur adipisicing elit. Expedita distinctio fugiat alias iure qui, commodi minima magni ullam aliquam dignissimos?
                </p>
                <img src="jpg/us map.png" alt="Description of the image">
-               <button id="close">Let's Go</button>
-           </div>
+               <button id="close">Explore the Map</button>
+          
 
     </body>
     <footer>
@@ -397,3 +462,4 @@
 
     
 </html>
+

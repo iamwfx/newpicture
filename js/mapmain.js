@@ -91,15 +91,15 @@ const censusCatDict_v2 = {
                                 [0.077, '#E15EA7'],
                                 [0.135, '#D33383'],
                                 [.25, '#A52461']],
-             "total_diversity_exp":  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
+             "total_diversity_exp": [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
              // [[0, '#d53e4f'],
              //                    [0.071, '#f46d43'],
              //                    [0.19, '#fdae61'],
@@ -189,15 +189,15 @@ const choroplethColors={'white_diversity_exp':{
                          },
                          'total_diversity_exp':{
                             property:'total_diversity_exp',
-                            stops: [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
+                            stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
                             // stops: [[0, '#d53e4f'],
                             //     [0.071, '#f46d43'],
                             //     [0.19, '#fdae61'],
@@ -400,7 +400,6 @@ const cities=['Santa Maria-Santa Barbara, CA','Red Bluff, CA','Salinas, CA','Sac
 $('.introButton').on('click',function(){
     $('.dimmer').removeClass('active');
     $('.blurring.dimmable>:not(.dimmer)').css('filter','none');
-    
 });
 
 
@@ -411,13 +410,23 @@ let PMTILES_URL_tract = "https://dewsfcxuf47u5.cloudfront.net/segregation_all-10
 let PMTILES_URL_county = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties-2-11.pmtiles";
 let PMTILES_URL_CBSA = "https://dewsfcxuf47u5.cloudfront.net/tl_2020_us_cbsa.pmtiles";
 
+let PMTILES_URL_tract_afternoon = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_10-14.pmtiles";
+
+let PMTILES_URL_county_intervals = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_0-11.pmtiles";
+
+
+
 const p_tract = new pmtiles.PMTiles(PMTILES_URL_tract)
 const p_county = new pmtiles.PMTiles(PMTILES_URL_county)
 const p_CBSA = new pmtiles.PMTiles(PMTILES_URL_CBSA)
+const p_tract_afternoon = new pmtiles.PMTiles(PMTILES_URL_tract_afternoon)
+const p_county_intervals = new pmtiles.PMTiles(PMTILES_URL_county_intervals)
 
 protocol.add(p_tract);
 protocol.add(p_county);
 protocol.add(p_CBSA);
+protocol.add(p_tract_afternoon);
+protocol.add(p_county_intervals);
 
 const baseWidth = .5
 const baseZoom = 4.1
@@ -484,15 +493,41 @@ function updateLegend(category){
                 .attr("text-anchor", "middle")
                 .attr("font-family",'Source Sans Pro')
                 .text(function(d){return d[1][0]});
-
-
 }
 
+
+function changeDow(day) {
+    map.setFilter('counties_intervals_layer', ['all', ['==', 'interval', getSelectedInterval()], ['==', 'dow', day]]);
+}
+
+function changeInterval(interval) {
+    map.setFilter('counties_intervals_layer', ['all', ['==', 'interval', interval], ['==', 'dow', getSelectedDow()]]);
+}
+
+function getSelectedDow() {
+    // Assuming you have some way to track the selected day of the week, return its corresponding number
+    // Example: If Monday is selected, return 1; if Tuesday is selected, return 2; and so on.
+    // You can implement this based on your specific UI and logic.
+}
+
+function getSelectedInterval() {
+    // Assuming you have some way to track the selected interval, return its value
+    // Example: If "morning" is selected, return "morning"; if "late night" is selected, return "late night"; and so on.
+    // You can implement this based on your specific UI and logic.
+}
 
 
 ///////////////pop//////////////
 
+let totolPopValue = null;
+let WHPopValue = null;
+let BLPopValue = null;
+let ASPopValue = null;
+let HIPopValue = null;
+let OTPopValue = null;
 let baPercValue = null;
+let medianIncValue = null;
+
 
 
 function createPopUp(popUp,layer,map,hoveredStateId,svg){
@@ -502,21 +537,26 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
             'sourceLayer':'segregation_all_countiesfgb',
             'source':'seg_2_11'
         },
+
         'tracts':{
             'sourceLayer':'segregation_allfgb',
             'source':'seg_10_13'
             }
     }
-    
 
     ///// Change the opacity of the highlighted HOLC zone 
-    map.on('mousemove',layer, e => {
-//mousemove
+    map.on('click',layer, e => {
+
+        //mousemove
         map.getCanvas().style.cursor = 'pointer';
         // e.stopPropagation();
         metric = $("#censusDropdown1 input").val();
+        city = $("#cityDropdown1 input").val();
+
         var div_score_exp  = e.features[0]['properties'][metric];
 
+        //console.log(city)
+        
         if (e.features[0]['layer']['id']=='counties'){
             var geom_name = e.features[0]['properties']['NAME']+" "+"County";    
             var geom_id = e.features[0]['properties']['COUNTYFP10']
@@ -525,7 +565,6 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
             var geom_id = e.features[0]['properties']['TRACTCE10'];
         };
 
-        // set up factors
         baPercValue = e.features[0]['properties']['ba_perc'];
         totolPopValue = e.features[0]['properties']['total_pop'];
         WHPopValue = e.features[0]['properties']['white_perc'];
@@ -533,7 +572,10 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
         ASPopValue = e.features[0]['properties']['asian_perc'];
         HIPopValue = e.features[0]['properties']['hispanic_perc'];
         OTPopValue = e.features[0]['properties']['other_perc'];  
-        medianIncValue = e.features[0]['properties']['median_inc'];          
+        medianIncValue = e.features[0]['properties']['median_inc'];
+        metro  = e.features[0]['properties']['CBSA Title'];          
+        console.log(metro)
+        //console.log(div_score_exp)
 
         $('#baPercValueDisplay').text(' ' + d3.format(",.1%")(baPercValue));     
         $('#WHPopValue').text(' ' + d3.format(",.1%")(WHPopValue));
@@ -544,782 +586,233 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
         $('#medianIncValue').text(' ' + d3.format(".0f")(medianIncValue));
         $('#totolPopValue').text(' ' + d3.format(".1f")(totolPopValue));
 
-["#Boxplot_White","#Boxplot_Black","#Boxplot_Asian","#Boxplot_Hisp","#Boxplot_Other","#Boxplot_2", "#Boxplot_3", "#Boxplot_totalPop"].forEach(function(id) {
-  var existingBoxplot = d3.select(id).select("svg");
-  if (!existingBoxplot.empty()) {
-    existingBoxplot.remove();
-  }
-});
-    
-/////////////////////////////////
-/////// Boxplot Total Pop////////
-/////////////////////////////////
-
-// Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
-  width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
-
-// Append the SVG object to the body of the page
-var svg = d3.select("#Boxplot_totalPop")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-    "translate(" + margin.left + "," + margin.top + ")");
-
-// Create dummy data
-var data = [2046, 2886, 4004, 5325, 6670]
-
-// Compute summary statistics used for the box:
-var data_sorted = data.sort(d3.ascending)
-var q1 = d3.quantile(data_sorted, .25)
-var median = d3.quantile(data_sorted, .5)
-var q3 = d3.quantile(data_sorted, .75)
-var interQuantileRange = q3 - q1
-var min = q1 - 1.5 * interQuantileRange
-var max = q1 + 1.5 * interQuantileRange
-
-// Show the X scale (swap x and y)
-var x = d3.scaleLinear()
-  .domain([0, 10000]) // Adjust the domain based on your data
-  .range([0, width]);
-
-var formatTicks = d3.format(".0s"); // Define the format function correctly
-
-var xAxis = d3.axisBottom(x)
-  .ticks(5)
-  .tickFormat(function (d) {
-    return formatTicks(d); // Use the correct format function
-  });
-
-svg.call(xAxis);
-
-var center =  35 ; // Adjust as needed
-var height =  10  ; // Adjust as needed
-
-// Show the main horizontal line (swap x and y)
-svg.append("line")
-  .attr("x1", x(d3.min(data)))
-  .attr("x2", x(d3.max(data)))
-  .attr("y1", center) // Swap y1 and x1
-  .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
-
-// Show the box (swap x and y)
-svg.append("rect")
-  .attr("x", x(d3.quantile(data, .25)))
-  .attr("y", center - height / 2) // Swap x and y
-  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
-  .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
-
-// Show median, min, and max vertical lines (swap x and y)
-svg.selectAll("toto")
-  .data([d3.min(data), d3.median(data), d3.max(data)])
-  .enter()
-  .append("line")
-  .attr("x1", function (d) { return x(d); })
-  .attr("x2", function (d) { return x(d); })
-  .attr("y1", center - height / 2) // Swap x1 and y1
-  .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
-
-  svg.append("line")
-  .attr("x1", x(totolPopValue))
-  .attr("x2", x(totolPopValue))
-  .attr("y1", center - height / 2)
-  .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
-/////////////////////////////////
-//// White Population///////////
-/////////////////////////////////
-
-// Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
-  width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
-
-// Append the SVG object to the body of the page
-var svg = d3.select("#Boxplot_White")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-    "translate(" + margin.left + "," + margin.top + ")");
-
-// Create dummy data
-var data = [0.09733569257365707,0.4121006861158183,0.7340962196249035,0.8918411340289653,0.952799690935183]
-
-// Compute summary statistics used for the box:
-var data_sorted = data.sort(d3.ascending)
-var q1 = d3.quantile(data_sorted, .25)
-var median = d3.quantile(data_sorted, .5)
-var q3 = d3.quantile(data_sorted, .75)
-var interQuantileRange = q3 - q1
-var min = q1 - 1.5 * interQuantileRange
-var max = q1 + 1.5 * interQuantileRange
-
-// Show the X scale (swap x and y)
-var x = d3.scaleLinear()
-  .domain([0, 1]) // Adjust the domain based on your data
-  .range([0, width]);
-
-var formatTicks = d3.format(".1%"); // Define the format function correctly
-
-var xAxis = d3.axisBottom(x)
-  .ticks(5)
-  .tickFormat(function (d) {
-    return formatTicks(d); // Use the correct format function
-  });
-
-svg.call(xAxis);
-
-var center =  35 ; // Adjust as needed
-var height =  10  ; // Adjust as needed
-
-// Show the main horizontal line (swap x and y)
-svg.append("line")
-  .attr("x1", x(d3.min(data)))
-  .attr("x2", x(d3.max(data)))
-  .attr("y1", center) // Swap y1 and x1
-  .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
-
-// Show the box (swap x and y)
-svg.append("rect")
-  .attr("x", x(d3.quantile(data, .25)))
-  .attr("y", center - height / 2) // Swap x and y
-  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
-  .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
-
-// Show median, min, and max vertical lines (swap x and y)
-svg.selectAll("toto")
-  .data([d3.min(data), d3.median(data), d3.max(data)])
-  .enter()
-  .append("line")
-  .attr("x1", function (d) { return x(d); })
-  .attr("x2", function (d) { return x(d); })
-  .attr("y1", center - height / 2) // Swap x1 and y1
-  .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
-
-  svg.append("line")
-  .attr("x1", x(WHPopValue))
-  .attr("x2", x(WHPopValue))
-  .attr("y1", center - height / 2)
-  .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
-
-/////////////////////////////////
-//// Black Population///////////
-/////////////////////////////////   
-function drawBoxPlot(svg, newData) {
- //d3.select("#Boxplot_Black").select("svg").remove();
-// Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
-  width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
-
-// Append the SVG object to the body of the page
-var svg = d3.select("#Boxplot_Black")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-    "translate(" + margin.left + "," + margin.top + ")");
-
-// Create dummy data
-var data = [0.003119633207536783,0.009328091836647715,0.036006794355198594,0.13880348075635815,0.42492614401867124]
-
-// Compute summary statistics used for the box:
-var data_sorted = data.sort(d3.ascending)
-var q1 = d3.quantile(data_sorted, .25)
-var median = d3.quantile(data_sorted, .5)
-var q3 = d3.quantile(data_sorted, .75)
-var interQuantileRange = q3 - q1
-var min = q1 - 1.5 * interQuantileRange
-var max = q1 + 1.5 * interQuantileRange
-
-// Show the X scale (swap x and y)
-var x = d3.scaleLinear()
-  .domain([0, 1]) // Adjust the domain based on your data
-  .range([0, width]);
-
-var formatTicks = d3.format(".1%"); // Define the format function correctly
-
-var xAxis = d3.axisBottom(x)
-  .ticks(5)
-  .tickFormat(function (d) {
-    return formatTicks(d); // Use the correct format function
-  });
-
-svg.call(xAxis);
-
-var center =  35 ; // Adjust as needed
-var height =  10  ; // Adjust as needed
-
-// Show the main horizontal line (swap x and y)
-svg.append("line")
-  .attr("x1", x(d3.min(data)))
-  .attr("x2", x(d3.max(data)))
-  .attr("y1", center) // Swap y1 and x1
-  .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
-
-// Show the box (swap x and y)
-svg.append("rect")
-  .attr("x", x(d3.quantile(data, .25)))
-  .attr("y", center - height / 2) // Swap x and y
-  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
-  .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
-
-// Show median, min, and max vertical lines (swap x and y)
-svg.selectAll("toto")
-  .data([d3.min(data), d3.median(data), d3.max(data)])
-  .enter()
-  .append("line")
-  .attr("x1", function (d) { return x(d); })
-  .attr("x2", function (d) { return x(d); })
-  .attr("y1", center - height / 2) // Swap x1 and y1
-  .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
-
-  svg.append("line")
-  .attr("x1", x(BLPopValue))
-  .attr("x2", x(BLPopValue))
-  .attr("y1", center - height / 2)
-  .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
-                            svg.append("rect")
-                            .attr("x", x(newData[0])) // Assuming newData[0] is the lower bound
-                            .attr("y", 30)
-                            .attr("width", x(newData[2]) - x(newData[0]))
-                            .attr("height", 10)
-                            .attr("stroke", "red")
-                            
-
-
-}
-                        /*function drawBoxPlot(svg, newData) {
-
-                          svg.append("rect")
-                            .attr("x", x(newData[0])) // Assuming newData[0] is the lower bound
-                            .attr("y", 27.5)
-                            .attr("width", x(newData[2]) - x(newData[0]))
-                            .attr("height", 15)
-                            .attr("stroke", "black")
-                            .style("fill", "red");
-
-                          // Show median, min, and max vertical lines for the new box
-                         console.log(newData[0]);
-                         console.log(svg)
-                          // Add a red line for the lower bound of the new box
-
-                        }*/
-
-/////////////////////////////////
-//// Asian Population///////////
-/////////////////////////////////
-
-// Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
-  width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
-
-// Append the SVG object to the body of the page
-var svg = d3.select("#Boxplot_Asian")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-    "translate(" + margin.left + "," + margin.top + ")");
-
-// Create dummy data
-var data = [0.0015873015873015873,0.004385527772920674,0.013943921193069492,0.041750644682946265,0.10923682506051323]
-
-// Compute summary statistics used for the box:
-var data_sorted = data.sort(d3.ascending)
-var q1 = d3.quantile(data_sorted, .25)
-var median = d3.quantile(data_sorted, .5)
-var q3 = d3.quantile(data_sorted, .75)
-var interQuantileRange = q3 - q1
-var min = q1 - 1.5 * interQuantileRange
-var max = q1 + 1.5 * interQuantileRange
-
-// Show the X scale (swap x and y)
-var x = d3.scaleLinear()
-  .domain([0, 1]) // Adjust the domain based on your data
-  .range([0, width]);
-
-var formatTicks = d3.format(".1%"); // Define the format function correctly
-
-var xAxis = d3.axisBottom(x)
-  .ticks(5)
-  .tickFormat(function (d) {
-    return formatTicks(d); // Use the correct format function
-  });
-
-svg.call(xAxis);
-
-var center =  35 ; // Adjust as needed
-var height =  10  ; // Adjust as needed
-
-// Show the main horizontal line (swap x and y)
-svg.append("line")
-  .attr("x1", x(d3.min(data)))
-  .attr("x2", x(d3.max(data)))
-  .attr("y1", center) // Swap y1 and x1
-  .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
-
-// Show the box (swap x and y)
-svg.append("rect")
-  .attr("x", x(d3.quantile(data, .25)))
-  .attr("y", center - height / 2) // Swap x and y
-  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
-  .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
-
-// Show median, min, and max vertical lines (swap x and y)
-svg.selectAll("toto")
-  .data([d3.min(data), d3.median(data), d3.max(data)])
-  .enter()
-  .append("line")
-  .attr("x1", function (d) { return x(d); })
-  .attr("x2", function (d) { return x(d); })
-  .attr("y1", center - height / 2) // Swap x1 and y1
-  .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
-
-  svg.append("line")
-  .attr("x1", x(ASPopValue))
-  .attr("x2", x(ASPopValue))
-  .attr("y1", center - height / 2)
-  .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
-/////////////////////////////////
-//// Hispanic Population///////////
-/////////////////////////////////
-
-// Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
-  width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
-
-// Append the SVG object to the body of the page
-var svg = d3.select("#Boxplot_Hisp")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-    "translate(" + margin.left + "," + margin.top + ")");
-
-// Create dummy data
-var data = [0.01250681005983965,0.02444987775061125,0.063359831464639,0.18972645213357398,0.49704283711592157]
-
-// Compute summary statistics used for the box:
-var data_sorted = data.sort(d3.ascending)
-var q1 = d3.quantile(data_sorted, .25)
-var median = d3.quantile(data_sorted, .5)
-var q3 = d3.quantile(data_sorted, .75)
-var interQuantileRange = q3 - q1
-var min = q1 - 1.5 * interQuantileRange
-var max = q1 + 1.5 * interQuantileRange
-
-// Show the X scale (swap x and y)
-var x = d3.scaleLinear()
-  .domain([0, 1]) // Adjust the domain based on your data
-  .range([0, width]);
-
-var formatTicks = d3.format(".1%"); // Define the format function correctly
-
-var xAxis = d3.axisBottom(x)
-  .ticks(5)
-  .tickFormat(function (d) {
-    return formatTicks(d); // Use the correct format function
-  });
-
-svg.call(xAxis);
-
-var center =  35 ; // Adjust as needed
-var height =  10  ; // Adjust as needed
-
-// Show the main horizontal line (swap x and y)
-svg.append("line")
-  .attr("x1", x(d3.min(data)))
-  .attr("x2", x(d3.max(data)))
-  .attr("y1", center) // Swap y1 and x1
-  .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
-
-// Show the box (swap x and y)
-svg.append("rect")
-  .attr("x", x(d3.quantile(data, .25)))
-  .attr("y", center - height / 2) // Swap x and y
-  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
-  .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
-
-// Show median, min, and max vertical lines (swap x and y)
-svg.selectAll("toto")
-  .data([d3.min(data), d3.median(data), d3.max(data)])
-  .enter()
-  .append("line")
-  .attr("x1", function (d) { return x(d); })
-  .attr("x2", function (d) { return x(d); })
-  .attr("y1", center - height / 2) // Swap x1 and y1
-  .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
-
-  svg.append("line")
-  .attr("x1", x(HIPopValue))
-  .attr("x2", x(HIPopValue))
-  .attr("y1", center - height / 2)
-  .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
-/////////////////////////////////
-//// Other Population///////////
-/////////////////////////////////
-
-// Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
-  width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
-
-// Append the SVG object to the body of the page
-var svg = d3.select("#Boxplot_Other")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-    "translate(" + margin.left + "," + margin.top + ")");
-
-// Create dummy data
-var data = [0.07987901372985093,0.1307648531057408,0.21833387129439763,0.3706182732546282,0.5462693608340624]
-
-// Compute summary statistics used for the box:
-var data_sorted = data.sort(d3.ascending)
-var q1 = d3.quantile(data_sorted, .25)
-var median = d3.quantile(data_sorted, .5)
-var q3 = d3.quantile(data_sorted, .75)
-var interQuantileRange = q3 - q1
-var min = q1 - 1.5 * interQuantileRange
-var max = q1 + 1.5 * interQuantileRange
-
-// Show the X scale (swap x and y)
-var x = d3.scaleLinear()
-  .domain([0, 1]) // Adjust the domain based on your data
-  .range([0, width]);
-
-var formatTicks = d3.format(".1%"); // Define the format function correctly
-
-var xAxis = d3.axisBottom(x)
-  .ticks(5)
-  .tickFormat(function (d) {
-    return formatTicks(d); // Use the correct format function
-  });
-
-svg.call(xAxis);
-
-var center = 35; // Adjust as needed
-var height = 10; // Adjust as needed
-
-// Show the main horizontal line (swap x and y)
-svg.append("line")
-  .attr("x1", x(d3.min(data)))
-  .attr("x2", x(d3.max(data)))
-  .attr("y1", center) // Swap y1 and x1
-  .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
-
-// Show the box (swap x and y)
-svg.append("rect")
-  .attr("x", x(d3.quantile(data, .25)))
-  .attr("y", center - height / 2) // Swap x and y
-  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
-  .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
-
-// Show median, min, and max vertical lines (swap x and y)
-svg.selectAll("toto")
-  .data([d3.min(data), d3.median(data), d3.max(data)])
-  .enter()
-  .append("line")
-  .attr("x1", function (d) { return x(d); })
-  .attr("x2", function (d) { return x(d); })
-  .attr("y1", center - height / 2) // Swap x1 and y1
-  .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
-
-  svg.append("line")
-  .attr("x1", x(OTPopValue))
-  .attr("x2", x(OTPopValue))
-  .attr("y1", center - height / 2)
-  .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
-/////////////////////////////////
-//// Boxplot Education///////////
-/////////////////////////////////
-
-// Set the dimensions and margins of the graph
-var margin = { top: 15, right: 20, bottom: 30, left: 15 },
-  width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
-
-// Append the SVG object to the body of the page
-var svg = d3.select("#Boxplot_2")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-    "translate(" + margin.left + "," + margin.top + ")");
-
-// Create dummy data
-var data = [0.079879014,0.130764853,0.218333871,0.370618273,0.546269361]
-
-// Compute summary statistics used for the box:
-var data_sorted = data.sort(d3.ascending)
-var q1 = d3.quantile(data_sorted, .25)
-var median = d3.quantile(data_sorted, .5)
-var q3 = d3.quantile(data_sorted, .75)
-var interQuantileRange = q3 - q1
-var min = q1 - 1.5 * interQuantileRange
-var max = q1 + 1.5 * interQuantileRange
-
-// Show the X scale (swap x and y)
-var x = d3.scaleLinear()
-  .domain([0, 0.6]) // Adjust the domain based on your data
-  .range([0, width]);
-
-var formatTicks = d3.format(".1%"); // Define the format function correctly
-
-var xAxis = d3.axisBottom(x)
-  .ticks(5)
-  .tickFormat(function (d) {
-    return formatTicks(d); // Use the correct format function
-  });
-
-svg.call(xAxis);
-
-var center =  35 ; // Adjust as needed
-var height =  10  ; // Adjust as needed
-
-// Show the main horizontal line (swap x and y)
-svg.append("line")
-  .attr("x1", x(d3.min(data)))
-  .attr("x2", x(d3.max(data)))
-  .attr("y1", center) // Swap y1 and x1
-  .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
-
-// Show the box (swap x and y)
-svg.append("rect")
-  .attr("x", x(d3.quantile(data, .25)))
-  .attr("y", center - height / 2) // Swap x and y
-  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
-  .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
-
-// Show median, min, and max vertical lines (swap x and y)
-svg.selectAll("toto")
-  .data([d3.min(data), d3.median(data), d3.max(data)])
-  .enter()
-  .append("line")
-  .attr("x1", function (d) { return x(d); })
-  .attr("x2", function (d) { return x(d); })
-  .attr("y1", center - height / 2) // Swap x1 and y1
-  .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
-
-  svg.append("line")
-  .attr("x1", x(baPercValue))
-  .attr("x2", x(baPercValue))
-  .attr("y1", center - height / 2)
-  .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
-/////////////////////////////////
-//////// Boxplot Income//////////
-/////////////////////////////////
-
-
-// Set the dimensions and margins of the graph
-var margin = { top: 10, right: 10, bottom: 30, left: 10 },
-  width = 300 - margin.left - margin.right,
-  height = 60 - margin.top - margin.bottom;
-
-// Append the SVG object to the body of the page
-var svg = d3.select("#Boxplot_3")
-  .append("svg")
-  .attr("width", width + margin.left + margin.right)
-  .attr("height", height + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform",
-    "translate(" + margin.left + "," + margin.top + ")");
-
-//Create dummy data
-var incData = [27306,36806,49375,67313,90296.8]
-
-// Compute summary statistics used for the box:
-var data_sorted = incData.sort(d3.ascending)
-var q1 = d3.quantile(data_sorted, .25)
-var median = d3.quantile(data_sorted, .5)
-var q3 = d3.quantile(data_sorted, .75)
-var interQuantileRange = q3 - q1
-var min = q1 - 1.5 * interQuantileRange
-var max = q1 + 1.5 * interQuantileRange
-
-// Show the X scale (swap x and y)
-var x = d3.scaleLinear()
-  .domain([20000, 100000]) // Adjust the domain based on your legend data
-  .range([0, width]);
-
-var formatTick = d3.format(".0s");
-
-var xAxis = d3.axisBottom(x)
-              .ticks(5)
-              .tickFormat(function (d) {
-                            return formatTick(d);
-  });; // Change the number of ticks as needed
-
-svg.call(xAxis);
-
-var center =  35 ; // Adjust as needed
-var height =  10  ; // Adjust as needed
-
-// Show the main horizontal line (swap x and y)
-svg.append("line")
-  .attr("x1", x(d3.min(incData)))
-  .attr("x2", x(d3.max(incData)))
-  .attr("y1", center) // Swap y1 and x1
-  .attr("y2", center) // Swap y2 and x2
-  .attr("stroke", "black");
-
-
-// Show the box (swap x and y)
-svg.append("rect")
-  .attr("x", x(d3.quantile(incData, .25)))
-  .attr("y", center - height / 2) // Swap x and y
-  .attr("width", x(d3.quantile(incData, .75)) - x(d3.quantile(incData, .25)))
-  .attr("height", height) // Swap width and height
-  .attr("stroke", "black")
-  .style("fill", "#A5DEE4");
-
-// Show median, min, and max vertical lines (swap x and y)
-svg.selectAll("toto")
-  .data([d3.min(incData), d3.median(incData), d3.max(incData)])
-  .enter()
-  .append("line")
-  .attr("x1", function (d) { return x(d); })
-  .attr("x2", function (d) { return x(d); })
-  .attr("y1", center - height / 2) // Swap x1 and y1
-  .attr("y2", center + height / 2) // Swap x2 and y2
-  .attr("stroke", "black");
-
-  svg.append("line")
-  .attr("x1", x(medianIncValue))
-  .attr("x2", x(medianIncValue))
-  .attr("y1", center - height / 2)
-  .attr("y2", center + height / 2)
-  .attr("stroke", "red"); // You can choose a color for the line
-
-
-//console.log(baPercValue);
-
-///////////////////////////
-//////////fly to///////////
-///////////////////////////
-
-// Define the URL of your hosted CSV file
-const csvFileURL = 'https://gist.githubusercontent.com/acopod/35967e9183f6de7c9db49389aed36681/raw/5885128198a67c7d3000296230962f390c776a69/CBSA_latlong.csv';
-const CBSA_boxplot = 'https://gist.githubusercontent.com/acopod/e8a65ad8156e9caf05625107996bd501/raw/1cb5474175a851ef84a766e9e33ae6eaadaaf443/boxplot_summary_cbsa_national.csv';
-let cityName; // Declare cityName variable in a broader scope
-let min_b;
-
-Papa.parse(csvFileURL, {
-  download: true,
-  complete: function (csvResults) {
-    const csvData = csvResults.data;
-
     Papa.parse(CBSA_boxplot, {
       download: true,
       complete: function (boxplotResults) {
         const boxplotData = boxplotResults.data;
+            newTPData = [];
+            newWHData = [];
+            newBLData = [];
+            newASData = [];
+            newHIData = [];
+            newOTData = [];
+            newHEData = [];
+            newMIData = [];
+            const result_TPboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'total_pop');
 
-        // Add an event listener to the dropdown selection change
-        $('#cityDropdown1').dropdown({
-          onChange: function (value, text, $selectedItem) {
-            cityName = text; // Assign the value to the broader-scoped variable cityName
-                        // Process CSV data
-            const result = csvData.find((row) => row[3] === cityName);
+              if (result_TPboxplot) {
+              var min_b = parseFloat(result_TPboxplot[1]);
+              var q1_b = parseFloat(result_TPboxplot[2]);
+              var median_b = parseFloat(result_TPboxplot[3]);
+              var q3_b = parseFloat(result_TPboxplot[4]);
+              var max_b = parseFloat(result_TPboxplot[5]);
+              var newTPData = [min_b, q1_b, median_b, q3_b, max_b]
 
-            if (result) {
-              const intptlat = parseFloat(result[10]);
-              const intptlon = parseFloat(result[11]);
-
-              // Fly to the selected location
-              map.flyTo({
-                center: [intptlon, intptlat],
-                zoom: 10,
-                essential: true,
-              });
-
-              console.log(`City '${cityName}'`);
+              console.log(newTPData)
             }
 
-            // Process boxplot data
-            const result_boxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'black_perc');
+                          const result_WHboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'white_perc');
 
-            if (result_boxplot) {
-  var min_b = parseFloat(result_boxplot[1]);
-  var q1_b = parseFloat(result_boxplot[2]);
-  var median_b = parseFloat(result_boxplot[3]);
-  var q3_b = parseFloat(result_boxplot[4]);
-  var max_b = parseFloat(result_boxplot[5]);
+              if (result_WHboxplot) {
+              var min_b = parseFloat(result_WHboxplot[1]);
+              var q1_b = parseFloat(result_WHboxplot[2]);
+              var median_b = parseFloat(result_WHboxplot[3]);
+              var q3_b = parseFloat(result_WHboxplot[4]);
+              var max_b = parseFloat(result_WHboxplot[5]);
+              var newWHData = [min_b, q1_b, median_b, q3_b, max_b]
+
+            }
+
+              const result_BLboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'black_perc');
+
+              if (result_BLboxplot) {
+              var min_b = parseFloat(result_BLboxplot[1]);
+              var q1_b = parseFloat(result_BLboxplot[2]);
+              var median_b = parseFloat(result_BLboxplot[3]);
+              var q3_b = parseFloat(result_BLboxplot[4]);
+              var max_b = parseFloat(result_BLboxplot[5]);
+              var newBLData = [min_b, q1_b, median_b, q3_b, max_b]
+
+            }
 
 
-  drawBoxPlot(svg, [min_b, q1_b, median_b, q3_b, max_b]);
+              const result_ASboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'asian_perc');
+
+              if (result_ASboxplot) {
+              var min_b = parseFloat(result_ASboxplot[1]);
+              var q1_b = parseFloat(result_ASboxplot[2]);
+              var median_b = parseFloat(result_ASboxplot[3]);
+              var q3_b = parseFloat(result_ASboxplot[4]);
+              var max_b = parseFloat(result_ASboxplot[5]);
+              var newASData = [min_b, q1_b, median_b, q3_b, max_b]
+
+            }
+
+              const result_HIboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'hispanic_perc');
+
+              if (result_HIboxplot) {
+              var min_b = parseFloat(result_HIboxplot[1]);
+              var q1_b = parseFloat(result_HIboxplot[2]);
+              var median_b = parseFloat(result_HIboxplot[3]);
+              var q3_b = parseFloat(result_HIboxplot[4]);
+              var max_b = parseFloat(result_HIboxplot[5]);
+              var newHIData = [min_b, q1_b, median_b, q3_b, max_b]
+
+            }
+
+              const result_OTboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'other_perc');
+
+              if (result_OTboxplot) {
+              var min_b = parseFloat(result_OTboxplot[1]);
+              var q1_b = parseFloat(result_OTboxplot[2]);
+              var median_b = parseFloat(result_OTboxplot[3]);
+              var q3_b = parseFloat(result_OTboxplot[4]);
+              var max_b = parseFloat(result_OTboxplot[5]);
+              var newOTData = [min_b, q1_b, median_b, q3_b, max_b]
+
+            }
+
+              const result_HEboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'ba_higher_perc');
+
+              if (result_HEboxplot) {
+              var min_b = parseFloat(result_HEboxplot[1]);
+              var q1_b = parseFloat(result_HEboxplot[2]);
+              var median_b = parseFloat(result_HEboxplot[3]);
+              var q3_b = parseFloat(result_HEboxplot[4]);
+              var max_b = parseFloat(result_HEboxplot[5]);
+              var newHEData = [min_b, q1_b, median_b, q3_b, max_b]
+
+            }
+
+              const result_MIboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'median_inc');
+
+              if (result_MIboxplot) {
+              var min_b = parseFloat(result_MIboxplot[1]);
+              var q1_b = parseFloat(result_MIboxplot[2]);
+              var median_b = parseFloat(result_MIboxplot[3]);
+              var q3_b = parseFloat(result_MIboxplot[4]);
+              var max_b = parseFloat(result_MIboxplot[5]);
+              var newMIData = [min_b, q1_b, median_b, q3_b, max_b]
+
+             
+            }
+
+drawTPBoxPlot(svg, newTPData, totolPopValue);
+drawWHBoxPlot(svg, newWHData, WHPopValue);
+drawBLBoxPlot(svg, newBLData, BLPopValue);
+drawASBoxPlot(svg, newASData, ASPopValue);
+drawHIBoxPlot(svg, newHIData, HIPopValue);
+drawOTBoxPlot(svg, newOTData, OTPopValue);
+drawHEBoxPlot(svg, newHEData, baPercValue);
+drawMIBoxPlot(svg, newMIData, medianIncValue);
+
+
 }
- console.log(`'${q1_b}'`);
-          },
-        });
-      },
-    });
-  },
 });
 
- 
 
+        Papa.parse(CBSA_histogram, {
+          download: true,
+          complete: function (histogramResults) {
+            const histogramData = histogramResults.data;
+
+            Papa.parse(national_histogram, {
+              download: true,
+              complete: function (nationalhistogramResults) {
+                const nationalhistorgramData = nationalhistogramResults.data;
+
+                const result_hitogram = nationalhistorgramData.find((row) => row[0] === metric);
+                const result_WHhistogram = histogramData.find((row) => row[1] === metro && row[3] === metric);
+
+                        var currentZoom = map.getZoom();
+                        var zoomThreshold = 10;
+
+                if (currentZoom >= zoomThreshold) {
+                      var CBSAbin_0 = parseFloat(result_WHhistogram[4]);
+                      var CBSAbin_1 = parseFloat(result_WHhistogram[5]);
+                      var CBSAbin_2 = parseFloat(result_WHhistogram[6]);
+                      var CBSAbin_3 = parseFloat(result_WHhistogram[7]);
+                      var CBSAbin_4 = parseFloat(result_WHhistogram[8]);
+                      var CBSAbin_5 = parseFloat(result_WHhistogram[9]);
+                      var CBSAbin_6 = parseFloat(result_WHhistogram[10]);
+                      var CBSAbin_7 = parseFloat(result_WHhistogram[11]);
+                      var CBSAbin_8 = parseFloat(result_WHhistogram[12]);
+                      var CBSAbin_0_perc = parseFloat(result_WHhistogram[13] * 100);
+                      var CBSAbin_1_perc = parseFloat(result_WHhistogram[14] * 100);
+                      var CBSAbin_2_perc = parseFloat(result_WHhistogram[15] * 100);
+                      var CBSAbin_3_perc = parseFloat(result_WHhistogram[16] * 100);
+                      var CBSAbin_4_perc = parseFloat(result_WHhistogram[17] * 100);
+                      var CBSAbin_5_perc = parseFloat(result_WHhistogram[18] * 100);
+                      var CBSAbin_6_perc = parseFloat(result_WHhistogram[19] * 100);
+                      var CBSAbin_7_perc = parseFloat(result_WHhistogram[20] * 100);
+
+                      var CBSAbinRanges = [
+                           {bin: CBSAbin_0, value: CBSAbin_0_perc},
+                           {bin: CBSAbin_1, value: CBSAbin_1_perc},
+                           {bin: CBSAbin_2, value: CBSAbin_2_perc},
+                           {bin: CBSAbin_3, value: CBSAbin_3_perc},
+                           {bin: CBSAbin_4, value: CBSAbin_4_perc},
+                           {bin: CBSAbin_5, value: CBSAbin_5_perc},
+                           {bin: CBSAbin_6, value: CBSAbin_6_perc},
+                           {bin: CBSAbin_7, value: CBSAbin_7_perc},
+                           {bin: CBSAbin_8, value: 0},]
+
+                      drawHistogram(CBSAbinRanges, div_score_exp);
+                };
+
+if (currentZoom < zoomThreshold) {
+      var bin_0 = parseFloat(result_hitogram[1]);
+      var bin_1 = parseFloat(result_hitogram[2]);
+      var bin_2 = parseFloat(result_hitogram[3]);
+      var bin_3 = parseFloat(result_hitogram[4]);
+      var bin_4 = parseFloat(result_hitogram[5]);
+      var bin_5 = parseFloat(result_hitogram[6]);
+      var bin_6 = parseFloat(result_hitogram[7]);
+      var bin_7 = parseFloat(result_hitogram[8]);
+      var bin_8 = parseFloat(result_hitogram[9]);
+      var bin_0_perc = parseFloat(result_hitogram[10] * 100);
+      var bin_1_perc = parseFloat(result_hitogram[11] * 100);
+      var bin_2_perc = parseFloat(result_hitogram[12] * 100);
+      var bin_3_perc = parseFloat(result_hitogram[13] * 100);
+      var bin_4_perc = parseFloat(result_hitogram[14] * 100);
+      var bin_5_perc = parseFloat(result_hitogram[15] * 100);
+      var bin_6_perc = parseFloat(result_hitogram[16] * 100);
+      var bin_7_perc = parseFloat(result_hitogram[17] * 100);
+
+        var binRanges = [
+           {bin: bin_0, value: bin_0_perc},
+           {bin: bin_1, value: bin_1_perc},
+           {bin: bin_2, value: bin_2_perc},
+           {bin: bin_3, value: bin_3_perc},
+           {bin: bin_4, value: bin_4_perc},
+           {bin: bin_5, value: bin_5_perc},
+           {bin: bin_6, value: bin_6_perc},
+           {bin: bin_7, value: bin_7_perc},
+           {bin: bin_8, value: 0},
+        ];
+
+      //console.log(binRanges);
+      //console.log(div_score_exp);
+      drawHistogram(binRanges, div_score_exp);
+
+};
+},
+});
+},
+});
+
+        const currentZoom = map.getZoom();
+    let popupDistanceMultiplier = 0.1;
+
+    // Adjust the distance multiplier based on zoom level
+    if (currentZoom >= 10 && currentZoom < 15) {
+        popupDistanceMultiplier = 0.005;
+    } else if (currentZoom >= 15 && currentZoom < 18) {
+        popupDistanceMultiplier = 0.002;
+    } else if (currentZoom >= 18) {
+        popupDistanceMultiplier = 0.001;
+    }
+    
         // Get the text
         popUpStr = `<div class='popup'>
             <h4>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h4>
@@ -1328,7 +821,7 @@ Papa.parse(csvFileURL, {
         </div>`;
 
         popUp.setHTML(popUpStr);
-        popUp.setLngLat([e.lngLat.lng, e.lngLat.lat*1.0005]);
+        popUp.setLngLat([e.lngLat.lng, e.lngLat.lat + (popupDistanceMultiplier)]);
         popUp.addTo(map);
         // if (!popUp.isOpen()) {
         //   popUp.addTo(map);
@@ -1356,11 +849,2252 @@ Papa.parse(csvFileURL, {
                     id: hoveredStateId},
                     {hover: true}
                 );
-            }
-            
+            }       
     });
 
+///////////////////////////////////////////////////////////////////////////////////////////////
+/////// Boxplot functions//////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////
+/////// Boxplot Total Pop////////
+/////////////////////////////////
+
+
+function drawTPBoxPlot(svg, newTPData, totolPopValue) {
+
+d3.select("#Boxplot_totalPop").select("svg").remove();
+
+// Set the dimensions and margins of the graph
+var margin = { top: 10, right: 20, bottom: 10, left: 15 },
+    width = 300 - margin.left - margin.right,
+    height = 40 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_totalPop")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [2046, 2886, 4004, 5325, 6670]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Initial domain values
+var minDomain = 2046;
+var maxDomain = 6670;
+
+if (newTPData[4] > maxDomain) {
+  maxDomain = newTPData[4];
+}
+
+if (newTPData[0] < minDomain) {
+  minDomain = newTPData[0];
+}
+
+// Set up the scale with the updated domain
+var x = d3.scaleLinear()
+  .domain([minDomain, maxDomain])
+  .range([0, width]);
+
+var formatTicks = d3.format(".2s"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+//svg.call(xAxis);
+
+var center =  10 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+if (newTPData.length === 0 ){
+
+svg.append("line")
+  .attr("x1", x(data[0]))
+  .attr("x2", x(data[1]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("line")
+  .attr("x1", x(data[3]))
+  .attr("x2", x(data[4]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2 ) 
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height ) // Swap width and height
+  .attr("stroke", "#555")
+  .style("fill", "#ffe1cc")
+  .attr("fill-opacity", 1)
+  .attr("rx", 3)
+  .attr("ry", 3);
+
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2 ) // Swap x1 and y1
+  .attr("y2", center + height / 2 ) // Swap x2 and y2
+  .attr("stroke", "#555");
+  }
+
+if (newTPData.length === 0 ){
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2 )
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+}
+
+if (newTPData.length > 0){
+// Show the main horizontal line (swap x and y)
+
+    
+       svg.append("line")
+      .attr("x1", x(newTPData[0]))
+      .attr("x2", x(newTPData[4]))
+      .attr("y1", center) // Swap y1 and x1
+      .attr("y2", center) // Swap y2 and x2
+      .attr("stroke", "#555")
+      .attr("stroke-dasharray", "3,3");    
+
+    svg.append("rect")
+    .attr("x", x(newTPData[1])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2 ) // Swap x and y
+    .attr("width", x(newTPData[3]) - x(newTPData[1]))
+    .attr("height", height)
+    .attr("stroke", "#555")
+    .attr("fill", "#f7b285")
+    //.attr("fill-opacity", 0)
+    .attr("rx", 3)
+    .attr("ry", 3);
+
+    // Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([newTPData[0], newTPData[4]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll("toto")
+  .data([newTPData[2]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll(".whisker-label")
+  .data([newTPData[1], newTPData[3]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([newTPData[0], newTPData[2], newTPData[4]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+}
+
+
+ svg.append("line")
+  .attr("x1", x(totolPopValue))
+  .attr("x2", x(totolPopValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
+
+
+}
+
+/////////////////////////////////
+/////// Boxplot White Pop////////
+/////////////////////////////////
+
+function drawWHBoxPlot(svg, newWHData, WHPopValue) {
+        d3.select("#Boxplot_White").select("svg").remove();
+
+        // Set the dimensions and margins of the graph
+var margin = { top: 12.5, right: 20, bottom: 12.5, left: 15 },
+    width = 300 - margin.left - margin.right,
+    height = 45 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_White")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [0.09733569257365707,0.4121006861158183,0.7340962196249035,0.8918411340289653,0.952799690935183]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Initial domain values
+var minDomain = 0.09733569257365707;
+var maxDomain = 0.952799690935183;
+
+// Check if newMIData[4] is smaller than 90296.8
+if (newWHData.length === 0) {
+ maxDomain = maxDomain;
+} else if (newWHData.length !== 0) {
+  maxDomain = newWHData[4];
+} 
+
+if (newWHData.length === 0) {
+ minDomain = minDomain;
+} else if (newWHData.length !== 0) {
+  minDomain = newWHData[0];
+} 
+
+// Set up the scale with the updated domain
+var x = d3.scaleLinear()
+  .domain([minDomain, maxDomain])
+  .range([0, width]);
+
+var formatTicks = d3.format(".1%"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+//svg.call(xAxis);
+
+var center =  10 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+if (newWHData.length === 0 ){
+
+svg.append("line")
+  .attr("x1", x(data[0]))
+  .attr("x2", x(data[1]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("line")
+  .attr("x1", x(data[3]))
+  .attr("x2", x(data[4]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2 ) 
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height ) // Swap width and height
+  .attr("stroke", "#555")
+  .style("fill", "#ffe1cc")
+  .attr("fill-opacity", 1)
+  .attr("rx", 3)
+  .attr("ry", 3);
+
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2 ) // Swap x1 and y1
+  .attr("y2", center + height / 2 ) // Swap x2 and y2
+  .attr("stroke", "#555");
+  }
+
+if (newWHData.length === 0){
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2 )
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+}
+
+if (newWHData.length > 0){
+// Show the main horizontal line (swap x and y)
+
+    
+       svg.append("line")
+      .attr("x1", x(newWHData[0]))
+      .attr("x2", x(newWHData[4]))
+      .attr("y1", center) // Swap y1 and x1
+      .attr("y2", center) // Swap y2 and x2
+      .attr("stroke", "#555")
+      .attr("stroke-dasharray", "3,3");    
+
+    svg.append("rect")
+    .attr("x", x(newWHData[1])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2 ) // Swap x and y
+    .attr("width", x(newWHData[3]) - x(newWHData[1]))
+    .attr("height", height)
+    .attr("stroke", "#555")
+    .attr("fill", "#f7b285")
+    //.attr("fill-opacity", 0)
+    .attr("rx", 3)
+    .attr("ry", 3);
+
+    // Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([newWHData[0], newWHData[4]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll("toto")
+  .data([newWHData[2]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll(".whisker-label")
+  .data([newWHData[1], newWHData[3]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([newWHData[0], newWHData[2], newWHData[4]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+}
+
+  svg.append("line")
+  .attr("x1", x(WHPopValue))
+  .attr("x2", x(WHPopValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
+}
+
+
+
+/////////////////////////////////
+//// Black Population///////////
+/////////////////////////////////   
+
+
+
+function drawBLBoxPlot(svg, newBLData, BLPopValue) {
+        d3.select("#Boxplot_Black").select("svg").remove();
+
+
+ // d3.select("#Boxplot_Black").select("svg").remove();
+
+var margin = { top: 12.5, right: 20, bottom: 12.5, left: 15 },
+    width = 300 - margin.left - margin.right,
+    height = 45 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_Black")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [0.003119633207536783,0.009328091836647715,0.036006794355198594,0.13880348075635815,0.42492614401867124]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Initial domain values
+var maxDomain = 0.49704283711592157;
+
+// Check if newMIData[4] is smaller than 90296.8
+if (newBLData.length === 0) {
+ maxDomain = maxDomain;
+} else if (newBLData.length !== 0) {
+  maxDomain = newBLData[4];
+} 
+
+// Set up the scale with the updated domain
+var x = d3.scaleLinear()
+  .domain([0, maxDomain])
+  .range([0, width]);
+
+var formatTicks = d3.format(".1%"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+//svg.call(xAxis);
+
+var center =  10 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+if (newBLData.length === 0 ){
+
+svg.append("line")
+  .attr("x1", x(data[0]))
+  .attr("x2", x(data[1]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("line")
+  .attr("x1", x(data[3]))
+  .attr("x2", x(data[4]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2 ) 
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height ) // Swap width and height
+  .attr("stroke", "#555")   
+  .style("fill", "#ffe1cc")
+  .attr("fill-opacity", 1)
+  .attr("rx", 3)
+  .attr("ry", 3);
+
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2 ) // Swap x1 and y1
+  .attr("y2", center + height / 2 ) // Swap x2 and y2
+  .attr("stroke", "#555");
+  }
+
+if (newBLData.length === 0){
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2 )
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+}
+
+if (newBLData.length > 0){
+// Show the main horizontal line (swap x and y)
+
+    
+       svg.append("line")
+      .attr("x1", x(newBLData[0]))
+      .attr("x2", x(newBLData[4]))
+      .attr("y1", center) // Swap y1 and x1
+      .attr("y2", center) // Swap y2 and x2
+      .attr("stroke", "#555")
+      .attr("stroke-dasharray", "3,3");    
+
+    svg.append("rect")
+    .attr("x", x(newBLData[1])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2 ) // Swap x and y
+    .attr("width", x(newBLData[3]) - x(newBLData[1]))
+    .attr("height", height)
+    .attr("stroke", "#555")
+    .attr("fill", "#f7b285")
+    //.attr("fill-opacity", 0)
+    .attr("rx", 3)
+    .attr("ry", 3);
+
+    // Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([newBLData[0], newBLData[4]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll("toto")
+  .data([newBLData[2]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll(".whisker-label")
+  .data([newBLData[1], newBLData[3]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([newBLData[0], newBLData[2], newBLData[4]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+}
+
+  svg.append("line")
+  .attr("x1", x(BLPopValue))
+  .attr("x2", x(BLPopValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
+
+}
+
+
+/////////////////////////////////
+//// Asian Population///////////
+/////////////////////////////////
+
+function drawASBoxPlot(svg, newASData, ASPopValue) {
+        d3.select("#Boxplot_Asian").select("svg").remove();
+
+var margin = { top: 12.5, right: 20, bottom: 12.5, left: 15 },
+    width = 300 - margin.left - margin.right,
+    height = 45 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_Asian")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [0.0015873015873015873,0.004385527772920674,0.013943921193069492,0.041750644682946265,0.10923682506051323]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Initial domain values
+var maxDomain = 0.10923682506051323;
+
+// Check if newMIData[4] is smaller than 90296.8
+if (newASData.length === 0) {
+ maxDomain = maxDomain;
+} else if (newASData.length !== 0) {
+  maxDomain = newASData[4];
+} 
+
+// Set up the scale with the updated domain
+var x = d3.scaleLinear()
+  .domain([0, maxDomain])
+  .range([0, width]);
+
+var formatTicks = d3.format(".1%"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+//svg.call(xAxis);
+
+var center =  10 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+if (newASData.length === 0 ){
+
+svg.append("line")
+  .attr("x1", x(data[0]))
+  .attr("x2", x(data[1]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("line")
+  .attr("x1", x(data[3]))
+  .attr("x2", x(data[4]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2 ) 
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height ) // Swap width and height
+  .attr("stroke", "#555")
+  .style("fill", "#ffe1cc")
+  .attr("fill-opacity", 1)
+  .attr("rx", 3)
+  .attr("ry", 3);
+
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2 ) // Swap x1 and y1
+  .attr("y2", center + height / 2 ) // Swap x2 and y2
+  .attr("stroke", "#555");
+  }
+
+if (newASData.length === 0){
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2 )
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+}
+
+if (newASData.length > 0){
+// Show the main horizontal line (swap x and y)
+
+    
+       svg.append("line")
+      .attr("x1", x(newASData[0]))
+      .attr("x2", x(newASData[4]))
+      .attr("y1", center) // Swap y1 and x1
+      .attr("y2", center) // Swap y2 and x2
+      .attr("stroke", "#555")
+      .attr("stroke-dasharray", "3,3");    
+
+    svg.append("rect")
+    .attr("x", x(newASData[1])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2 ) // Swap x and y
+    .attr("width", x(newASData[3]) - x(newASData[1]))
+    .attr("height", height)
+    .attr("stroke", "#555")
+    .attr("fill", "#f7b285")
+    //.attr("fill-opacity", 0)
+    .attr("rx", 3)
+    .attr("ry", 3);
+
+    // Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([newASData[0], newASData[4]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll("toto")
+  .data([newASData[2]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll(".whisker-label")
+  .data([newASData[1], newASData[3]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([newASData[0], newASData[2], newASData[4]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+}
+
+  svg.append("line")
+  .attr("x1", x(ASPopValue))
+  .attr("x2", x(ASPopValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
+
+}
+
+/////////////////////////////////
+//// Hispanic Population///////////
+/////////////////////////////////
+
+function drawHIBoxPlot(svg, newHIData, HIPopValue) {
+        d3.select("#Boxplot_Hisp").select("svg").remove();
+
+// Set the dimensions and margins of the graph
+var margin = { top: 12.5, right: 20, bottom: 10, left: 12.5 },
+  width = 300 - margin.left - margin.right,
+  height = 45 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_Hisp")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [0.01250681005983965,0.02444987775061125,0.063359831464639,0.18972645213357398,0.49704283711592157]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Initial domain values
+var maxDomain = 0.49704283711592157;
+
+// Check if newMIData[4] is smaller than 90296.8
+if (newHIData.length === 0) {
+ maxDomain = maxDomain;
+} else if (newHIData.length !== 0) {
+  maxDomain = newHIData[4];
+} 
+
+// Set up the scale with the updated domain
+var x = d3.scaleLinear()
+  .domain([0, maxDomain])
+  .range([0, width]);
+
+var formatTicks = d3.format(".1%"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+//svg.call(xAxis);
+
+var center =  10 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+if (newHIData.length === 0 ){
+
+svg.append("line")
+  .attr("x1", x(data[0]))
+  .attr("x2", x(data[1]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("line")
+  .attr("x1", x(data[3]))
+  .attr("x2", x(data[4]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2 ) 
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height ) // Swap width and height
+  .attr("stroke", "#555")
+  .style("fill", "#ffe1cc")
+  .attr("fill-opacity", 1)
+  .attr("rx", 3)
+  .attr("ry", 3);
+
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2 ) // Swap x1 and y1
+  .attr("y2", center + height / 2 ) // Swap x2 and y2
+  .attr("stroke", "#555");
+  }
+
+if (newHIData.length === 0){
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2 )
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+}
+
+if (newHIData.length > 0){
+// Show the main horizontal line (swap x and y)
+
+    
+       svg.append("line")
+      .attr("x1", x(newHIData[0]))
+      .attr("x2", x(newHIData[4]))
+      .attr("y1", center) // Swap y1 and x1
+      .attr("y2", center) // Swap y2 and x2
+      .attr("stroke", "#555")
+      .attr("stroke-dasharray", "3,3");    
+
+    svg.append("rect")
+    .attr("x", x(newHIData[1])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2 ) // Swap x and y
+    .attr("width", x(newHIData[3]) - x(newHIData[1]))
+    .attr("height", height)
+    .attr("stroke", "#555")
+    .attr("fill", "#f7b285")
+    //.attr("fill-opacity", 0)
+    .attr("rx", 3)
+    .attr("ry", 3);
+
+    // Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([newHIData[0], newHIData[4]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll("toto")
+  .data([newHIData[2]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll(".whisker-label")
+  .data([newHIData[1], newHIData[3]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([newHIData[0], newHIData[2], newHIData[4]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+}
+
+  svg.append("line")
+  .attr("x1", x(HIPopValue))
+  .attr("x2", x(HIPopValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
+
+}
+
+/////////////////////////////////
+//// Other Population///////////
+/////////////////////////////////
+
+
+function drawOTBoxPlot(svg, newOTData, OTPopValue) {
+        d3.select("#Boxplot_Other").select("svg").remove();
+
+// Set the dimensions and margins of the graph
+var margin = { top: 10, right: 20, bottom: 10, left: 15 },
+  width = 300 - margin.left - margin.right,
+  height = 40 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_Other")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [0.00889679715302491,0.0137231917122169,0.0211115020720932,0.0325522581439024,0.0491011866236629]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Initial domain values
+var maxDomain = 0.0491011866236629;
+
+// Check if newMIData[4] is smaller than 90296.8
+if (newOTData.length === 0) {
+ maxDomain = maxDomain;
+} else if (newOTData.length !== 0) {
+  maxDomain = newOTData[4];
+} 
+
+// Set up the scale with the updated domain
+var x = d3.scaleLinear()
+  .domain([0, maxDomain])
+  .range([0, width]);
+
+var formatTicks = d3.format(".1%"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+//svg.call(xAxis);
+
+var center =  10 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+if (newOTData.length === 0 ){
+
+svg.append("line")
+  .attr("x1", x(data[0]))
+  .attr("x2", x(data[1]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("line")
+  .attr("x1", x(data[3]))
+  .attr("x2", x(data[4]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2 ) 
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height ) // Swap width and height
+  .attr("stroke", "#555")
+  .style("fill", "#ffe1cc")
+  .attr("fill-opacity", 1)
+  .attr("rx", 3)
+  .attr("ry", 3);
+
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2 ) // Swap x1 and y1
+  .attr("y2", center + height / 2 ) // Swap x2 and y2
+  .attr("stroke", "#555");
+  }
+
+if (newOTData.length === 0){
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2 )
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+}
+
+if (newOTData.length > 0){
+// Show the main horizontal line (swap x and y)
+
+    
+       svg.append("line")
+      .attr("x1", x(newOTData[0]))
+      .attr("x2", x(newOTData[4]))
+      .attr("y1", center) // Swap y1 and x1
+      .attr("y2", center) // Swap y2 and x2
+      .attr("stroke", "#555")
+      .attr("stroke-dasharray", "3,3");    
+
+    svg.append("rect")
+    .attr("x", x(newOTData[1])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2 ) // Swap x and y
+    .attr("width", x(newOTData[3]) - x(newOTData[1]))
+    .attr("height", height)
+    .attr("stroke", "#555")
+    .attr("fill", "#f7b285")
+    //.attr("fill-opacity", 0)
+    .attr("rx", 3)
+    .attr("ry", 3);
+
+    // Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([newOTData[0], newOTData[4]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll("toto")
+  .data([newOTData[2]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll(".whisker-label")
+  .data([newOTData[1], newOTData[3]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([newOTData[0], newOTData[2], newOTData[4]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+}
+
+  svg.append("line")
+  .attr("x1", x(OTPopValue))
+  .attr("x2", x(OTPopValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
+
+}
+
+/////////////////////////////////
+//// Boxplot Education///////////
+/////////////////////////////////
+
+function drawHEBoxPlot(svg, newHEData, baPercValue) {
+        d3.select("#Boxplot_2").select("svg").remove();
+
+// Set the dimensions and margins of the graph
+var margin = { top: 10, right: 20, bottom: 10, left: 15 },
+  width = 300 - margin.left - margin.right,
+  height = 40 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_2")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+// Create dummy data
+var data = [0.079879014,0.130764853,0.218333871,0.370618273,0.546269361]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+// Initial domain values
+var maxDomain = 0.546269361;
+
+// Check if newMIData[4] is smaller than 90296.8
+if (newHEData.length === 0) {
+ maxDomain = maxDomain;
+} else if (newHEData.length !== 0) {
+  maxDomain = newHEData[4];
+} 
+
+// Set up the scale with the updated domain
+var x = d3.scaleLinear()
+  .domain([0, maxDomain])
+  .range([0, width]);
+
+var formatTicks = d3.format(".1%"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+//svg.call(xAxis);
+
+var center =  10 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+if (newHEData.length === 0 ){
+
+svg.append("line")
+  .attr("x1", x(data[0]))
+  .attr("x2", x(data[1]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("line")
+  .attr("x1", x(data[3]))
+  .attr("x2", x(data[4]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2 ) 
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height ) // Swap width and height
+  .attr("stroke", "#555")
+  .style("fill", "#ffe1cc")
+  .attr("fill-opacity", 1)
+  .attr("rx", 3)
+  .attr("ry", 3);
+
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2 ) // Swap x1 and y1
+  .attr("y2", center + height / 2 ) // Swap x2 and y2
+  .attr("stroke", "#555");
+  }
+
+if (newHEData.length === 0){
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2 )
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+}
+
+if (newHEData.length > 0){
+// Show the main horizontal line (swap x and y)
+
+    
+       svg.append("line")
+      .attr("x1", x(newHEData[0]))
+      .attr("x2", x(newHEData[4]))
+      .attr("y1", center) // Swap y1 and x1
+      .attr("y2", center) // Swap y2 and x2
+      .attr("stroke", "#555")
+      .attr("stroke-dasharray", "3,3");    
+
+    svg.append("rect")
+    .attr("x", x(newHEData[1])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2 ) // Swap x and y
+    .attr("width", x(newHEData[3]) - x(newHEData[1]))
+    .attr("height", height)
+    .attr("stroke", "#555")
+    .attr("fill", "#f7b285")
+    //.attr("fill-opacity", 0)
+    .attr("rx", 3)
+    .attr("ry", 3);
+
+    // Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([newHEData[0], newHEData[4]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll("toto")
+  .data([newHEData[2]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll(".whisker-label")
+  .data([newHEData[1], newHEData[3]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([newHEData[0], newHEData[2], newHEData[4]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+}
+
+
+
+  svg.append("line")
+  .attr("x1", x(baPercValue))
+  .attr("x2", x(baPercValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);  
+  }
+
+/////////////////////////////////
+//////// Boxplot Income//////////
+/////////////////////////////////
+
+
+function drawMIBoxPlot(svg, newMIData, medianIncValue) {
+        d3.select("#Boxplot_3").select("svg").remove();
+
+// Set the dimensions and margins of the graph
+var margin = { top: 10, right: 10, bottom: 10, left: 10 },
+  width = 300 - margin.left - margin.right,
+  height = 40 - margin.top - margin.bottom;
+
+// Append the SVG object to the body of the page
+var svg = d3.select("#Boxplot_3")
+  .append("svg")
+  .attr("width", width + margin.left + margin.right)
+  .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform",
+    "translate(" + margin.left + "," + margin.top + ")");
+
+//Create dummy data
+var data = [27306,36806,49375,67313,90296.8]
+
+// Compute summary statistics used for the box:
+var data_sorted = data.sort(d3.ascending)
+var q1 = d3.quantile(data_sorted, .25)
+var median = d3.quantile(data_sorted, .5)
+var q3 = d3.quantile(data_sorted, .75)
+var interQuantileRange = q3 - q1
+var min = q1 - 1.5 * interQuantileRange
+var max = q1 + 1.5 * interQuantileRange
+
+// Initial domain values
+var minDomain = 27306;
+var maxDomain = 90296.8;
+
+// Check if newMIData[4] is smaller than 90296.8
+if (newMIData[4] > maxDomain) {
+  maxDomain = newMIData[4];
+}
+
+// Check if newMIData[0] is bigger than 27306
+if (newMIData[0] < minDomain) {
+  minDomain = newMIData[0];
+}
+
+// Set up the scale with the updated domain
+var x = d3.scaleLinear()
+  .domain([minDomain, maxDomain])
+  .range([0, width]);
+
+var formatTicks = d3.format(".2s"); // Define the format function correctly
+
+var xAxis = d3.axisBottom(x)
+  .ticks(5)
+  .tickFormat(function (d) {
+    return formatTicks(d); // Use the correct format function
+  });
+
+//svg.call(xAxis);
+
+var center =  10 ; // Adjust as needed
+var height =  10  ; // Adjust as needed
+
+if (newMIData.length === 0 ){
+
+svg.append("line")
+  .attr("x1", x(data[0]))
+  .attr("x2", x(data[1]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("line")
+  .attr("x1", x(data[3]))
+  .attr("x2", x(data[4]))
+  .attr("y1", center) // Swap y1 and x1
+  .attr("y2", center) // Swap y2 and x2
+  .attr("stroke", "#555")
+  .attr("stroke-dasharray", "3,3");
+
+
+svg.append("rect")
+  .attr("x", x(d3.quantile(data, .25)))
+  .attr("y", center - height / 2 ) 
+  .attr("width", x(d3.quantile(data, .75)) - x(d3.quantile(data, .25)))
+  .attr("height", height ) // Swap width and height
+  .attr("stroke", "#555")
+  .style("fill", "#ffe1cc")
+  .attr("fill-opacity", 1)
+  .attr("rx", 3)
+  .attr("ry", 3);
+
+svg.selectAll("toto")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2 ) // Swap x1 and y1
+  .attr("y2", center + height / 2 ) // Swap x2 and y2
+  .attr("stroke", "#555");
+  }
+
+if (newMIData.length === 0){
+
+svg.selectAll(".whisker-label")
+  .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2 )
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([d3.min(data), d3.median(data), d3.max(data)])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+}
+
+if (newMIData.length > 0){
+// Show the main horizontal line (swap x and y)
+
+    
+       svg.append("line")
+      .attr("x1", x(newMIData[0]))
+      .attr("x2", x(newMIData[4]))
+      .attr("y1", center) // Swap y1 and x1
+      .attr("y2", center) // Swap y2 and x2
+      .attr("stroke", "#555")
+      .attr("stroke-dasharray", "3,3");    
+
+    svg.append("rect")
+    .attr("x", x(newMIData[1])) // Assuming newData[0] is the lower bound
+    .attr("y", center - height / 2 ) // Swap x and y
+    .attr("width", x(newMIData[3]) - x(newMIData[1]))
+    .attr("height", height)
+    .attr("stroke", "#555")
+    .attr("fill", "#f7b285")
+    //.attr("fill-opacity", 0)
+    .attr("rx", 3)
+    .attr("ry", 3);
+
+    // Show median, min, and max vertical lines (swap x and y)
+svg.selectAll("toto")
+  .data([newMIData[0], newMIData[4]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll("toto")
+  .data([newMIData[2]])
+  .enter()
+  .append("line")
+  .attr("x1", function (d) { return x(d); })
+  .attr("x2", function (d) { return x(d); })
+  .attr("y1", center - height / 2) // Swap x1 and y1
+  .attr("y2", center + height / 2) // Swap x2 and y2
+  .attr("stroke", "#555");
+
+  svg.selectAll(".whisker-label")
+  .data([newMIData[1], newMIData[3]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center - height / 2)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+svg.selectAll(".whisker-label_below")
+  .data([newMIData[0], newMIData[2], newMIData[4]])
+  .enter()
+  .append("text")
+  .attr("x", function(d) { return x(d); })
+  .attr("y", center + height * 2 + 3)
+  .text(function(d) { return formatTicks(d); }) // Display the value as text
+  .attr("font-family", "Lato")
+  .attr("fill", "#555") // Set the text color to black
+  .attr("text-anchor", "middle") // Center the text horizontally
+  .attr("font-size", "9px") // Adjust font size as needed
+  .attr("dy", "-0.7em"); // Fine-tune vertical position if required
+
+}
+
+  svg.append("line")
+  .attr("x1", x(medianIncValue))
+  .attr("x2", x(medianIncValue))
+  .attr("y1", center - height / 2)
+  .attr("y2", center + height / 2)
+  .attr("stroke", "red") // You can choose a color for the line
+  .style("stroke-width", 2);
+}
+
+///////////////////////////
+//////////fly to///////////
+///////////////////////////
+
+// Define the URL of your hosted CSV file
+const csvFileURL = 'https://gist.githubusercontent.com/acopod/35967e9183f6de7c9db49389aed36681/raw/5885128198a67c7d3000296230962f390c776a69/CBSA_latlong.csv';
+const CBSA_boxplot = 'https://gist.githubusercontent.com/acopod/e8a65ad8156e9caf05625107996bd501/raw/1cb5474175a851ef84a766e9e33ae6eaadaaf443/boxplot_summary_cbsa_national.csv';
+const CBSA_histogram = 'https://gist.githubusercontent.com/acopod/ad35eca551b3d3d86efe6ceb7553f94e/raw/a9f070cc22b285ad810230552e8179e3c56412ca/histogram_summary_cbsa_national.csv';
+let cityName; // Declare cityName variable in a broader scope
+let min_b;
+newTPData = [];
+newWHData = [];
+newBLData = [];
+newASData = [];
+newHIData = [];
+newOTData = [];
+newHEData = [];
+newMIData = [];
+wHhistoRanges = [];
+
+Papa.parse(csvFileURL, {
+  download: true,
+  complete: function (csvResults) {
+    const csvData = csvResults.data;
+
+    Papa.parse(CBSA_boxplot, {
+      download: true,
+      complete: function (boxplotResults) {
+        const boxplotData = boxplotResults.data;
+
+        Papa.parse(CBSA_histogram, {
+          download: true,
+          complete: function (histogramResults) {
+            const histogramData = histogramResults.data;
+
+            Papa.parse(national_histogram, {
+              download: true,
+              complete: function (nationalhistogramResults) {
+                const nationalhistorgramData = nationalhistogramResults.data;
+
+        // Add an event listener to the dropdown selection change
+        $('#cityDropdown1').dropdown({
+          onChange: function (value, text, $selectedItem) {
+            cityName = text; // Assign the value to the broader-scoped variable cityName
+                        // Process CSV data
+            const result = csvData.find((row) => row[3] === cityName);
+            $('#cityDropdown1').dropdown('hide');
+                            if (result) {
+                              const intptlat = parseFloat(result[10]);
+                              const intptlon = parseFloat(result[11]);
+
+                              // Fly to the selected location
+                              map.flyTo({
+                                center: [intptlon, intptlat],
+                                zoom: 10,
+                                essential: true,
+                              });
+
+                              console.log(`City '${cityName}'`);
+
+                            }
+
+            // Process boxplot data
+              const result_TPboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'total_pop');
+
+              if (result_TPboxplot) {
+              var min_b = parseFloat(result_TPboxplot[1]);
+              var q1_b = parseFloat(result_TPboxplot[2]);
+              var median_b = parseFloat(result_TPboxplot[3]);
+              var q3_b = parseFloat(result_TPboxplot[4]);
+              var max_b = parseFloat(result_TPboxplot[5]);
+              var newTPData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              console.log(newTPData)
+
+              drawTPBoxPlot(svg, newTPData, totolPopValue);
+            }
+
+              const result_WHboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'white_perc');
+
+              if (result_WHboxplot) {
+              var min_b = parseFloat(result_WHboxplot[1]);
+              var q1_b = parseFloat(result_WHboxplot[2]);
+              var median_b = parseFloat(result_WHboxplot[3]);
+              var q3_b = parseFloat(result_WHboxplot[4]);
+              var max_b = parseFloat(result_WHboxplot[5]);
+              var newWHData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawWHBoxPlot(svg, newWHData, WHPopValue);
+            }
+
+              const result_BLboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'black_perc');
+
+              if (result_BLboxplot) {
+              var min_b = parseFloat(result_BLboxplot[1]);
+              var q1_b = parseFloat(result_BLboxplot[2]);
+              var median_b = parseFloat(result_BLboxplot[3]);
+              var q3_b = parseFloat(result_BLboxplot[4]);
+              var max_b = parseFloat(result_BLboxplot[5]);
+              var newBLData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawBLBoxPlot(svg, newBLData, BLPopValue);
+            }
+
+              const result_ASboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'asian_perc');
+
+              if (result_ASboxplot) {
+              var min_b = parseFloat(result_ASboxplot[1]);
+              var q1_b = parseFloat(result_ASboxplot[2]);
+              var median_b = parseFloat(result_ASboxplot[3]);
+              var q3_b = parseFloat(result_ASboxplot[4]);
+              var max_b = parseFloat(result_ASboxplot[5]);
+              var newASData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawASBoxPlot(svg, newASData, ASPopValue);
+            }
+
+              const result_HIboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'hispanic_perc');
+
+              if (result_HIboxplot) {
+              var min_b = parseFloat(result_HIboxplot[1]);
+              var q1_b = parseFloat(result_HIboxplot[2]);
+              var median_b = parseFloat(result_HIboxplot[3]);
+              var q3_b = parseFloat(result_HIboxplot[4]);
+              var max_b = parseFloat(result_HIboxplot[5]);
+              var newHIData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawHIBoxPlot(svg, newHIData, HIPopValue);
+            }
+
+              const result_OTboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'other_perc');
+
+              if (result_OTboxplot) {
+              var min_b = parseFloat(result_OTboxplot[1]);
+              var q1_b = parseFloat(result_OTboxplot[2]);
+              var median_b = parseFloat(result_OTboxplot[3]);
+              var q3_b = parseFloat(result_OTboxplot[4]);
+              var max_b = parseFloat(result_OTboxplot[5]);
+              var newOTData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawOTBoxPlot(svg, newOTData, OTPopValue);
+            }
+
+              const result_HEboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'ba_higher_perc');
+
+              if (result_HEboxplot) {
+              var min_b = parseFloat(result_HEboxplot[1]);
+              var q1_b = parseFloat(result_HEboxplot[2]);
+              var median_b = parseFloat(result_HEboxplot[3]);
+              var q3_b = parseFloat(result_HEboxplot[4]);
+              var max_b = parseFloat(result_HEboxplot[5]);
+              var newHEData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawHEBoxPlot(svg, newHEData, baPercValue);
+            }
+
+              const result_MIboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'median_inc');
+
+              if (result_MIboxplot) {
+              var min_b = parseFloat(result_MIboxplot[1]);
+              var q1_b = parseFloat(result_MIboxplot[2]);
+              var median_b = parseFloat(result_MIboxplot[3]);
+              var q3_b = parseFloat(result_MIboxplot[4]);
+              var max_b = parseFloat(result_MIboxplot[5]);
+              var newMIData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawMIBoxPlot(svg, newMIData, medianIncValue);
+            }
+
+              console.log(`'${q1_b}'`);
+
+             // Pass newData to a callback function
+              updateNewTPData(newTPData);
+              updateNewWHData(newWHData);
+              updateNewBLData(newBLData);
+              updateNewASData(newASData);
+              updateNewHIData(newHIData);
+              updateNewOTData(newOTData);
+              updateNewHEData(newHEData);              
+              updateNewMIData(newMIData);
+
+
+    $('#censusDropdown1').dropdown({
+      onChange: function (value, text, $selectedItem) {
+        var selectedcensus = text;
+        var selectedtext_translated = catDict1[selectedcensus];
+
+        var currentZoom = map.getZoom();
+        var zoomThreshold = 10;
+
+                const result_WHhistogram = histogramData.find((row) => row[1] === cityName && row[3] === selectedtext_translated);
+                const result_hitogram = nationalhistorgramData.find((row) => row[0] === selectedtext_translated);
+
+                if (currentZoom >= zoomThreshold) {
+                      var CBSAbin_0 = parseFloat(result_WHhistogram[4]);
+                      var CBSAbin_1 = parseFloat(result_WHhistogram[5]);
+                      var CBSAbin_2 = parseFloat(result_WHhistogram[6]);
+                      var CBSAbin_3 = parseFloat(result_WHhistogram[7]);
+                      var CBSAbin_4 = parseFloat(result_WHhistogram[8]);
+                      var CBSAbin_5 = parseFloat(result_WHhistogram[9]);
+                      var CBSAbin_6 = parseFloat(result_WHhistogram[10]);
+                      var CBSAbin_7 = parseFloat(result_WHhistogram[11]);
+                      var CBSAbin_8 = parseFloat(result_WHhistogram[12]);
+                      var CBSAbin_0_perc = parseFloat(result_WHhistogram[13] * 100);
+                      var CBSAbin_1_perc = parseFloat(result_WHhistogram[14] * 100);
+                      var CBSAbin_2_perc = parseFloat(result_WHhistogram[15] * 100);
+                      var CBSAbin_3_perc = parseFloat(result_WHhistogram[16] * 100);
+                      var CBSAbin_4_perc = parseFloat(result_WHhistogram[17] * 100);
+                      var CBSAbin_5_perc = parseFloat(result_WHhistogram[18] * 100);
+                      var CBSAbin_6_perc = parseFloat(result_WHhistogram[19] * 100);
+                      var CBSAbin_7_perc = parseFloat(result_WHhistogram[20] * 100);
+                    
+                      var newMIData = [min_b, q1_b, median_b, q3_b, max_b]
+
+                      var CBSAbinRanges = [
+                           {bin: CBSAbin_0, value: CBSAbin_0_perc},
+                           {bin: CBSAbin_1, value: CBSAbin_1_perc},
+                           {bin: CBSAbin_2, value: CBSAbin_2_perc},
+                           {bin: CBSAbin_3, value: CBSAbin_3_perc},
+                           {bin: CBSAbin_4, value: CBSAbin_4_perc},
+                           {bin: CBSAbin_5, value: CBSAbin_5_perc},
+                           {bin: CBSAbin_6, value: CBSAbin_6_perc},
+                           {bin: CBSAbin_7, value: CBSAbin_7_perc},
+                           {bin: CBSAbin_8, value: 0},]
+
+                      drawHistogram(CBSAbinRanges);
+                };
+
+            if (currentZoom < zoomThreshold) {
+      var bin_0 = parseFloat(result_hitogram[1]);
+      var bin_1 = parseFloat(result_hitogram[2]);
+      var bin_2 = parseFloat(result_hitogram[3]);
+      var bin_3 = parseFloat(result_hitogram[4]);
+      var bin_4 = parseFloat(result_hitogram[5]);
+      var bin_5 = parseFloat(result_hitogram[6]);
+      var bin_6 = parseFloat(result_hitogram[7]);
+      var bin_7 = parseFloat(result_hitogram[8]);
+      var bin_8 = parseFloat(result_hitogram[9]);
+      var bin_0_perc = parseFloat(result_hitogram[10] * 100);
+      var bin_1_perc = parseFloat(result_hitogram[11] * 100);
+      var bin_2_perc = parseFloat(result_hitogram[12] * 100);
+      var bin_3_perc = parseFloat(result_hitogram[13] * 100);
+      var bin_4_perc = parseFloat(result_hitogram[14] * 100);
+      var bin_5_perc = parseFloat(result_hitogram[15] * 100);
+      var bin_6_perc = parseFloat(result_hitogram[16] * 100);
+      var bin_7_perc = parseFloat(result_hitogram[17] * 100);
+
+
+var binRanges = [
+   {bin: bin_0, value: bin_0_perc},
+   {bin: bin_1, value: bin_1_perc},
+   {bin: bin_2, value: bin_2_perc},
+   {bin: bin_3, value: bin_3_perc},
+   {bin: bin_4, value: bin_4_perc},
+   {bin: bin_5, value: bin_5_perc},
+   {bin: bin_6, value: bin_6_perc},
+   {bin: bin_7, value: bin_7_perc},
+   {bin: bin_8, value: 0},
+
+];
+      drawHistogram(binRanges);}
+
+               updatewHhistoRanges(wHhistoRanges);
+               console.log(wHhistoRanges);
+          
+          $('#cityDropdown1').dropdown({
+          onChange: function (value, text, $selectedItem) {
+            cityName = text; // Assign the value to the broader-scoped variable cityName
+                        // Process CSV data
+            const result = csvData.find((row) => row[3] === cityName);
+            $('#cityDropdown1').dropdown('hide');
+                            if (result) {
+                              const intptlat = parseFloat(result[10]);
+                              const intptlon = parseFloat(result[11]);
+
+                              // Fly to the selected location
+                              map.flyTo({
+                                center: [intptlon, intptlat],
+                                zoom: 10,
+                                essential: true,
+                              });
+
+                              console.log(`City '${cityName}'`);
+
+                            };
+                                          const result_TPboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'total_pop');
+
+              if (result_TPboxplot) {
+              var min_b = parseFloat(result_TPboxplot[1]);
+              var q1_b = parseFloat(result_TPboxplot[2]);
+              var median_b = parseFloat(result_TPboxplot[3]);
+              var q3_b = parseFloat(result_TPboxplot[4]);
+              var max_b = parseFloat(result_TPboxplot[5]);
+              var newTPData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawTPBoxPlot(svg, newTPData, totolPopValue);
+            }
+
+              const result_WHboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'white_perc');
+
+              if (result_WHboxplot) {
+              var min_b = parseFloat(result_WHboxplot[1]);
+              var q1_b = parseFloat(result_WHboxplot[2]);
+              var median_b = parseFloat(result_WHboxplot[3]);
+              var q3_b = parseFloat(result_WHboxplot[4]);
+              var max_b = parseFloat(result_WHboxplot[5]);
+              var newWHData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawWHBoxPlot(svg, newWHData, WHPopValue);
+            }
+
+              const result_BLboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'black_perc');
+
+              if (result_BLboxplot) {
+              var min_b = parseFloat(result_BLboxplot[1]);
+              var q1_b = parseFloat(result_BLboxplot[2]);
+              var median_b = parseFloat(result_BLboxplot[3]);
+              var q3_b = parseFloat(result_BLboxplot[4]);
+              var max_b = parseFloat(result_BLboxplot[5]);
+              var newBLData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawBLBoxPlot(svg, newBLData, BLPopValue);
+            }
+
+              const result_ASboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'asian_perc');
+
+              if (result_ASboxplot) {
+              var min_b = parseFloat(result_ASboxplot[1]);
+              var q1_b = parseFloat(result_ASboxplot[2]);
+              var median_b = parseFloat(result_ASboxplot[3]);
+              var q3_b = parseFloat(result_ASboxplot[4]);
+              var max_b = parseFloat(result_ASboxplot[5]);
+              var newASData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawASBoxPlot(svg, newASData, ASPopValue);
+            }
+
+              const result_HIboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'hispanic_perc');
+
+              if (result_HIboxplot) {
+              var min_b = parseFloat(result_HIboxplot[1]);
+              var q1_b = parseFloat(result_HIboxplot[2]);
+              var median_b = parseFloat(result_HIboxplot[3]);
+              var q3_b = parseFloat(result_HIboxplot[4]);
+              var max_b = parseFloat(result_HIboxplot[5]);
+              var newHIData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawHIBoxPlot(svg, newHIData, HIPopValue);
+            }
+
+              const result_OTboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'other_perc');
+
+              if (result_OTboxplot) {
+              var min_b = parseFloat(result_OTboxplot[1]);
+              var q1_b = parseFloat(result_OTboxplot[2]);
+              var median_b = parseFloat(result_OTboxplot[3]);
+              var q3_b = parseFloat(result_OTboxplot[4]);
+              var max_b = parseFloat(result_OTboxplot[5]);
+              var newOTData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawOTBoxPlot(svg, newOTData, OTPopValue);
+            }
+
+              const result_HEboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'ba_higher_perc');
+
+              if (result_HEboxplot) {
+              var min_b = parseFloat(result_HEboxplot[1]);
+              var q1_b = parseFloat(result_HEboxplot[2]);
+              var median_b = parseFloat(result_HEboxplot[3]);
+              var q3_b = parseFloat(result_HEboxplot[4]);
+              var max_b = parseFloat(result_HEboxplot[5]);
+              var newHEData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawHEBoxPlot(svg, newHEData, baPercValue);
+            }
+
+              const result_MIboxplot = boxplotData.find((row) => row[7] === cityName && row[0] === 'median_inc');
+
+              if (result_MIboxplot) {
+              var min_b = parseFloat(result_MIboxplot[1]);
+              var q1_b = parseFloat(result_MIboxplot[2]);
+              var median_b = parseFloat(result_MIboxplot[3]);
+              var q3_b = parseFloat(result_MIboxplot[4]);
+              var max_b = parseFloat(result_MIboxplot[5]);
+              var newMIData = [min_b, q1_b, median_b, q3_b, max_b]
+
+              drawMIBoxPlot(svg, newMIData, medianIncValue);
+            }
+
+              console.log(`'${q1_b}'`);
+
+             // Pass newData to a callback function
+              updateNewTPData(newTPData);
+              updateNewWHData(newWHData);
+              updateNewBLData(newBLData);
+              updateNewASData(newASData);
+              updateNewHIData(newHIData);
+              updateNewOTData(newOTData);
+              updateNewHEData(newHEData);              
+              updateNewMIData(newMIData);
+
+                        const result_WHhistogram = histogramData.find((row) => row[1] === cityName && row[3] === selectedtext_translated);
+
+                if (result_WHhistogram) {
+                      var CBSAbin_0 = parseFloat(result_WHhistogram[4]);
+                      var CBSAbin_1 = parseFloat(result_WHhistogram[5]);
+                      var CBSAbin_2 = parseFloat(result_WHhistogram[6]);
+                      var CBSAbin_3 = parseFloat(result_WHhistogram[7]);
+                      var CBSAbin_4 = parseFloat(result_WHhistogram[8]);
+                      var CBSAbin_5 = parseFloat(result_WHhistogram[9]);
+                      var CBSAbin_6 = parseFloat(result_WHhistogram[10]);
+                      var CBSAbin_7 = parseFloat(result_WHhistogram[11]);
+                      var CBSAbin_8 = parseFloat(result_WHhistogram[12]);
+                      var CBSAbin_0_perc = parseFloat(result_WHhistogram[13] * 100);
+                      var CBSAbin_1_perc = parseFloat(result_WHhistogram[14] * 100);
+                      var CBSAbin_2_perc = parseFloat(result_WHhistogram[15] * 100);
+                      var CBSAbin_3_perc = parseFloat(result_WHhistogram[16] * 100);
+                      var CBSAbin_4_perc = parseFloat(result_WHhistogram[17] * 100);
+                      var CBSAbin_5_perc = parseFloat(result_WHhistogram[18] * 100);
+                      var CBSAbin_6_perc = parseFloat(result_WHhistogram[19] * 100);
+                      var CBSAbin_7_perc = parseFloat(result_WHhistogram[20] * 100);
+
+                      var CBSAbinRanges = [
+                           {bin: CBSAbin_0, value: CBSAbin_0_perc},
+                           {bin: CBSAbin_1, value: CBSAbin_1_perc},
+                           {bin: CBSAbin_2, value: CBSAbin_2_perc},
+                           {bin: CBSAbin_3, value: CBSAbin_3_perc},
+                           {bin: CBSAbin_4, value: CBSAbin_4_perc},
+                           {bin: CBSAbin_5, value: CBSAbin_5_perc},
+                           {bin: CBSAbin_6, value: CBSAbin_6_perc},
+                           {bin: CBSAbin_7, value: CBSAbin_7_perc},
+                           {bin: CBSAbin_8, value: 0},]
+
+                            console.log(CBSAbinRanges);
+
+                      drawHistogram(CBSAbinRanges);};
+                        }
+});
+
+},
+        });
+
+
+               console.log(`'${CBSAbin_3}'`);
+               console.log(`'${bin_7_perc}'`);
+
+
+
+          },
+        });
+      },
+
+    });
+ },
+
+     });
+ },
+        });
+  },
+});
+
+
+// Callback function to receive and handle newData
+function updateNewTPData(updatedData) {
+  newTPData = updatedData;
+}
+function updateNewWHData(updatedData) {
+  newWHData = updatedData;
+}
+function updateNewBLData(updatedData) {
+  newBLData = updatedData;
+}
+function updateNewASData(updatedData) {
+  newASData = updatedData;
+}
+function updateNewHIData(updatedData) {
+  newHIData = updatedData;
+}
+function updateNewOTData(updatedData) {
+  newOTData = updatedData;
+}
+function updateNewHEData(updatedData) {
+  newHEData = updatedData;
+}
+function updateNewMIData(updatedData) {
+  newMIData = updatedData;
+}
+function updatewHhistoRanges(updatedData) {
+  wHhistoRanges = updatedData;
+}
+
+
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+//////////////////////////////////////////////
+
+
+
+
+
 const national_histogram = 'https://gist.githubusercontent.com/acopod/32a8afe3dddb034f477ecce19961f4c7/raw/54fca9757905899fd4882384a72ab503f555f7c5/histogram_summary_national.csv';
+
+
+
 
 Papa.parse(national_histogram, {
   download: true,
@@ -1372,110 +3106,242 @@ Papa.parse(national_histogram, {
 
     // Add an event listener to the dropdown selection change
     $('#censusDropdown1').dropdown({
-      onChange: function (value, text, $selectedItem) {
-        var selectedcensus = text;
-        var selectedtext_translated = catDict1[selectedcensus];
-        const result_hitogram = historgramData.find((row) => row[0] === selectedtext_translated);
+          onChange: function (value, text, $selectedItem) {
+            var selectedcensus = text;
+            var selectedtext_translated = catDict1[selectedcensus];
+            const result_hitogram = historgramData.find((row) => row[0] === selectedtext_translated);
 
-        if (result_hitogram) {
-  var bin_0 = parseFloat(result_hitogram[1]);
-  var bin_1 = parseFloat(result_hitogram[2]);
-  var bin_2 = parseFloat(result_hitogram[3]);
-  var bin_3 = parseFloat(result_hitogram[4]);
-  var bin_4 = parseFloat(result_hitogram[5]);
-  var bin_5 = parseFloat(result_hitogram[6]);
-  var bin_6 = parseFloat(result_hitogram[7]);
-  var bin_7 = parseFloat(result_hitogram[8]);
-  var bin_8 = parseFloat(result_hitogram[9]);
-  var bin_0_perc = parseFloat(result_hitogram[11] * 100);
-  var bin_1_perc = parseFloat(result_hitogram[12] * 100);
-  var bin_2_perc = parseFloat(result_hitogram[13] * 100);
-  var bin_3_perc = parseFloat(result_hitogram[14] * 100);
-  var bin_4_perc = parseFloat(result_hitogram[15] * 100);
-  var bin_5_perc = parseFloat(result_hitogram[16] * 100);
-  var bin_6_perc = parseFloat(result_hitogram[17] * 100);
-  var bin_7_perc = parseFloat(result_hitogram[18] * 100);
+            if (result_hitogram) {
+      var bin_0 = parseFloat(result_hitogram[1]);
+      var bin_1 = parseFloat(result_hitogram[2]);
+      var bin_2 = parseFloat(result_hitogram[3]);
+      var bin_3 = parseFloat(result_hitogram[4]);
+      var bin_4 = parseFloat(result_hitogram[5]);
+      var bin_5 = parseFloat(result_hitogram[6]);
+      var bin_6 = parseFloat(result_hitogram[7]);
+      var bin_7 = parseFloat(result_hitogram[8]);
+      var bin_8 = parseFloat(result_hitogram[9]);
+      var bin_0_perc = parseFloat(result_hitogram[10] * 100);
+      var bin_1_perc = parseFloat(result_hitogram[11] * 100);
+      var bin_2_perc = parseFloat(result_hitogram[12] * 100);
+      var bin_3_perc = parseFloat(result_hitogram[13] * 100);
+      var bin_4_perc = parseFloat(result_hitogram[14] * 100);
+      var bin_5_perc = parseFloat(result_hitogram[15] * 100);
+      var bin_6_perc = parseFloat(result_hitogram[16] * 100);
+      var bin_7_perc = parseFloat(result_hitogram[17] * 100);
 
 
+var binRanges = [
+   {bin: bin_0, value: bin_0_perc},
+   {bin: bin_1, value: bin_1_perc},
+   {bin: bin_2, value: bin_2_perc},
+   {bin: bin_3, value: bin_3_perc},
+   {bin: bin_4, value: bin_4_perc},
+   {bin: bin_5, value: bin_5_perc},
+   {bin: bin_6, value: bin_6_perc},
+   {bin: bin_7, value: bin_7_perc},
+   {bin: bin_8, value: 0},
 
-  drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc);
-}
- console.log(`'${bin_0}'`);
+];
+      drawHistogram(binRanges);
+
+    }
+
+    updatebin_0(bin_0);
+    updatebin_1(bin_1);
+    updatebin_2(bin_2);
+    updatebin_3(bin_3);
+    updatebin_4(bin_4);
+    updatebin_5(bin_5);
+    updatebin_6(bin_6);
+    updatebin_7(bin_7);
+    updatebin_8(bin_8);
+    updatebin_0_perc(bin_0_perc);
+    updatebin_1_perc(bin_1_perc);
+    updatebin_2_perc(bin_2_perc);
+    updatebin_3_perc(bin_3_perc);
+    updatebin_4_perc(bin_4_perc);
+    updatebin_5_perc(bin_5_perc);
+    updatebin_6_perc(bin_6_perc);
+    updatebin_7_perc(bin_7_perc);
+
+ console.log(`'${bin_0_perc}'`);
           },
         });
       },
     });
 
 
-function drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc){
-// Set the dimensions and margins of the graph for the histogram
-        var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
-            histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
-            histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
+function updatebin_0(updatedData) {
+  bin_0 = updatedData;
+}
+function updatebin_1(updatedData) {
+  bin_1 = updatedData;
+}
+function updatebin_2(updatedData) {
+  bin_2 = updatedData;
+}
+function updatebin_3(updatedData) {
+  bin_3 = updatedData;
+}
+function updatebin_4(updatedData) {
+  bin_4 = updatedData;
+}
+function updatebin_5(updatedData) {
+  bin_5 = updatedData;
+}
+function updatebin_6(updatedData) {
+  bin_6 = updatedData;
+}
+function updatebin_7(updatedData) {
+  bin_7 = updatedData;
+}
+function updatebin_8(updatedData) {
+  bin_8 = updatedData;
+}
+function updatebin_0_perc(updatedData) {
+  bin_0_perc = updatedData;
+}
+function updatebin_1_perc(updatedData) {
+  bin_1_perc = updatedData;
+}
 
-        // Append the SVG object to the body of the page for the histogram
-        var histogramSvg = d3.select("#my_histogram")
-          .append("svg")
-            .attr("width", histogramWidth + histogramMargin.left + histogramMargin.right)
-            .attr("height", histogramHeight + histogramMargin.top + histogramMargin.bottom)
-          .append("g")
-            .attr("transform",
-                  "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
+function updatebin_2_perc(updatedData) {
+  bin_2_perc = updatedData;
+}
+
+function updatebin_3_perc(updatedData) {
+  bin_3_perc = updatedData;
+}
+
+function updatebin_4_perc(updatedData) {
+  bin_4_perc = updatedData;
+}
+
+function updatebin_5_perc(updatedData) {
+  bin_5_perc = updatedData;
+}
+
+function updatebin_6_perc(updatedData) {
+  bin_6_perc = updatedData;
+}
+
+function updatebin_7_perc(updatedData) {
+  bin_7_perc = updatedData;
+}
+
+var ABC = [
+   {bin: 1, value: 2},
+   {bin: 2, value: 3},
+   {bin: 3, value: 4},
+   {bin: 4, value: 1},
+   {bin: 5, value: 5},
+   {bin: 6, value: 3},
+   {bin: 8, value: 3},
+   {bin: 9, value: 4},
+   {bin: 10, value: 0},
+]
+
+var initialRanges = [
+   {bin: 0
+, value: 1.28005
+},
+   {bin: 0.1
+, value: 11.5937504
+},
+   {bin: 0.2
+, value: 13.4303438
+},
+   {bin: 0.3
+, value: 16.7913234
+},
+   {bin: 0.4
+, value: 22.2888868
+},
+   {bin: 0.5
+, value: 22.029619
+},
+   {bin: 0.6
+, value: 10.2403996
+},
+   {bin: 0.7
+, value: 0.7194342
+},
+   {bin: 0.8
+, value: 0},
+
+];
+
+drawHistogram(initialRanges);
 
 
-        // Your data
-        // Define custom bin ranges and corresponding heights as percentages
-        var binRanges = [
-          [bin_0, 0.003719339, bin_0_perc],
-          [bin_1, 0.052152194, bin_1_perc],
-          [bin_2, 0.108444529, bin_2_perc],
-          [bin_3, 0.116602642, bin_3_perc],
-          [bin_4, 0.135878049, bin_4_perc],
-          [bin_5, 0.176329257, bin_5_perc],
-          [bin_6, 0.257421711, bin_6_perc],
-          [bin_7, 0.133190351, bin_7_perc],
-          [bin_8, 0, 0],
-        ];
+function drawHistogram(data, div_score_exp) {
+    // Set the dimensions and margins of the graph for the histogram
+    var maxPercentage = d3.max(data, function(d) { return d.value });
+    var minPercentage = d3.min(data, function(d) { return d.value });
 
-        // Calculate the total percentage
-        var totalPercentage = binRanges.reduce((sum, range) => sum + range[2], 0);
-        var maxPercentage = d3.max(binRanges, range => range[2]);
+    var tickvalue = d3.ticks(minPercentage, maxPercentage, 8);
 
-        // X axis: scale and draw:
-        var x = d3.scaleLinear()
-          .domain([0, 0.25])
-          .range([0, histogramWidth]);
+    // Update the X axis
+    x.domain([d3.min(data, function(d) { return d.bin }), d3.max(data, function(d) { return d.bin })])
+    xAxis.transition().duration(1000)
+        .call(d3.axisBottom(x).tickFormat(d3.format(".2f")).tickValues(data.map(range => range.bin)))
 
-        var xAxis = d3.axisBottom(x)
-          .tickValues(binRanges.map(range => range[0]))
-          .tickFormat(d3.format(".3f")); // Set the desired precision
+    var binWidths = [];
+    for (var i = 0; i < data.length - 1; i++) {
+        binWidths.push(data[i + 1].bin - data[i].bin);
+    }
 
-        histogramSvg.append("g")
-          .attr("transform", "translate(0," + histogramHeight + ")")
-          .call(xAxis);
-
-        // Y axis: scale and draw
-        var y = d3.scaleLinear()
-          .range([histogramHeight, 0]) // Adjust the range to start from the bottom
-          .domain([0, maxPercentage]);
-
-        histogramSvg.append("g")
-          .call(d3.axisLeft(y).tickFormat(d => d + "%").ticks(maxPercentage / 5)); // Set tick intervals
-
-        // Append the bar rectangles to the svg element
-        histogramSvg.selectAll("rect")
-          .data(binRanges)
-          .enter()
-          .append("rect")
-          .attr("x", range => x(range[0]))
-          .attr("width", x(binRanges[1][0]) - x(binRanges[0][0]) - 1)
-          .attr("y", range => histogramHeight - (range[2] / maxPercentage) * histogramHeight)
-          .attr("height", range => (range[2] / maxPercentage) * histogramHeight)
-          .style("fill", "#A5DEE4");
+    // Update the Y axis
+    y.domain([0, d3.max(data, function(d) { return d.value })]);
+    yAxis.transition().duration(1000).call(d3.axisLeft(y).tickFormat(d => d + "%").tickValues(tickvalue));
 
 
+    // Create the u variable
+    var NationalHis = histogramSvg.selectAll("rect")
+        .data(data)
 
+    var currentZoom = map.getZoom();
+    var zoomThreshold = 10;
+
+    //console.log(currentZoom);
+
+    NationalHis
+        .enter()
+        .append("rect")
+        .merge(NationalHis)
+        .transition()
+        .duration(1000)
+        .attr("x", function(d) { return x(d.bin); })
+        .attr("y", function(d) { return y(d.value); })
+        .attr("width", 27)
+        .attr("height", function(d) { return histogramHeight - y(d.value); })
+        .attr("fill", function(d) {
+            if (zoomThreshold > currentZoom) {
+                if (d.bin <= div_score_exp && d.bin +  binWidths[0]  >= div_score_exp) {
+            return "#FF474C"; // Highlight color
+        } else {
+            return "#ffe1cc"; // Default color
         }
+            }
+
+
+             else {
+                if (zoomThreshold <= currentZoom) {
+                if (d.bin <= div_score_exp && d.bin +  binWidths[0]  >= div_score_exp) {
+            return "#FF474C"; // Highlight color
+        } else {
+            return "#f7b285"; // Default color
+        }
+            }
+        }
+    })
+        .attr("fill-opacity", "1")
+        .attr("stroke", "#555")
+        .attr("rx", 5)
+        .attr("ry", 5)
+
+};
             ///// Change the opacity back
             map.on('mouseleave',layer, event => {
                 
@@ -1497,7 +3363,6 @@ function drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin
 
  
 }
-
 
 
 //       });
@@ -1548,30 +3413,35 @@ $.each(censusList1, function(k,v) {
 
 updateLegend('total_diversity_exp');
 
+
+/////////////////////////////////
+// initialize city dropdown /////
+/////////////////////////////////
+
+
+var $cityDropdown = $("#cityDropdown");
+$('#cityDropdown1').dropdown();
+
+$cityDropdown.empty();
+$.each(cities, function () {
+$cityDropdown.append($('<div class="item" data-value="' + this + '">' + this + '</div>'));});
+
+
 /////////////////////////////////
 ///////////// Add map ///////////
 /////////////////////////////////
 
-p_tract.getHeader().then(h => {
-    const map = new maplibregl.Map({
-        container: 'map',
-        attributionControl: false,
-        zoom: baseZoom,
-        // center: [h.centerLon, h.centerLat],
-        minZoom:4,
-        // zoom: 11,
-        center: [-97.54593, 38.99387],
-        style:'https://api.maptiler.com/maps/5f5a5e3a-bf8e-4515-b05b-423feccaabbd/style.json?key=is6mQIv8IXor3VbmKwq8',
-        // style: 'https://api.maptiler.com/maps/dataviz/style.json?key=is6mQIv8IXor3VbmKwq8',
-        // style:"https://tiles.stadiamaps.com/styles/alidade_smooth.json"
 
-       
-    });
+
+
+
 
     let hoveredStateId = null;
 
 
-    map.on('load',function(){
+
+
+function loadLayers(map) {
 
         const layers = map.getStyle().layers;
 
@@ -1608,15 +3478,40 @@ p_tract.getHeader().then(h => {
         });
 
 
+        map.addSource('tract_afternoon',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_tract_afternoon,
+        });
+
+        map.addSource('county_intervals',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_county_intervals,
+        });
+
+
+
         map.addLayer({
                 "id":"tracts",
                 "source": "seg_10_13",
                 "source-layer":"segregation_allfgb",
                 "type": "fill",
+                 'layout': {
+                // Make the layer visible by default.
+                'visibility': 'visible'
+                  },
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#440154'],
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        /*stops: [[0, '#440154'],
                                 [0.071, '#440154'],
                                 [0.19, '#46327f'],
                                 [.282, '#365c8d'],
@@ -1624,10 +3519,11 @@ p_tract.getHeader().then(h => {
                                 [0.449, '#1fa288'],
                                 [.524, '#4ac26d'],
                                 [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
+                                [0.8, '#fde725']],*/
                     default: 'gray',
-                         },
 
+                         },
+                    'fill-opacity': 1,        
                 //     'fill-opacity': [
                 //     'interpolate',
 
@@ -1651,27 +3547,102 @@ p_tract.getHeader().then(h => {
                     
                 }
             },firstLineId);
+
+
+                map.addLayer({
+                "id":"tract_11_14",
+                "source": "tract_afternoon",
+                "source-layer":"segregation_all_intervals",
+                "type": "fill",
+                 'layout': {
+                // Make the layer visible by default.
+                'visibility': 'none'
+                  },
+                "paint": {
+                    "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                                  },
+                                 'fill-opacity': 1, 
+                         }
+                 },firstLineId);
+
+
+
+
+// Get reference to the buttons
+const buttons = document.querySelectorAll('.ui.button');
+
+// Function to toggle layer visibility
+function toggleLayers(layerIds) {
+    const layers = ['tracts', 'tract_11_14', 'counties', 'counties_intervals_layer'];
+
+    layers.forEach(layer => {
+        if (layerIds.includes(layer)) {
+            map.setLayoutProperty(layer, 'visibility', 'visible');
+        } else {
+            map.setLayoutProperty(layer, 'visibility', 'none');
+        }
+    });
+}
+
+// Add click event listeners to the buttons
+buttons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+        if (index === 4) { // First button clicked
+            toggleLayers(['tracts', 'counties']);
+        } else if (index === 5) { // Second button clicked
+            toggleLayers(['tract_11_14', 'counties_intervals_layer']);
+        }
+    });
+});
+
+
+// Get a reference to the slider element
+const slider = document.getElementById('slider-1');
+
+// Add an input event listener to the slider
+slider.addEventListener('input', function() {
+  // Get the slider value
+  const opacityValue = parseFloat(this.value);
+
+  // Update the fill-opacity of the layers
+  map.setPaintProperty('tracts', 'fill-opacity', opacityValue);
+});
+
         map.addLayer({
                     "id":"counties",
                     "source": "seg_2_11",
                     "source-layer":"segregation_all_countiesfgb",
                     "type": "fill",
+                    'layout': {
+                    'visibility': 'visible'
+                      },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
                     "paint": {
                         "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
                         default: 'gray',
                         },
-
+                        'fill-opacity': 1,
 
 
                         // 'fill-opacity': [
@@ -1695,6 +3666,8 @@ p_tract.getHeader().then(h => {
                         },
                         },*/
         },firstLineId);
+
+
 
          /*map.addLayer({
                     "id":"missing_data_outline",
@@ -1738,6 +3711,36 @@ p_tract.getHeader().then(h => {
                                 default: 1,}
                                 },
         });*/
+
+
+        map.addLayer({
+                    "id":"counties_intervals_layer",
+                    "source": "county_intervals",
+                    "source-layer":"segregation_all_counties_intervals",
+                    "filter": ["all", ["==", "interval", "morning"], ["==", "dow", 6]],
+                    "type": "fill",
+                    'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,
+        },firstLineId});
+
+
 
 
         map.addLayer({
@@ -1791,6 +3794,8 @@ p_tract.getHeader().then(h => {
                                 },
 
         },firstLineId);
+
+
     
         // Change paint on metric change
         
@@ -1805,11 +3810,33 @@ p_tract.getHeader().then(h => {
             map.setPaintProperty(                
             'counties', 'fill-color', choroplethColors[metric]
             );
+                        map.setPaintProperty(                
+            'counties_intervals_layer', 'fill-color', choroplethColors[metric]
+            );
             map.setPaintProperty(                
             'tracts', 'fill-color', choroplethColors[metric]
             );
+            map.setPaintProperty(                
+            'tract_11_14', 'fill-color', choroplethColors[metric]
+            );
 
-            })
+
+            });
+
+
+        $('.ui.slider').slider({
+    min: 0,
+    max: 1,
+    start: 1,
+    step: 0,
+    onChange: function(value) {
+        // Set the fill opacity of the layers based on the slider value
+        map.setPaintProperty('counties', 'fill-opacity', value);
+        map.setPaintProperty('tracts', 'fill-opacity', value);
+        map.setPaintProperty('tract_11_14', 'fill-opacity', value);
+    }
+});
+
 
 /////////////////////////////////
 ///////////// popup ///////////
@@ -1845,14 +3872,40 @@ p_tract.getHeader().then(h => {
 
         createPopUp(popup,'counties',map,hoveredStateId);
         createPopUp(popup,'tracts',map,hoveredStateId);
+        createPopUp(popup,'tract_11_14',map,hoveredStateId);
+        createPopUp(popup,'counties_intervals_layer',map,hoveredStateId);
+    };
 
 
+p_tract.getHeader().then(h => {
+    const map = new maplibregl.Map({
+        container: 'map',
+        attributionControl: false,
+        zoom: baseZoom,
+        minZoom: 4,
+        center: [-97.54593, 38.99387],
+        style: 'https://api.maptiler.com/maps/5f5a5e3a-bf8e-4515-b05b-423feccaabbd/style.json?key=is6mQIv8IXor3VbmKwq8',
+    });
 
 
+    map.on('load', function() {
+        loadLayers(map);
+    });
 
-    })
 
-   
+document.getElementById('mapStyle1').addEventListener('click', function() {
+    map.setStyle('https://api.maptiler.com/maps/5ecd6622-96da-4bfa-b7e4-89e5e700f7a0/style.json?key=HNi5BjBnVWZQP32PQRdv');
+        map.on('load', function() {
+        loadLayers(map);
+    });
+});
+
+document.getElementById('mapStyle2').addEventListener('click', function() {
+    map.setStyle('https://api.maptiler.com/maps/5f5a5e3a-bf8e-4515-b05b-423feccaabbd/style.json?key=is6mQIv8IXor3VbmKwq8');
+        loadLayers(map);
+});
+
+        
     map.addControl(new maplibregl.NavigationControl(), 'bottom-left');
     map.addControl(new maplibregl.AttributionControl(), 'bottom-right')
 
@@ -1898,168 +3951,9 @@ p_tract.getHeader().then(h => {
             isSidePanelOpen = !isSidePanelOpen;
         };
 
-
 /////////////////////////////////
-//////// initial parameters /////
+///////////// Intro /////////////
 /////////////////////////////////
-
-/// Definite the initial category parameters
-var city='Ithaca, NY';
-
-
-
-/////////////////////////////////
-// initialize city dropdown /////
-/////////////////////////////////
-
-
-var $cityDropdown = $("#cityDropdown");
-$('#cityDropdown1   ').dropdown();
-
-$cityDropdown.empty();
-$.each(cities, function () {
-$cityDropdown.append($('<div class="item" data-value="' + this + '">' + this + '</div>'));});
-
-/////////////////////////////////
-////// collapsible-content //////
-/////////////////////////////////
-
-var coll = document.getElementsByClassName("collapsible");
-var i;
-
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.display === "block") {
-      content.style.display = "none";
-    } else {
-      content.style.display = "block";
-    }
-  });
-};
-
-
-/////////////////////////////////
-///////////// Histogram ///////////
-/////////////////////////////////
-
-const national_histogram = 'https://gist.githubusercontent.com/acopod/32a8afe3dddb034f477ecce19961f4c7/raw/54fca9757905899fd4882384a72ab503f555f7c5/histogram_summary_national.csv';
-
-Papa.parse(national_histogram, {
-  download: true,
-  complete: function (histogramResults) {
-    const historgramData = histogramResults.data;
-
-    //var selectedcensus = $('#censusDropdown1').find('.text').text();
-    //var selectedtext_translated = catDict1[selectedcensus];
-
-    // Add an event listener to the dropdown selection change
-    $('#censusDropdown1').dropdown({
-      onChange: function (value, text, $selectedItem) {
-        var selectedcensus = text;
-        var selectedtext_translated = catDict1[selectedcensus];
-        const result_hitogram = historgramData.find((row) => row[0] === selectedtext_translated);
-
-        if (result_hitogram) {
-  var bin_0 = parseFloat(result_hitogram[1]);
-  var bin_1 = parseFloat(result_hitogram[2]);
-  var bin_2 = parseFloat(result_hitogram[3]);
-  var bin_3 = parseFloat(result_hitogram[4]);
-  var bin_4 = parseFloat(result_hitogram[5]);
-  var bin_5 = parseFloat(result_hitogram[6]);
-  var bin_6 = parseFloat(result_hitogram[7]);
-  var bin_7 = parseFloat(result_hitogram[8]);
-  var bin_8 = parseFloat(result_hitogram[9]);
-  var bin_0_perc = parseFloat(result_hitogram[11] * 100);
-  var bin_1_perc = parseFloat(result_hitogram[12] * 100);
-  var bin_2_perc = parseFloat(result_hitogram[13] * 100);
-  var bin_3_perc = parseFloat(result_hitogram[14] * 100);
-  var bin_4_perc = parseFloat(result_hitogram[15] * 100);
-  var bin_5_perc = parseFloat(result_hitogram[16] * 100);
-  var bin_6_perc = parseFloat(result_hitogram[17] * 100);
-  var bin_7_perc = parseFloat(result_hitogram[18] * 100);
-
-
-
-  drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc);
-}
- console.log(`'${bin_0}'`);
-          },
-        });
-      },
-    });
-
-
-function drawHistogram(svg, bin_0, bin_1, bin_2, bin_3, bin_4, bin_5, bin_6, bin_7, bin_8, bin_0_perc, bin_1_perc, bin_2_perc, bin_3_perc, bin_4_perc, bin_5_perc, bin_6_perc, bin_7_perc){
-// Set the dimensions and margins of the graph for the histogram
-var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
-    histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
-    histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
-
-// Append the SVG object to the body of the page for the histogram
-var histogramSvg = d3.select("#my_histogram")
-  .append("svg")
-    .attr("width", histogramWidth + histogramMargin.left + histogramMargin.right)
-    .attr("height", histogramHeight + histogramMargin.top + histogramMargin.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
-
-
-// Your data
-// Define custom bin ranges and corresponding heights as percentages
-var binRanges = [
-  [bin_0, 0.003719339, bin_0_perc],
-  [bin_1, 0.052152194, bin_1_perc],
-  [bin_2, 0.108444529, bin_2_perc],
-  [bin_3, 0.116602642, bin_3_perc],
-  [bin_4, 0.135878049, bin_4_perc],
-  [bin_5, 0.176329257, bin_5_perc],
-  [bin_6, 0.257421711, bin_6_perc],
-  [bin_7, 0.133190351, bin_7_perc],
-  [bin_8, 0, 0],
-];
-
-// Calculate the total percentage
-var totalPercentage = binRanges.reduce((sum, range) => sum + range[2], 0);
-var maxPercentage = d3.max(binRanges, range => range[2]);
-
-// X axis: scale and draw:
-var x = d3.scaleLinear()
-  .domain([0, 0.25])
-  .range([0, histogramWidth]);
-
-var xAxis = d3.axisBottom(x)
-  .tickValues(binRanges.map(range => range[0]))
-  .tickFormat(d3.format(".3f")); // Set the desired precision
-
-histogramSvg.append("g")
-  .attr("transform", "translate(0," + histogramHeight + ")")
-  .call(xAxis);
-
-// Y axis: scale and draw
-var y = d3.scaleLinear()
-  .range([histogramHeight, 0]) // Adjust the range to start from the bottom
-  .domain([0, maxPercentage]);
-
-histogramSvg.append("g")
-  .call(d3.axisLeft(y).tickFormat(d => d + "%").ticks(maxPercentage / 5)); // Set tick intervals
-
-// Append the bar rectangles to the svg element
-histogramSvg.selectAll("rect")
-  .data(binRanges)
-  .enter()
-  .append("rect")
-  .attr("x", range => x(range[0]))
-  .attr("width", x(binRanges[1][0]) - x(binRanges[0][0]) - 1)
-  .attr("y", range => histogramHeight - (range[2] / maxPercentage) * histogramHeight)
-  .attr("height", range => (range[2] / maxPercentage) * histogramHeight)
-  .style("fill", "#A5DEE4");
-
-
-
-};
 
 
 window.addEventListener("load", function(){
@@ -2071,7 +3965,96 @@ window.addEventListener("load", function(){
         0
     )
 });
+
+function openOverlay() {
+    document.querySelector(".overlay").style.display = "block"; // Show the overlay
+    document.querySelector(".popupIntro").style.display = "block";
+}
+
+// Event listener for the About button
+document.querySelector("#aboutText").addEventListener("click", function(event) {
+    openOverlay(); // Calls the function to open the overlay and popupIntro
+});
+
 document.querySelector("#close").addEventListener("click", function(){
     document.querySelector(".overlay").style.display = "none"; // Hide the overlay
     document.querySelector(".popupIntro").style.display = "none";
 });
+
+
+
+$(document).ready(function() {
+/////////////////////////////
+///////// Page functions ////
+/////////////////////////////
+
+
+$('.homeIcon').on('click',function(){
+    $('.dimmer').addClass('active');
+})
+
+$('.infoIcon').on('click',function(){
+    $('#infoMessage').transition('fade in');
+})
+
+$('.dataIcon').on('click',function(){
+    $('#dataMessage').transition('fade in');
+})
+
+$('.message .close')
+  .on('click', function() {
+    $(this)
+      .closest('.message')
+      .transition('fade')
+    ;
+  });
+
+});
+
+var functions = document.getElementById('functions');
+var display = false; // Use boolean instead of 0 and 1
+
+function hideShow() {
+  if (display) {
+    functions.style.display = 'none';
+  } else {
+    functions.style.display = 'flex';
+  }
+  display = !display; // Toggle the boolean value
+}
+
+document.querySelector("#toggleButton").addEventListener("click", function(event) {
+  hideShow();
+});
+
+
+
+  var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
+            histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
+            histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
+
+        // Append the SVG object to the body of the page for the histogram
+        var histogramSvg = d3.select("#my_histogram")
+          .append("svg")
+            .attr("width", histogramWidth + histogramMargin.left + histogramMargin.right)
+            .attr("height", histogramHeight + histogramMargin.top + histogramMargin.bottom)
+          .append("g")
+            .attr("transform",
+                  "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
+
+           var x = d3.scaleLinear()
+                  .range([ 0, histogramWidth ]);
+
+
+            var xAxis = histogramSvg.append("g")
+              .attr("transform", "translate(0," + histogramHeight + ")").attr("class", "axisWhite")
+
+
+            // Initialize the Y axis
+            var y = d3.scaleLinear()
+              .range([ histogramHeight, 0]);
+            var yAxis = histogramSvg.append("g")
+              .attr("class", "axisWhite")
+
+
+

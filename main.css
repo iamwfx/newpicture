@@ -1,13 +1,12 @@
 @font-face {
-  font-family: 'EduDiatypeRounded';
-  src: url('font/Edu Diatype Rounded Semi-Mono/EduDiatypeRoundedSemi-Mono-Regular.otf') format('opentype');
-}
+  font-family: 'Lato';
+  }
 body {
         margin: 0;
         padding: 0;
         color: 'pink';
         font-size: 13px;
-        font-family: 'EduDiatypeRounded', Arial, sans-serif;
+        font-family: 'Lato', Arial, sans-serif;
       }
 body * {
    -webkit-touch-callout: none;
@@ -23,14 +22,34 @@ body * {
   height:100%;
   width: 100%;
 }
-a{
-  color: black;
+
+div::-webkit-scrollbar{
+  display: none;
+
 }
 
-h3 {
-/*  font-size: 2em;*/
-  /*padding: 5px 0px 0px 0px;*/
-/*  text-align: left /* You can adjust the value to your desired padding size */*/
+
+
+
+
+
+h2 {
+  font-size: 1.8em;
+  text-align: left;
+  margin: 0em !important;
+    font-family: 'Lato' !important;
+}
+
+
+a {
+  font-size: 1.1em !important;
+  text-align: left;
+  color: white !important;
+  writing-mode: vertical-rl;
+}
+h5 {
+  margin: 1em 0em 1em 0em !important;
+  font-family: 'Lato';
 }
 
 
@@ -58,7 +77,7 @@ background: repeating-linear-gradient(-45deg,        #ff0000,   #ff0000 5px,   #
 .introHeader{
   color:white !important;
   font-size: 15px;
-  font-family: 'EduDiatypeRounded', Arial, sans-serif;
+  font-family: 'Lato', Arial, sans-serif;
 }
 .introButton{
   background:white !important;
@@ -66,7 +85,7 @@ background: repeating-linear-gradient(-45deg,        #ff0000,   #ff0000 5px,   #
 
 body{
   background: #f2f2f2;
-  font-family: 'EduDiatypeRounded', Arial, sans-serif;
+  font-family: 'Lato', Arial, sans-serif;
 }
 
 /* searchbar */
@@ -100,7 +119,7 @@ body{
 
 #my-input {
   width: 270px;
-  border: 1px solid #A5DEE4;
+  border: 1px solid #lightgray;
 /*  border-right: none;*/
   
   height: 36px;
@@ -117,12 +136,13 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
 #my-result-container {
-/*  border: 1px solid # A5DEE4;*/
+/*  border: 1px solid # f97c29;*/
   border-right: none;
   position: relative;
     z-index: 100;
     display: block;
     border: none;
+    width: 19.2rem;
 
  /* top: calc(0.1vw + 36px);
   left: calc(100vw - 700px);*/
@@ -132,7 +152,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 .searchButton {
   width: 40px;
   height: 36px;
-  border: 1px solid #A5DEE4;
+  border: 1px solid #f97c29;
   background: white;
   text-align: center;
 /*  position: relative;*/
@@ -146,7 +166,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 
 .ui.fluid.search.selection.dropdown {
   width: 100%;
-  border: 1px solid #A5DEE4;
+  border: 1px solid #lightgray;
   padding: 10px;
   height: 36px;
   border-radius: 5px 5px 5px 5px;
@@ -159,8 +179,8 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   right: 0px;
 /*  top: 60px;*/
 /*  height:calc(100% - 60px);*/
-  height:95%;
-  width:calc(100% - 340px);
+  height:100%;
+  width:calc(100% - 340px - 5rem);
 }   
 
 
@@ -173,25 +193,25 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }*/
 
 .menu{
-    font-family: 'EduDiatypeRounded', Arial, sans-serif;
+    font-family: 'Lato', Arial, sans-serif;
 
 }
 
 #info {
   position: fixed;
-  left: 0px;
-  border-right: 1px solid gray;
+  left:5rem;
+  border-right: 1px solid lightgray;
   /*left:0px;
   top:60px;*/
   background: #fff;
 /*  height: calc(100% - 60px);*/
   height:100%;
 /*  bottom: 0px;*/
-  padding: 15px;
+  padding:  15px 15px 100px 15px;
   width: 340px;
   z-index: 1; /* Stay on top */
   overflow-x: hidden; /* Disable horizontal scroll */
-  font-family: 'EduDiatypeRounded', Arial, sans-serif;
+  font-family: Lato !important; 
 
 
 }
@@ -203,7 +223,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   height: 7.5%;
   top: 0;
   left: 0;
-  background-color: #A5DEE4;
+  background-color: #f97c29;
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 5px;
@@ -235,7 +255,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   height: 50px;
   z-index: 3;
   cursor: pointer;
-  background-color: #A5DEE4;
+  background-color: #f97c29;
   color: #1C2526;
   /*padding: 10px 15px;*/
   border: none;
@@ -244,15 +264,44 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   justify-content: center;
 }
 .menutitle{
-  background-color: #A5DEE4 !important;
-  font-family: 'EduDiatypeRounded', Arial, sans-serif;
-  z-index: 8;
+  background-color: #f97c29 !important;
+  border-right: 0.1px solid lightgray !important;
+  position: fixed;
+  font-family: 'Lato', Arial, sans-serif;
+  display: flex !important;
+  z-index: 8!important;
   margin-top: 0px !important;
   margin-bottom: 0px !important;
   border-bottom: 0px !important;
-/*  padding-top: 1%;*/
-  padding-block: .75%;
-  height: 5%;
+  height: 100%;
+
+  width: 5rem !important;
+  align-items: flex-end;
+}
+.menutitle > * {
+  margin: 3rem 1.25rem 1rem 0 !important; /* Adjust the value as needed */
+}
+/* CSS for the icon */
+#icons{
+    position: fixed;
+    font-family: 'Lato', Arial, sans-serif;
+    display: flex !important;
+    z-index: 8!important;
+    left: 0rem;
+    height: 40%;
+    bottom: -2.5rem !important;
+    width: 5rem !important;
+    align-items: center;
+    flex-direction: column-reverse;
+    flex-wrap: nowrap;
+
+}
+
+#icons a {
+  margin: 9rem 0rem -1rem 0 !important; /* Adjust the margin value as needed */
+}
+.rightmenu{
+  align-items: center;
 }
 /*
 .title{
@@ -263,7 +312,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   width: 100%;
   height: 60px;
   z-index: 8;
-  background-color: #A5DEE4 !important;
+  background-color: #f97c29 !important;
   color: #1C2526;
   border: none;
   display: flex;
@@ -271,25 +320,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   font-family: 'EduDiatypeRounded', Arial, sans-serif;
 }*/
 
-.my-button{
-    position: fixed;
-    right: 0%;
-    top: 0px;
-    /*padding: 0px 0px 0px 15px;*/
-    width: 400px;
-    height: 60px;
-    z-index: 8;
-    /* background-color: #A5DEE4; */
-    color: #1C2526;
-    border: none;
-    display: flex;
-    align-items: center;
-    font-family: 'EduDiatypeRounded', Arial, sans-serif;
-    justify-content: flex-end;
-     margin-right: 10px;
 
-
-}
 
 .my-button a {
     margin-right: 10px; /* Add right margin to create space between buttons */
@@ -315,7 +346,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   text-align: left;
   outline: none;
   font-size: 13px;
-  font-family: 'EduDiatypeRounded', Arial, sans-serif;
+  font-family: 'Lato', Arial, sans-serif;
 }
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
@@ -338,7 +369,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
     left: 50%;
     top: 50%;
     border-radius: 8px;
-    font-family: "Poppins",sans-serif;
+    font-family: "Lato",sans-serif;
     display: none;
     text-align: center;
     z-index: 2;
@@ -356,12 +387,12 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 
 .popupIntro button{
     display: block;
-    width: 100px;
+    width: 130px;
     position: relative;
     margin: 5px auto;
     border-radius: 8px;
     text-align: center;
-    background-color: #A5DEE4;
+    background-color: #f97c29;
     color: #ffffff;
     text-decoration: none;
     padding: 10px 0;
@@ -392,7 +423,163 @@ img.logo {
   fill: #000000; /* For SVG images that use the fill attribute */
   /* Adjust size */
 
-  width: 100px; /* Set the width */
-  height: 100px; /* Set the height */
+  width: 80%; /* Set the width */
   /* Additional styles as needed */
+}
+
+
+#logoContainer {
+  position: fixed;
+  display: flex; 
+  left: 0px;
+  top:95%;
+  background: #fff;
+/*  height: calc(100% - 60px);*/
+  height: 10%;
+/*  bottom: 0px;*/
+  padding: 15px 0px 0px 15px;
+  width: 340px;
+  z-index: 1; /* Stay on top */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  justify-content: space-around;
+  font-family: 'Lato', Arial, sans-serif;
+  border-right: 1px solid gray;
+
+
+}
+.infoSegment{
+  z-index: 100;
+  width:70%;
+  height: 70%;
+  left: 15%;
+  right: 10%;
+  top:10%;
+  overflow-y: scroll;
+  margin: 0 !important;
+  background-color: white !important;
+  opacity: 0.9;
+}
+
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0px 0px 5px 0px;
+}
+
+th, td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: left;
+   font-size: 12px
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+
+.leftpanel  {
+  width: 100%;
+  position: fixed;
+  z-index: 4;
+  padding: 15%;
+  height: 100%;
+  left: 0;
+  background-color: white;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 3rem;
+  font-family: 
+}
+
+
+body {
+  font-family: 'Lato', Helvetica, Arial, sans-serif;
+}
+
+.box {
+  font: 10px sans-serif;
+}
+
+.box line,
+.box rect,
+.box circle {
+  fill: steelblue;
+  stroke: #000;
+  stroke-width: 1px;
+}
+
+.box .center {
+  stroke-dasharray: 3,3;
+}
+
+.box .outlier {
+  fill: none;
+  stroke: #000;
+}
+
+.axis {
+  font: 12px sans-serif;
+}
+ 
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+ 
+.x.axis path { 
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+
+    .rotate-90 {
+        transform: rotate(90deg);
+        filter: brightness(0) invert(1);
+
+    }
+
+#Boxplot_totalPop{
+  transition: 1s;
+}
+
+
+
+#functions {
+    background-color: #f97c29 !important;
+    position: fixed;
+    left: 32.8rem;
+    bottom: 0.7rem;
+    /* height: calc(100% - 60px); */
+    height: 6.3rem;
+    width: 30.5rem;
+    border-radius: 10px;
+    align-items: flex-end;
+    display: flex;
+    padding: 8.7px;
+    flex-wrap: wrap;
+    align-content: space-between;
+    justify-content: flex-start;
+
+}   
+
+
+.axisWhite line{
+  stroke: #555;
+}
+
+.axisWhite path{
+  stroke: white;
+}
+
+#slider-1{
+  width: 97%;
 }
