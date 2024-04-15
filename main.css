@@ -559,18 +559,13 @@ body {
     left: 32.8rem;
     bottom: 0.7rem;
     /* height: calc(100% - 60px); */
-    height: 6.3rem;
-    width: 30.5rem;
+    /* height: 6.3rem; */
+    /* width: 30.5rem; */
     border-radius: 10px;
-    align-items: flex-end;
     display: flex;
     padding: 8.7px;
-    flex-wrap: wrap;
-    align-content: space-between;
-    justify-content: flex-start;
-
-}   
-
+    flex-direction: row-reverse;
+}
 
 .axisWhite line{
   stroke: #555;
@@ -582,4 +577,13 @@ body {
 
 #slider-1{
   width: 97%;
+  padding: 13.5px 11px 1px 11px;
+}
+
+#intervalButton{
+  padding: 0px 0px 6px 2px;
+}
+
+#dowButton{
+  padding: 0px 0px 0px 2px;
 }

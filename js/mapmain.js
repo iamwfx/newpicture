@@ -410,23 +410,79 @@ let PMTILES_URL_tract = "https://dewsfcxuf47u5.cloudfront.net/segregation_all-10
 let PMTILES_URL_county = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties-2-11.pmtiles";
 let PMTILES_URL_CBSA = "https://dewsfcxuf47u5.cloudfront.net/tl_2020_us_cbsa.pmtiles";
 
-let PMTILES_URL_tract_afternoon = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_10-14.pmtiles";
+let PMTILES_URL_tract_weekday_late_night = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_weekday_late_night_10-14.pmtiles";
+let PMTILES_URL_tract_weekend_late_night = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_weekend_late_night_10-14.pmtiles";
+let PMTILES_URL_tract_weekday_morning = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_weekday_morning_10-14.pmtiles";
+let PMTILES_URL_tract_weekdend_morning = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_weekend_morning_10-14.pmtiles";
+let PMTILES_URL_tract_weekday_afternoon = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_weekday_afternoon_10-14.pmtiles";
+let PMTILES_URL_tract_weekend_afternoon = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_weekend_afternoon_10-14.pmtiles";
+let PMTILES_URL_tract_weekday_evening = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_weekday_evening_10-14.pmtiles";
+let PMTILES_URL_tract_weekend_evening = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_weekend_evening_10-14.pmtiles";
+let PMTILES_URL_tract_weekday_late_evening = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_weekday_late_evening_10-14.pmtiles";
+let PMTILES_URL_tract_weekend_late_evening = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_weekend_late_evening_10-14.pmtiles";
 
-let PMTILES_URL_county_intervals = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_0-11.pmtiles";
-
-
+let PMTILES_URL_county_weekday_late_night = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_weekday_late_night_0-11.pmtiles";
+let PMTILES_URL_county_weekend_late_night = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_weekend_late_night_0-11.pmtiles";
+let PMTILES_URL_county_weekday_morning = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_weekday_morning_0-11.pmtiles";
+let PMTILES_URL_county_weekdend_morning = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_weekend_morning_0-11.pmtiles";
+let PMTILES_URL_county_weekday_afternoon = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_weekday_afternoon_0-11.pmtiles";
+let PMTILES_URL_county_weekend_afternoon = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_weekend_afternoon_0-11.pmtiles";
+let PMTILES_URL_county_weekday_evening = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_weekday_evening_0-11.pmtiles";
+let PMTILES_URL_county_weekend_evening = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_weekend_evening_0-11.pmtiles";
+let PMTILES_URL_county_weekday_late_evening = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_weekday_late_evening_0-11.pmtiles";
+let PMTILES_URL_county_weekend_late_evening = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_weekend_late_evening_0-11.pmtiles";
 
 const p_tract = new pmtiles.PMTiles(PMTILES_URL_tract)
 const p_county = new pmtiles.PMTiles(PMTILES_URL_county)
 const p_CBSA = new pmtiles.PMTiles(PMTILES_URL_CBSA)
-const p_tract_afternoon = new pmtiles.PMTiles(PMTILES_URL_tract_afternoon)
-const p_county_intervals = new pmtiles.PMTiles(PMTILES_URL_county_intervals)
+
+const p_tract_weekday_late_night = new pmtiles.PMTiles(PMTILES_URL_tract_weekday_late_night)
+const p_tract_weekend_late_night = new pmtiles.PMTiles(PMTILES_URL_tract_weekend_late_night)
+const p_tract_weekday_morning = new pmtiles.PMTiles(PMTILES_URL_tract_weekday_morning)
+const p_tract_weekend_morning = new pmtiles.PMTiles(PMTILES_URL_tract_weekdend_morning)
+const p_tract_weekday_afternoon = new pmtiles.PMTiles(PMTILES_URL_tract_weekday_afternoon)
+const p_tract_weekend_afternoon = new pmtiles.PMTiles(PMTILES_URL_tract_weekend_afternoon)
+const p_tract_weekday_evening = new pmtiles.PMTiles(PMTILES_URL_tract_weekday_evening)
+const p_tract_weekend_evening = new pmtiles.PMTiles(PMTILES_URL_tract_weekend_evening)
+const p_tract_weekday_late_evening = new pmtiles.PMTiles(PMTILES_URL_tract_weekday_late_evening)
+const p_tract_weekend_late_evening = new pmtiles.PMTiles(PMTILES_URL_tract_weekend_late_evening)
+
+const p_county_weekday_late_night = new pmtiles.PMTiles(PMTILES_URL_county_weekday_late_night)
+const p_county_weekend_late_night = new pmtiles.PMTiles(PMTILES_URL_county_weekend_late_night)
+const p_county_weekday_morning = new pmtiles.PMTiles(PMTILES_URL_county_weekday_morning)
+const p_county_weekend_morning = new pmtiles.PMTiles(PMTILES_URL_county_weekdend_morning)
+const p_county_weekday_afternoon = new pmtiles.PMTiles(PMTILES_URL_county_weekday_afternoon)
+const p_county_weekend_afternoon = new pmtiles.PMTiles(PMTILES_URL_county_weekend_afternoon)
+const p_county_weekday_evening = new pmtiles.PMTiles(PMTILES_URL_county_weekday_evening)
+const p_county_weekend_evening = new pmtiles.PMTiles(PMTILES_URL_county_weekend_evening)
+const p_county_weekday_late_evening = new pmtiles.PMTiles(PMTILES_URL_county_weekday_late_evening)
+const p_county_weekend_late_evening = new pmtiles.PMTiles(PMTILES_URL_county_weekend_late_evening)
 
 protocol.add(p_tract);
 protocol.add(p_county);
 protocol.add(p_CBSA);
-protocol.add(p_tract_afternoon);
-protocol.add(p_county_intervals);
+
+protocol.add(p_tract_weekday_late_night);
+protocol.add(p_tract_weekend_late_night);
+protocol.add(p_tract_weekday_morning);
+protocol.add(p_tract_weekend_morning);
+protocol.add(p_tract_weekday_afternoon);
+protocol.add(p_tract_weekend_afternoon);
+protocol.add(p_tract_weekday_evening);
+protocol.add(p_tract_weekend_evening);
+protocol.add(p_tract_weekday_late_evening);
+protocol.add(p_tract_weekend_late_evening);
+
+protocol.add(p_county_weekday_late_night);
+protocol.add(p_county_weekend_late_night);
+protocol.add(p_county_weekday_morning);
+protocol.add(p_county_weekend_morning);
+protocol.add(p_county_weekday_afternoon);
+protocol.add(p_county_weekend_afternoon);
+protocol.add(p_county_weekday_evening);
+protocol.add(p_county_weekend_evening);
+protocol.add(p_county_weekday_late_evening);
+protocol.add(p_county_weekend_late_evening);
 
 const baseWidth = .5
 const baseZoom = 4.1
@@ -495,26 +551,6 @@ function updateLegend(category){
                 .text(function(d){return d[1][0]});
 }
 
-
-function changeDow(day) {
-    map.setFilter('counties_intervals_layer', ['all', ['==', 'interval', getSelectedInterval()], ['==', 'dow', day]]);
-}
-
-function changeInterval(interval) {
-    map.setFilter('counties_intervals_layer', ['all', ['==', 'interval', interval], ['==', 'dow', getSelectedDow()]]);
-}
-
-function getSelectedDow() {
-    // Assuming you have some way to track the selected day of the week, return its corresponding number
-    // Example: If Monday is selected, return 1; if Tuesday is selected, return 2; and so on.
-    // You can implement this based on your specific UI and logic.
-}
-
-function getSelectedInterval() {
-    // Assuming you have some way to track the selected interval, return its value
-    // Example: If "morning" is selected, return "morning"; if "late night" is selected, return "late night"; and so on.
-    // You can implement this based on your specific UI and logic.
-}
 
 
 ///////////////pop//////////////
@@ -3478,14 +3514,105 @@ function loadLayers(map) {
         });
 
 
-        map.addSource('tract_afternoon',{
+        map.addSource('tract_weekday_late_night',{
         type: "vector",
-        url: "pmtiles://" + PMTILES_URL_tract_afternoon,
+        url: "pmtiles://" + PMTILES_URL_tract_weekday_late_night,
         });
 
-        map.addSource('county_intervals',{
+        map.addSource('tract_weekend_late_night',{
         type: "vector",
-        url: "pmtiles://" + PMTILES_URL_county_intervals,
+        url: "pmtiles://" + PMTILES_URL_tract_weekend_late_night,
+        });
+
+        map.addSource('tract_weekday_morning',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_tract_weekday_morning,
+        });
+
+        map.addSource('tract_weekend_morning',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_tract_weekdend_morning,
+        });
+
+        map.addSource('tract_weekday_afternoon',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_tract_weekday_afternoon,
+        });
+
+        map.addSource('tract_weekend_afternoon',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_tract_weekend_afternoon,
+        });
+
+        map.addSource('tract_weekday_evening',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_tract_weekday_evening,
+        });
+
+        map.addSource('tract_weekend_evening',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_tract_weekend_evening,
+        });
+
+        map.addSource('tract_weekday_late_evening',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_tract_weekday_late_evening,
+        });
+
+        map.addSource('tract_weekend_late_evening',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_tract_weekend_late_evening,
+        });
+
+
+        map.addSource('county_weekday_late_night',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_county_weekday_late_night,
+        });
+
+        map.addSource('county_weekend_late_night',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_county_weekend_late_night,
+        });
+
+        map.addSource('county_weekday_morning',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_county_weekday_morning,
+        });
+
+        map.addSource('county_weekend_morning',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_county_weekdend_morning,
+        });
+
+        map.addSource('county_weekday_afternoon',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_county_weekday_afternoon,
+        });
+
+        map.addSource('county_weekend_afternoon',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_county_weekend_afternoon,
+        });
+
+        map.addSource('county_weekday_evening',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_county_weekday_evening,
+        });
+
+        map.addSource('county_weekend_evening',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_county_weekend_evening,
+        });
+
+        map.addSource('county_weekday_late_evening',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_county_weekday_late_evening,
+        });
+
+        map.addSource('county_weekend_late_evening',{
+        type: "vector",
+        url: "pmtiles://" + PMTILES_URL_county_weekend_late_evening,
         });
 
 
@@ -3497,7 +3624,7 @@ function loadLayers(map) {
                 "type": "fill",
                  'layout': {
                 // Make the layer visible by default.
-                'visibility': 'visible'
+                'visibility': 'none'
                   },
                 "paint": {
                     "fill-color": {
@@ -3550,12 +3677,245 @@ function loadLayers(map) {
 
 
                 map.addLayer({
-                "id":"tract_11_14",
-                "source": "tract_afternoon",
-                "source-layer":"segregation_all_intervals",
+                "id":"tract_wdln",
+                "source": "tract_weekday_late_night",
+                "source-layer":"segregation_all_intervals_weekday_late_night",
                 "type": "fill",
                  'layout': {
-                // Make the layer visible by default.
+                'visibility': 'none'
+                  },
+                "paint": {
+                    "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                                  },
+                                 'fill-opacity': 1, 
+                         }
+                 },firstLineId);
+
+                map.addLayer({
+                "id":"tract_weln",
+                "source": "tract_weekend_late_night",
+                "source-layer":"segregation_all_intervals_weekend_late_night",
+                "type": "fill",
+                 'layout': {
+                'visibility': 'none'
+                  },
+                "paint": {
+                    "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                                  },
+                                 'fill-opacity': 1, 
+                         }
+                 },firstLineId);
+
+                map.addLayer({
+                "id":"tract_wdm",
+                "source": "tract_weekday_morning",
+                "source-layer":"segregation_all_intervals_weekday_morning",
+                "type": "fill",
+                 'layout': {
+                'visibility': 'none'
+                  },
+                "paint": {
+                    "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                                  },
+                                 'fill-opacity': 1, 
+                         }
+                 },firstLineId);
+
+                map.addLayer({
+                "id":"tract_wem",
+                "source": "tract_weekend_morning",
+                "source-layer":"segregation_all_intervals_weekend_morning",
+                "type": "fill",
+                 'layout': {
+                'visibility': 'none'
+                  },
+                "paint": {
+                    "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                                  },
+                                 'fill-opacity': 1, 
+                         }
+                 },firstLineId);
+
+                map.addLayer({
+                "id":"tract_wda",
+                "source": "tract_weekday_afternoon",
+                "source-layer":"segregation_all_intervals_weekday_afternoon",
+                "type": "fill",
+                 'layout': {
+                'visibility': 'none'
+                  },
+                "paint": {
+                    "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                                  },
+                                 'fill-opacity': 1, 
+                         }
+                 },firstLineId);
+
+                map.addLayer({
+                "id":"tract_wea",
+                "source": "tract_weekend_afternoon",
+                "source-layer":"segregation_all_intervals_weekend_afternoon",
+                "type": "fill",
+                 'layout': {
+                'visibility': 'none'
+                  },
+                "paint": {
+                    "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                                  },
+                                 'fill-opacity': 1, 
+                         }
+                 },firstLineId);
+
+                map.addLayer({
+                "id":"tract_wde",
+                "source": "tract_weekday_evening",
+                "source-layer":"segregation_all_intervals_weekday_evening",
+                "type": "fill",
+                 'layout': {
+                'visibility': 'none'
+                  },
+                "paint": {
+                    "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                                  },
+                                 'fill-opacity': 1, 
+                         }
+                 },firstLineId);
+
+                map.addLayer({
+                "id":"tract_wee",
+                "source": "tract_weekend_evening",
+                "source-layer":"segregation_all_intervals_weekend_evening",
+                "type": "fill",
+                 'layout': {
+                'visibility': 'none'
+                  },
+                "paint": {
+                    "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                                  },
+                                 'fill-opacity': 1, 
+                         }
+                 },firstLineId);
+
+                map.addLayer({
+                "id":"tract_wdle",
+                "source": "tract_weekday_late_evening",
+                "source-layer":"segregation_all_intervals_weekday_late_evening",
+                "type": "fill",
+                 'layout': {
+                'visibility': 'none'
+                  },
+                "paint": {
+                    "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                                  },
+                                 'fill-opacity': 1, 
+                         }
+                 },firstLineId);
+
+                map.addLayer({
+                "id":"tract_wele",
+                "source": "tract_weekend_late_evening",
+                "source-layer":"segregation_all_intervals_weekend_late_evening",
+                "type": "fill",
+                 'layout': {
                 'visibility': 'none'
                   },
                 "paint": {
@@ -3578,15 +3938,32 @@ function loadLayers(map) {
 
 
 
+let recordedLayerIds = [];
 
-// Get reference to the buttons
-const buttons = document.querySelectorAll('.ui.button');
 
 // Function to toggle layer visibility
 function toggleLayers(layerIds) {
-    const layers = ['tracts', 'tract_11_14', 'counties', 'counties_intervals_layer'];
+    const weekdayLayers = ['tract_wdle', 'tract_wdm', 'tract_wda', 'tract_wde', 'tract_wdln', 'counties_wdle', 'counties_wdm', 'counties_wda', 'counties_wde', 'counties_wdln'];
+    const weekendLayers = ['tract_wele', 'tract_wem', 'tract_wea', 'tract_wee', 'tract_weln', 'counties_wele', 'counties_wem', 'counties_wea', 'counties_wee', 'counties_weln'];
+    const generalLayer = ['counties', 'tracts'];
 
-    layers.forEach(layer => {
+    weekdayLayers.forEach(layer => {
+        if (layerIds.includes(layer)) {
+            map.setLayoutProperty(layer, 'visibility', 'visible');
+        } else {
+            map.setLayoutProperty(layer, 'visibility', 'none');
+        }
+    });
+
+    weekendLayers.forEach(layer => {
+        if (layerIds.includes(layer)) {
+            map.setLayoutProperty(layer, 'visibility', 'visible');
+        } else {
+            map.setLayoutProperty(layer, 'visibility', 'none');
+        }
+    });
+
+    generalLayer.forEach(layer => {
         if (layerIds.includes(layer)) {
             map.setLayoutProperty(layer, 'visibility', 'visible');
         } else {
@@ -3595,16 +3972,66 @@ function toggleLayers(layerIds) {
     });
 }
 
-// Add click event listeners to the buttons
-buttons.forEach((button, index) => {
+const buttons = document.querySelectorAll('.ui.button');
+buttons.forEach(button => {
     button.addEventListener('click', () => {
-        if (index === 4) { // First button clicked
-            toggleLayers(['tracts', 'counties']);
-        } else if (index === 5) { // Second button clicked
-            toggleLayers(['tract_11_14', 'counties_intervals_layer']);
+        const buttonId = button.id;
+        let layerIds = [];
+
+        // Check if the toggle is on weekday or weekend
+        if (isWeekday) {
+            if (buttonId === 'morningButton') {
+                layerIds.push('tract_wdm', 'counties_wdm');
+            } else if (buttonId === 'afternoonButton') {
+                layerIds.push('tract_wda', 'counties_wda');
+            } else if (buttonId === 'eveningButton') {
+                layerIds.push('tract_wde', 'counties_wde');
+            } else if (buttonId === 'lateEveningButton') {
+                layerIds.push('tract_wdle','counties_wdle');
+            } else if (buttonId === 'lateNightButton') {
+                layerIds.push('tract_wdln', 'counties_wdln');
+            }
+
+        } else { // Weekend
+            if (buttonId === 'morningButton') {
+                layerIds.push('tract_wem', 'counties_wem');
+            } else if (buttonId === 'afternoonButton') {
+                layerIds.push('tract_wea', 'counties_wea');
+            } else if (buttonId === 'eveningButton') {
+                layerIds.push('tract_wee', 'counties_wee');
+            } else if (buttonId === 'lateEveningButton') {
+                layerIds.push('tract_wele', 'counties_wele');
+            } else if (buttonId === 'lateNightButton') {
+                layerIds.push('tract_weln', 'counties_weln');
+            }
         }
+
+        // Reset button logic
+        if (buttonId === 'reset') {
+            layerIds.push('tracts', 'counties'); // Add general layers
+        }
+        updateLayerID(layerIds);
+        // Call toggleLayers function with the appropriate layer IDs
+        toggleLayers(layerIds);
     });
 });
+
+function updateLayerID(updatedData) {
+  newLayerID = updatedData;
+  console.log(newLayerID)
+}
+
+
+
+function updateWeekdayWeekend(updatedData) {
+    let togglelayerIds;
+    if (updatedData === 'tract_wdm' || updatedData === 'counties_wdm') {
+        togglelayerIds = ['tract_wem', 'counties_wem'];
+    }
+    console.log(togglelayerIds)
+    toggleLayers(togglelayerIds);
+}
+
 
 
 // Get a reference to the slider element
@@ -3617,7 +4044,18 @@ slider.addEventListener('input', function() {
 
   // Update the fill-opacity of the layers
   map.setPaintProperty('tracts', 'fill-opacity', opacityValue);
+  map.setPaintProperty('tract_wdle', 'fill-opacity', opacityValue);
+  map.setPaintProperty('tract_wele', 'fill-opacity', opacityValue);
+  map.setPaintProperty('tract_wdm', 'fill-opacity', opacityValue);
+  map.setPaintProperty('tract_wem', 'fill-opacity', opacityValue);
+  map.setPaintProperty('tract_wda', 'fill-opacity', opacityValue);
+  map.setPaintProperty('tract_wea', 'fill-opacity', opacityValue);
+  map.setPaintProperty('tract_wde', 'fill-opacity', opacityValue);
+  map.setPaintProperty('tract_wee', 'fill-opacity', opacityValue);
+  map.setPaintProperty('tract_wdln', 'fill-opacity', opacityValue);
+  map.setPaintProperty('tract_weln', 'fill-opacity', opacityValue);
 });
+
 
         map.addLayer({
                     "id":"counties",
@@ -3625,7 +4063,7 @@ slider.addEventListener('input', function() {
                     "source-layer":"segregation_all_countiesfgb",
                     "type": "fill",
                     'layout': {
-                    'visibility': 'visible'
+                    'visibility': 'none'
                       },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
                     "paint": {
@@ -3712,14 +4150,13 @@ slider.addEventListener('input', function() {
                                 },
         });*/
 
-
-        map.addLayer({
-                    "id":"counties_intervals_layer",
-                    "source": "county_intervals",
-                    "source-layer":"segregation_all_counties_intervals",
-                    "filter": ["all", ["==", "interval", "morning"], ["==", "dow", 6]],
+        
+                map.addLayer({
+                    "id":"counties_wdln",
+                    "source": "county_weekday_late_night",
+                    "source-layer":"segregation_all_counties_intervals_weekday_late_night",
                     "type": "fill",
-                    'layout': {
+                     'layout': {
                     'visibility': 'none'
                       },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
@@ -3738,9 +4175,241 @@ slider.addEventListener('input', function() {
                         default: 'gray',
                         },
                         'fill-opacity': 1,
-        },firstLineId});
+                 },firstLineId});
 
+                map.addLayer({
+                    "id":"counties_weln",
+                    "source": "county_weekend_late_night",
+                    "source-layer":"segregation_all_counties_intervals_weekend_late_night",
+                    "type": "fill",
+                     'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,
+                 },firstLineId});
 
+                map.addLayer({
+                    "id":"counties_wdm",
+                    "source": "county_weekday_morning",
+                    "source-layer":"segregation_all_counties_intervals_weekday_morning",
+                    "type": "fill",
+                     'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,
+                 },firstLineId});
+
+                map.addLayer({
+                    "id":"counties_wem",
+                    "source": "county_weekend_morning",
+                    "source-layer":"segregation_all_counties_intervals_weekend_morning",
+                    "type": "fill",
+                     'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,
+                 },firstLineId});
+
+                map.addLayer({
+                    "id":"counties_wda",
+                    "source": "county_weekday_afternoon",
+                    "source-layer":"segregation_all_counties_intervals_weekday_afternoon",
+                    "type": "fill",
+                     'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,
+                 },firstLineId});
+
+                map.addLayer({
+                    "id":"counties_wea",
+                    "source": "county_weekend_afternoon",
+                    "source-layer":"segregation_all_counties_intervals_weekend_afternoon",
+                    "type": "fill",
+                     'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,
+                 },firstLineId});
+                
+                map.addLayer({
+                    "id":"counties_wde",
+                    "source": "county_weekday_evening",
+                    "source-layer":"segregation_all_counties_intervals_weekday_evening",
+                    "type": "fill",
+                     'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,
+                 },firstLineId});
+
+                map.addLayer({
+                    "id":"counties_wee",
+                    "source": "county_weekend_evening",
+                    "source-layer":"segregation_all_counties_intervals_weekend_evening",
+                    "type": "fill",
+                     'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,
+                 },firstLineId});
+
+                map.addLayer({
+                    "id":"counties_wdle",
+                    "source": "county_weekday_late_evening",
+                    "source-layer":"segregation_all_counties_intervals_weekday_late_evening",
+                    "type": "fill",
+                     'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,
+                 },firstLineId});
+
+                map.addLayer({
+                    "id":"counties_wele",
+                    "source": "county_weekend_late_evening",
+                    "source-layer":"segregation_all_counties_intervals_weekend_late_evening",
+                    "type": "fill",
+                     'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops: [[0, '#222a2e'],
+                                [0.071, '#21404c'],
+                                [0.19, '#21596d'],
+                                [.282, '#1d708a'],
+                                [0.369, '#238894'],
+                                [0.449, '#38afa6'],
+                                [.524, '#63c4b1'],
+                                [0.603, '#82ccb7'],
+                                [0.8, '#b0d5c5']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,
+                 },firstLineId});
 
 
         map.addLayer({
@@ -3795,7 +4464,15 @@ slider.addEventListener('input', function() {
 
         },firstLineId);
 
+function changeDow(day) {
+    console.log("A")
+    map.setFilter('counties_intervals_layer', ['==', 'weekday', day]);
+}
 
+
+function changeInterval(interval) {
+    map.setFilter('counties_intervals_layer', ['all', ['==', 'interval', interval], ['==', 'dow', getSelectedDow()]]);
+}
     
         // Change paint on metric change
         
@@ -3810,7 +4487,7 @@ slider.addEventListener('input', function() {
             map.setPaintProperty(                
             'counties', 'fill-color', choroplethColors[metric]
             );
-                        map.setPaintProperty(                
+            map.setPaintProperty(                
             'counties_intervals_layer', 'fill-color', choroplethColors[metric]
             );
             map.setPaintProperty(                
@@ -3818,6 +4495,71 @@ slider.addEventListener('input', function() {
             );
             map.setPaintProperty(                
             'tract_11_14', 'fill-color', choroplethColors[metric]
+            );
+
+
+            map.setPaintProperty(                
+            'tract_wdle', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'tract_wele', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'tract_wdm', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'tract_wem', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'tract_wda', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'tract_wea', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'tract_wde', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'tract_wee', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'tract_wdln', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'tract_weln', 'fill-color', choroplethColors[metric]
+            );
+
+
+
+            map.setPaintProperty(                
+            'counties_wdle', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'counties_wele', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'counties_wdm', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'counties_wem', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'counties_wda', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'counties_wea', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'counties_wde', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'counties_wee', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'counties_wdln', 'fill-color', choroplethColors[metric]
+            );
+            map.setPaintProperty(                
+            'counties_weln', 'fill-color', choroplethColors[metric]
             );
 
 
@@ -3833,7 +4575,29 @@ slider.addEventListener('input', function() {
         // Set the fill opacity of the layers based on the slider value
         map.setPaintProperty('counties', 'fill-opacity', value);
         map.setPaintProperty('tracts', 'fill-opacity', value);
-        map.setPaintProperty('tract_11_14', 'fill-opacity', value);
+
+        map.setPaintProperty('tract_wdle', 'fill-opacity', value);
+        map.setPaintProperty('tract_wele', 'fill-opacity', value);
+        map.setPaintProperty('tract_wdm', 'fill-opacity', value);
+        map.setPaintProperty('tract_wem', 'fill-opacity', value);
+        map.setPaintProperty('tract_wda', 'fill-opacity', value);
+        map.setPaintProperty('tract_wea', 'fill-opacity', value);
+        map.setPaintProperty('tract_wde', 'fill-opacity', value);
+        map.setPaintProperty('tract_wee', 'fill-opacity', value);
+        map.setPaintProperty('tract_wdln', 'fill-opacity', value);
+        map.setPaintProperty('tract_weln', 'fill-opacity', value);
+
+        map.setPaintProperty('counties_wele', 'fill-opacity', value);
+        map.setPaintProperty('counties_wdle', 'fill-opacity', value);
+        map.setPaintProperty('counties_wee', 'fill-opacity', value);
+        map.setPaintProperty('counties_wde', 'fill-opacity', value);
+        map.setPaintProperty('counties_wea', 'fill-opacity', value);
+        map.setPaintProperty('counties_wda', 'fill-opacity', value);
+        map.setPaintProperty('counties_wem', 'fill-opacity', value);
+        map.setPaintProperty('counties_wdm', 'fill-opacity', value);
+        map.setPaintProperty('counties_weln', 'fill-opacity', value);
+        map.setPaintProperty('counties_wdln', 'fill-opacity', value);
+
     }
 });
 
@@ -4056,5 +4820,16 @@ document.querySelector("#toggleButton").addEventListener("click", function(event
             var yAxis = histogramSvg.append("g")
               .attr("class", "axisWhite")
 
+let isWeekday = true;
 
+// Function to toggle between weekday and weekend
+function toggleWeekend() {
+    const button = document.getElementById('tgl');
+    if (isWeekday) {
+        button.textContent = 'Weekend';
+    } else {
+        button.textContent = 'Weekday';
+    }
+    isWeekday = !isWeekday;
 
+}
