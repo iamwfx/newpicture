@@ -159,6 +159,7 @@
 
           <div id="map"></div>  
 
+          
           <div id ='info'>
             <!--<button class="openbtn" onclick="toggleNav()"><i class="gg-menu"></i></button>  -->
              <!--  <div id="mySidepanel" class="sidepanel">
@@ -393,48 +394,25 @@
           </div>   -->
 
 <div id="functions" class="hidden">
-
-
-          <div id="styleA">
-
-<button class="ui tiny toggle button" id="tgl" onclick="toggleWeekend(), updateWeekdayWeekend()">Weekday</button>
-<button class="ui tiny button" id="reset" >Reset</button>
-
-<div id="intervalButton" class="ui fluid tiny icon buttons">
-  <button id="morningButton" class="ui button" >Morning</button>
-  <button id="afternoonButton" class="ui button" >Afternoon</button>
-  <button id="eveningButton" class="ui button" >Evening</button>
-  <button id="lateEveningButton" class="ui button" >Late evening</button>
-  <button id="lateNightButton" class="ui button" >Late night</button>
-</div>
-
-  <br>
-<!--<div id= "dowButton" class="ui fluid tiny icon buttons">
-  <button class="ui button" onclick="changeDow('weekday')">Sun</button>
-  <button class="ui button" onclick="changeDow('weekend')">Mon</button>
-  <button class="ui button" onclick="changeDow(2)">Tue</button>
-  <button class="ui button" onclick="changeDow(3)">Wed</button>
-  <button class="ui button" onclick="changeDow(4)">Thu</button>
-  <button class="ui button" onclick="changeDow(5)">Fri</button>
-  <button class="ui button" onclick="changeDow(6)">Sat</button>
-</div>-->
+    <div class="first-row">
+        <button class="ui tiny toggle button weekday" id="tgl" onclick="toggleWeekend(), updateWeekdayWeekend()">Weekday</button>
+        <div id="intervalButton" class=" ui fluid tiny icon buttons">
+            <button id="morningButton" class="ui button">Morning</button>
+            <button id="afternoonButton" class="ui button">Afternoon</button>
+            <button id="eveningButton" class="ui button">Evening</button>
+            <button id="lateEveningButton" class="ui button">Late evening</button>
+            <button id="lateNightButton" class="ui button">Late night</button>
+        </div>
     </div>
-
-  <br>
-
-  <div id="styleB">
-    <button id="mapStyle1" class="ui tiny button">
-        Satellite
-    </button>
-    <button id="mapStyle2" class=" tiny ui button">
-        Basic
-    </button>
-    <div class="ui slider" id="slider-1"></div>
+    <div class="second-row">
+        <div id="styleButton" class=" ui fluid tiny icon buttons">
+        <button id="mapStyle1" class="ui tiny button">Satellite</button>
+        <button id="mapStyle2" class="tiny ui button">Basic</button>
+        </div>
+        <button class="ui tiny button" id="reset">Reset</button>
+        <div class="ui slider" id="slider-1"></div>
+        
     </div>
-  <br>
-
-
-
 </div>
           </div> 
 

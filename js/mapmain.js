@@ -91,15 +91,15 @@ const censusCatDict_v2 = {
                                 [0.077, '#E15EA7'],
                                 [0.135, '#D33383'],
                                 [.25, '#A52461']],
-             "total_diversity_exp": [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+             "total_diversity_exp":  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
              // [[0, '#d53e4f'],
              //                    [0.071, '#f46d43'],
              //                    [0.19, '#fdae61'],
@@ -109,6 +109,17 @@ const censusCatDict_v2 = {
              //                    [.524, '#abdda4'],
              //                    [0.603, '#66c2a5'],
              //                    [0.8, '#3288bd']],
+
+             //[[0, '#222a2e'],
+             //                   [0.071, '#21404c'],
+             //                   [0.19, '#21596d'],
+             //                   [.282, '#1d708a'],
+             //                   [0.369, '#238894'],
+             //                   [0.449, '#38afa6'],
+             //                   [.524, '#63c4b1'],
+             //                   [0.603, '#82ccb7'],
+             //                   [0.8, '#b0d5c5']]
+
 
             "total_diversity_resi":  [[0, '#440154'],
                                 [0.071, '#440154'],
@@ -189,15 +200,15 @@ const choroplethColors={'white_diversity_exp':{
                          },
                          'total_diversity_exp':{
                             property:'total_diversity_exp',
-                            stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                            stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                             // stops: [[0, '#d53e4f'],
                             //     [0.071, '#f46d43'],
                             //     [0.19, '#fdae61'],
@@ -566,19 +577,32 @@ let medianIncValue = null;
 
 
 
-function createPopUp(popUp,layer,map,hoveredStateId,svg){
+function createPopUp(popUp,layer,layerA,map,hoveredStateId,svg){
     
     var layerPopUpInfo = {
-         'counties':{
+         'county_weird':{
             'sourceLayer':'segregation_all_countiesfgb',
             'source':'seg_2_11'
         },
 
-        'tracts':{
+        'tracts_weird':{
             'sourceLayer':'segregation_allfgb',
             'source':'seg_10_13'
-            }
+            },
+
+
+        'county_outline':{
+            'sourceLayer':'segregation_all_countiesfgb',
+            'source':'seg_2_11'
+            },
+          
+
     }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+/////// Mouse click ///////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////
+
 
     ///// Change the opacity of the highlighted HOLC zone 
     map.on('click',layer, e => {
@@ -609,8 +633,8 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
         HIPopValue = e.features[0]['properties']['hispanic_perc'];
         OTPopValue = e.features[0]['properties']['other_perc'];  
         medianIncValue = e.features[0]['properties']['median_inc'];
-        metro  = e.features[0]['properties']['CBSA Title'];          
-        console.log(metro)
+        metro  = e.features[0]['properties']['NAME'];          
+        //console.log(metro)
         //console.log(div_score_exp)
 
         $('#baPercValueDisplay').text(' ' + d3.format(",.1%")(baPercValue));     
@@ -644,7 +668,7 @@ function createPopUp(popUp,layer,map,hoveredStateId,svg){
               var max_b = parseFloat(result_TPboxplot[5]);
               var newTPData = [min_b, q1_b, median_b, q3_b, max_b]
 
-              console.log(newTPData)
+              //console.log(newTPData)
             }
 
                           const result_WHboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'white_perc');
@@ -852,8 +876,7 @@ if (currentZoom < zoomThreshold) {
         // Get the text
         popUpStr = `<div class='popup'>
             <h4>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h4>
-            <p> Place: ${geom_name}</p>
-            
+             
         </div>`;
 
         popUp.setHTML(popUpStr);
@@ -865,28 +888,42 @@ if (currentZoom < zoomThreshold) {
         // else {
         // popUp.remove();
         // }
-
-
-        // Change the opacity
-        if (e.features.length > 0) {               
-
+/*
+ map.on('click', 'county_outline', (e) => {
+            if (e.features.length > 0) {
                 if (hoveredStateId) {
-                    map.removeFeatureState(
-                        {source: layerPopUpInfo[layer]['source'], 
-                        sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
-                        id: hoveredStateId}
+                    map.setFeatureState(
+                        {source: 'seg_2_11', id: hoveredStateId},
+                        {hover: false}
                     );
                 }
-
                 hoveredStateId = e.features[0].id;
                 map.setFeatureState(
-                    {source: layerPopUpInfo[layer]['source'], 
-                    sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
-                    id: hoveredStateId},
+                    {source: 'seg_2_11', id: hoveredStateId},
                     {hover: true}
                 );
-            }       
+           console.log(hoveredStateId)
+            }
+        });
+
+        // When the mouse leaves the state-fill layer, update the feature state of the
+        // previously hovered feature.
+        map.on('mouseleave', 'county_outline', () => {
+            if (hoveredStateId) {
+                map.setFeatureState(
+                    {source: 'seg_2_11', id: hoveredStateId},
+                    {hover: false}
+                );
+            }
+            hoveredStateId = null;
+        });*/
+
+
+
+        // Change the opacity 
+        
     });
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /////// Boxplot functions//////////////////////////////////////////////////////////////////////
@@ -1108,8 +1145,6 @@ svg.selectAll(".whisker-label_below")
   .attr("y2", center + height / 2)
   .attr("stroke", "red") // You can choose a color for the line
   .style("stroke-width", 2);
-
-
 }
 
 /////////////////////////////////
@@ -3360,8 +3395,6 @@ function drawHistogram(data, div_score_exp) {
             return "#ffe1cc"; // Default color
         }
             }
-
-
              else {
                 if (zoomThreshold <= currentZoom) {
                 if (d.bin <= div_score_exp && d.bin +  binWidths[0]  >= div_score_exp) {
@@ -3379,13 +3412,53 @@ function drawHistogram(data, div_score_exp) {
 
 };
             ///// Change the opacity back
-            map.on('mouseleave',layer, event => {
+map.on('click', layerA, (e) => {
+        if (e.features.length > 0) {               
+if (hoveredStateId) {
+                    map.setFeatureState(
+                         {source: layerPopUpInfo[layerA]['source'], 
+                                sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
+                            id: hoveredStateId},
+                        {hover: false}
+                    );
+                }
+                hoveredStateId = e.features[0].id;
+                map.setFeatureState(
+                     {source: layerPopUpInfo[layerA]['source'], 
+                                sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
+                            id: hoveredStateId},
+                    {hover: true}
+                );
+               /* if (hoveredStateId) {
+                    map.removeFeatureState(
+                        {source: layerPopUpInfo[layer]['source'], 
+                        sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
+                        id: hoveredStateId}
+                    );
+                }
+
+                hoveredStateId = e.features[0].id;
+                map.setFeatureState(
+                    {source: layerPopUpInfo[layer]['source'], 
+                    sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
+                    id: hoveredStateId},
+                    {hover: true}
+                                   );
+                 console.log(hoveredStateId)*/
+
+
+            }       
+        });
+       
+
+
+            map.on('mouseleave',layerA, event => {
                 
                
                 if (hoveredStateId) {
                         map.setFeatureState(
-                            {source: layerPopUpInfo[layer]['source'], 
-                                sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
+                            {source: layerPopUpInfo[layerA]['source'], 
+                                sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
                             id: hoveredStateId},
                             {hover: false}
                         );
@@ -3393,10 +3466,7 @@ function drawHistogram(data, div_score_exp) {
                 hoveredStateId = null;
                 map.getCanvas().style.cursor = '';
                 popUp.remove();
-
-              
             });
-
  
 }
 
@@ -3624,20 +3694,20 @@ function loadLayers(map) {
                 "type": "fill",
                  'layout': {
                 // Make the layer visible by default.
-                'visibility': 'none'
+                'visibility': 'visible'
                   },
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         /*stops: [[0, '#440154'],
                                 [0.071, '#440154'],
                                 [0.19, '#46327f'],
@@ -3687,15 +3757,15 @@ function loadLayers(map) {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                                   },
                                  'fill-opacity': 1, 
@@ -3713,15 +3783,15 @@ function loadLayers(map) {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                                   },
                                  'fill-opacity': 1, 
@@ -3739,15 +3809,15 @@ function loadLayers(map) {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                                   },
                                  'fill-opacity': 1, 
@@ -3765,15 +3835,15 @@ function loadLayers(map) {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                                   },
                                  'fill-opacity': 1, 
@@ -3791,15 +3861,15 @@ function loadLayers(map) {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                        stops: [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                                   },
                                  'fill-opacity': 1, 
@@ -3817,15 +3887,15 @@ function loadLayers(map) {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                                   },
                                  'fill-opacity': 1, 
@@ -3843,15 +3913,15 @@ function loadLayers(map) {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                                   },
                                  'fill-opacity': 1, 
@@ -3869,15 +3939,15 @@ function loadLayers(map) {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                                   },
                                  'fill-opacity': 1, 
@@ -3895,15 +3965,15 @@ function loadLayers(map) {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                                   },
                                  'fill-opacity': 1, 
@@ -3921,15 +3991,15 @@ function loadLayers(map) {
                 "paint": {
                     "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                                   },
                                  'fill-opacity': 1, 
@@ -4005,7 +4075,6 @@ buttons.forEach(button => {
                 layerIds.push('tract_weln', 'counties_weln');
             }
         }
-
         // Reset button logic
         if (buttonId === 'reset') {
             layerIds.push('tracts', 'counties'); // Add general layers
@@ -4056,11 +4125,38 @@ slider.addEventListener('input', function() {
   map.setPaintProperty('tract_weln', 'fill-opacity', opacityValue);
 });
 
-
         map.addLayer({
                     "id":"counties",
                     "source": "seg_2_11",
                     "source-layer":"segregation_all_countiesfgb",
+                    "type": "fill",
+                    'layout': {
+                    'visibility': 'visible'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,},
+                      },firstLineId);
+
+
+
+        map.addLayer({
+                    "id":"counties_wdln",
+                    "source": "county_weekday_late_night",
+                    "source-layer":"segregation_all_counties_intervals_weekday_late_night_new",
                     "type": "fill",
                     'layout': {
                     'visibility': 'none'
@@ -4069,350 +4165,268 @@ slider.addEventListener('input', function() {
                     "paint": {
                         "fill-color": {
                         property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
                         default: 'gray',
                         },
-                        'fill-opacity': 1,
-
-
-                        // 'fill-opacity': [
-                        //       'case',
-                        //     ['boolean', ['feature-state', 'hover'], false],
-                        //     0.9,
-                        //     0.7,
-
-                        // ]
-                        
-                    },
-
-                    /*"paint": {
-                        "fill-pattern": {
-                            property:'total_diversity_exp',
-                            type: 'categorical',
-                            stops: [
-                            // Define the patterns for different conditions
-                            ['white', 'hatch-pattern'], 
-                        ],
-                        },
-                        },*/
-        },firstLineId);
-
-
-
-         /*map.addLayer({
-                    "id":"missing_data_outline",
-                    "source": "seg_2_11",
-                    "source-layer":"segregation_all_countiesfgb",
-                    "type": "line",
-                    "paint": {
-                        'line-color': 'red',
-                        'line-width': {
-                            property:'total_diversity_exp',
-                            stops: [[0, 0],
-                                [0.071, 0],
-                                [0.19, 0],
-                                [.282, 0],
-                                [0.369, 0],
-                                [0.449, 0],
-                                [.524, 0],
-                                [0.603, 0],
-                                [0.8, 0]],
-                                default: 1,}
-                                },
-        });
-                  map.addLayer({
-                    "id":"missing_data_tract_outline",
-                    "source": "seg_10_13",
-                    "source-layer":"segregation_allfgb",
-                    "type": "line",
-                    "paint": {
-                        'line-color': 'red',
-                        'line-width': {
-                            property:'total_diversity_exp',
-                            stops: [[0, 0],
-                                [0.071, 0],
-                                [0.19, 0],
-                                [.282, 0],
-                                [0.369, 0],
-                                [0.449, 0],
-                                [.524, 0],
-                                [0.603, 0],
-                                [0.8, 0]],
-                                default: 1,}
-                                },
-        });*/
-
-        
-                map.addLayer({
-                    "id":"counties_wdln",
-                    "source": "county_weekday_late_night",
-                    "source-layer":"segregation_all_counties_intervals_weekday_late_night",
-                    "type": "fill",
-                     'layout': {
-                    'visibility': 'none'
-                      },
-                    "maxzoom": 10, // Set zoom level to whatever suits your needs
-                    "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,
-                 },firstLineId});
-
-                map.addLayer({
-                    "id":"counties_weln",
-                    "source": "county_weekend_late_night",
-                    "source-layer":"segregation_all_counties_intervals_weekend_late_night",
-                    "type": "fill",
-                     'layout': {
-                    'visibility': 'none'
-                      },
-                    "maxzoom": 10, // Set zoom level to whatever suits your needs
-                    "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,
-                 },firstLineId});
-
-                map.addLayer({
-                    "id":"counties_wdm",
-                    "source": "county_weekday_morning",
-                    "source-layer":"segregation_all_counties_intervals_weekday_morning",
-                    "type": "fill",
-                     'layout': {
-                    'visibility': 'none'
-                      },
-                    "maxzoom": 10, // Set zoom level to whatever suits your needs
-                    "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,
-                 },firstLineId});
-
-                map.addLayer({
-                    "id":"counties_wem",
-                    "source": "county_weekend_morning",
-                    "source-layer":"segregation_all_counties_intervals_weekend_morning",
-                    "type": "fill",
-                     'layout': {
-                    'visibility': 'none'
-                      },
-                    "maxzoom": 10, // Set zoom level to whatever suits your needs
-                    "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,
-                 },firstLineId});
-
-                map.addLayer({
-                    "id":"counties_wda",
-                    "source": "county_weekday_afternoon",
-                    "source-layer":"segregation_all_counties_intervals_weekday_afternoon",
-                    "type": "fill",
-                     'layout': {
-                    'visibility': 'none'
-                      },
-                    "maxzoom": 10, // Set zoom level to whatever suits your needs
-                    "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,
-                 },firstLineId});
-
-                map.addLayer({
-                    "id":"counties_wea",
-                    "source": "county_weekend_afternoon",
-                    "source-layer":"segregation_all_counties_intervals_weekend_afternoon",
-                    "type": "fill",
-                     'layout': {
-                    'visibility': 'none'
-                      },
-                    "maxzoom": 10, // Set zoom level to whatever suits your needs
-                    "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,
-                 },firstLineId});
-                
-                map.addLayer({
-                    "id":"counties_wde",
-                    "source": "county_weekday_evening",
-                    "source-layer":"segregation_all_counties_intervals_weekday_evening",
-                    "type": "fill",
-                     'layout': {
-                    'visibility': 'none'
-                      },
-                    "maxzoom": 10, // Set zoom level to whatever suits your needs
-                    "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,
-                 },firstLineId});
-
-                map.addLayer({
-                    "id":"counties_wee",
-                    "source": "county_weekend_evening",
-                    "source-layer":"segregation_all_counties_intervals_weekend_evening",
-                    "type": "fill",
-                     'layout': {
-                    'visibility': 'none'
-                      },
-                    "maxzoom": 10, // Set zoom level to whatever suits your needs
-                    "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,
-                 },firstLineId});
-
-                map.addLayer({
-                    "id":"counties_wdle",
-                    "source": "county_weekday_late_evening",
-                    "source-layer":"segregation_all_counties_intervals_weekday_late_evening",
-                    "type": "fill",
-                     'layout': {
-                    'visibility': 'none'
-                      },
-                    "maxzoom": 10, // Set zoom level to whatever suits your needs
-                    "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,
-                 },firstLineId});
-
-                map.addLayer({
-                    "id":"counties_wele",
-                    "source": "county_weekend_late_evening",
-                    "source-layer":"segregation_all_counties_intervals_weekend_late_evening",
-                    "type": "fill",
-                     'layout': {
-                    'visibility': 'none'
-                      },
-                    "maxzoom": 10, // Set zoom level to whatever suits your needs
-                    "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops: [[0, '#222a2e'],
-                                [0.071, '#21404c'],
-                                [0.19, '#21596d'],
-                                [.282, '#1d708a'],
-                                [0.369, '#238894'],
-                                [0.449, '#38afa6'],
-                                [.524, '#63c4b1'],
-                                [0.603, '#82ccb7'],
-                                [0.8, '#b0d5c5']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,
-                 },firstLineId});
+                        'fill-opacity': 1,},
+                      },firstLineId);
 
 
         map.addLayer({
+                    "id":"counties_weln",
+                    "source": "county_weekend_late_night",
+                    "source-layer":"segregation_all_counties_intervals_weekend_late_night_new",
+                    "type": "fill",
+                    'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,},
+                      },firstLineId);
+
+
+        map.addLayer({
+                    "id":"counties_wdm",
+                    "source": "county_weekday_morning",
+                    "source-layer":"segregation_all_counties_intervals_weekday_morning_new",
+                    "type": "fill",
+                    'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,},
+                      },firstLineId);
+
+
+        map.addLayer({
+                    "id":"counties_wem",
+                    "source": "county_weekend_morning",
+                    "source-layer":"segregation_all_counties_intervals_weekend_morning_new",
+                    "type": "fill",
+                    'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,},
+                      },firstLineId);
+
+
+        map.addLayer({
+                    "id":"counties_wda",
+                    "source": "county_weekday_afternoon",
+                    "source-layer":"segregation_all_counties_intervals_weekday_afternoon_new",
+                    "type": "fill",
+                    'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,},
+                      },firstLineId);
+
+
+        map.addLayer({
+                    "id":"counties_wea",
+                    "source": "county_weekend_afternoon",
+                    "source-layer":"segregation_all_counties_intervals_weekend_afternoon_new",
+                    "type": "fill",
+                    'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,},
+                      },firstLineId);
+
+
+        map.addLayer({
+                    "id":"counties_wde",
+                    "source": "county_weekday_evening",
+                    "source-layer":"segregation_all_counties_intervals_weekday_evening_new",
+                    "type": "fill",
+                    'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,},
+                      },firstLineId);
+
+
+        map.addLayer({
+                    "id":"counties_wee",
+                    "source": "county_weekend_evening",
+                    "source-layer":"segregation_all_counties_intervals_weekend_evening_new",
+                    "type": "fill",
+                    'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,},
+                      },firstLineId);
+
+
+        map.addLayer({
+                    "id":"counties_wdle",
+                    "source": "county_weekday_late_evening",
+                    "source-layer":"segregation_all_counties_intervals_weekday_late_evening_new",
+                    "type": "fill",
+                    'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,},
+                      },firstLineId);
+
+
+        map.addLayer({
+                    "id":"counties_wele",
+                    "source": "county_weekend_late_evening",
+                    "source-layer":"segregation_all_counties_intervals_weekend_late_evening_new",
+                    "type": "fill",
+                    'layout': {
+                    'visibility': 'none'
+                      },
+                    "maxzoom": 10, // Set zoom level to whatever suits your needs
+                    "paint": {
+                        "fill-color": {
+                        property:'total_diversity_exp',
+                        stops:  [[0, '#440154'],
+                                [0.071, '#440154'],
+                                [0.19, '#46327f'],
+                                [.282, '#365c8d'],
+                                [0.369, '#277f8e'],
+                                [0.449, '#1fa288'],
+                                [.524, '#4ac26d'],
+                                [0.603, '#9ed93a'],
+                                [0.8, '#fde725']],
+                        default: 'gray',
+                        },
+                        'fill-opacity': 1,},
+                      },firstLineId);
+
+
+
+ 
+
+                map.addLayer({
                     "id":"tracts_outline",
                     "source": "seg_10_13",
                     "source-layer":"segregation_allfgb",
@@ -4434,9 +4448,7 @@ slider.addEventListener('input', function() {
                     //     // When zoom is 20, set the line width to 3 units.
                     //     30, 20,
                     // ]
-                                },
-
-        },firstLineId);
+                                },});
 
         map.addLayer({
                     "id":"county_outline",
@@ -4462,7 +4474,35 @@ slider.addEventListener('input', function() {
                     // ]
                                 },
 
+        });
+
+
+       map.addLayer({
+                    "id":"county_weird",
+                    "source": "seg_2_11",
+                    "source-layer":"segregation_all_countiesfgb",
+                    "type": "fill",
+                    "maxzoom": 10,
+                    "paint": {
+                        'fill-color': 'red',
+                    'fill-opacity': 0,
+                                },
+
         },firstLineId);
+
+        map.addLayer({
+                "id":"tracts_weird",
+                "source": "seg_10_13",
+                "source-layer":"segregation_allfgb",
+                "type": "fill",
+                "paint": {
+                    "fill-color": 'red',
+                    'fill-opacity': 0,        
+
+                }
+            },firstLineId);
+
+
 
 function changeDow(day) {
     console.log("A")
@@ -4611,7 +4651,7 @@ function changeInterval(interval) {
           closeOnClick: false
         });
 
-        map.on('mouseenter','segregation_allfgb',function(e){
+/*        map.on('mouseenter','segregation_allfgb',function(e){
             const coordinates = e.features[0].geometry.coordinates.slice();
                 function emptyToYesNo(val){
                   if (val.length > 1){
@@ -4629,15 +4669,36 @@ function changeInterval(interval) {
             map.getCanvas().style.cursor = '';
             popup.remove();
             });
-
+*/
 
         const delay = 70;
         let clickedFeatureId = null;
 
-        createPopUp(popup,'counties',map,hoveredStateId);
-        createPopUp(popup,'tracts',map,hoveredStateId);
-        createPopUp(popup,'tract_11_14',map,hoveredStateId);
-        createPopUp(popup,'counties_intervals_layer',map,hoveredStateId);
+        createPopUp(popup,'counties','county_weird',map,hoveredStateId);
+        createPopUp(popup,'tracts','tracts_weird',map,hoveredStateId);
+
+        createPopUp(popup,'counties_weln','county_weird',map,hoveredStateId);
+        createPopUp(popup,'counties_wdln','county_weird',map,hoveredStateId);
+        createPopUp(popup,'counties_wdm', layerB ,map,hoveredStateId);
+        createPopUp(popup,'counties_wem',map,hoveredStateId);
+        createPopUp(popup,'counties_wda',map,hoveredStateId);
+        createPopUp(popup,'counties_wea',map,hoveredStateId);
+        createPopUp(popup,'counties_wde',map,hoveredStateId);
+        createPopUp(popup,'counties_wee',map,hoveredStateId);
+        createPopUp(popup,'counties_wdle',map,hoveredStateId);
+        createPopUp(popup,'counties_wele',map,hoveredStateId);
+
+        createPopUp(popup,'tract_wdln',map,hoveredStateId);
+        createPopUp(popup,'tract_weln',map,hoveredStateId);
+        createPopUp(popup,'tract_wdm',map,hoveredStateId);
+        createPopUp(popup,'tract_wem',map,hoveredStateId);
+        createPopUp(popup,'tract_wda',map,hoveredStateId);
+        createPopUp(popup,'tract_wea',map,hoveredStateId);
+        createPopUp(popup,'tract_wde',map,hoveredStateId);
+        createPopUp(popup,'tract_wee',map,hoveredStateId);
+        createPopUp(popup,'tract_wdle',map,hoveredStateId);
+        createPopUp(popup,'tract_wele',map,hoveredStateId);
+
     };
 
 
@@ -4652,24 +4713,23 @@ p_tract.getHeader().then(h => {
     });
 
 
-    map.on('load', function() {
+    map.on('style.load', function() {
         loadLayers(map);
+
+        
+
     });
+
 
 
 document.getElementById('mapStyle1').addEventListener('click', function() {
-    map.setStyle('https://api.maptiler.com/maps/5ecd6622-96da-4bfa-b7e4-89e5e700f7a0/style.json?key=HNi5BjBnVWZQP32PQRdv');
-        map.on('load', function() {
-        loadLayers(map);
-    });
+    map.setStyle('https://api.maptiler.com/maps/bd3a8a99-b061-4a3a-a1c2-20d08f6ee042/style.json?key=HNi5BjBnVWZQP32PQRdv');
 });
 
 document.getElementById('mapStyle2').addEventListener('click', function() {
     map.setStyle('https://api.maptiler.com/maps/5f5a5e3a-bf8e-4515-b05b-423feccaabbd/style.json?key=is6mQIv8IXor3VbmKwq8');
-        loadLayers(map);
 });
 
-        
     map.addControl(new maplibregl.NavigationControl(), 'bottom-left');
     map.addControl(new maplibregl.AttributionControl(), 'bottom-right')
 
@@ -4827,9 +4887,29 @@ function toggleWeekend() {
     const button = document.getElementById('tgl');
     if (isWeekday) {
         button.textContent = 'Weekend';
+        button.classList.add('weekend'); // Add CSS class for weekend
+        button.classList.remove('weekday'); // Remove CSS class for weekday
     } else {
         button.textContent = 'Weekday';
+        button.classList.add('weekday'); // Add CSS class for weekday
+        button.classList.remove('weekend'); // Remove CSS class for weekend
     }
     isWeekday = !isWeekday;
 
+function updateWeekdayWeekend(updatedData) {
+    let togglelayerIds;
+    if (updatedData === 'tract_wdm' || updatedData === 'counties_wdm') {
+        togglelayerIds = ['tract_wem', 'counties_wem'];
+    }
+    console.log(togglelayerIds)
+    toggleLayers(togglelayerIds);
+};
+
+  console.log(layerIds)
+
+    updateWeekdayWeekend(updatedData);
 }
+
+
+
+
