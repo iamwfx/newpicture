@@ -50,8 +50,27 @@ a {
 h5 {
   margin: 1em 0em 1em 0em !important;
   font-family: 'Lato';
+
 }
 
+
+/* CSS code for h6 heading */
+h6 {
+    margin: 0.6em 0.5em 0.5em 0em !important;
+    font-size: 1em; /* Adjust the font size as needed */
+    color: #555; /* Optionally, adjust the color */
+    font-family: 'Lato';
+    line-height: 0px;
+
+}
+
+h7 {
+    margin: 0em 0em 0em 0em !important;
+    font-size: 0.8em; /* Adjust the font size as needed */
+    color: #555; /* Optionally, adjust the color */
+    font-family: 'Lato';
+
+}
 
 /*.map {
   position: absolute;
@@ -130,10 +149,7 @@ body{
   
 }
 
-.maplibregl-popup {
-max-width: 500px;
-font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-}
+
 
 #my-result-container {
 /*  border: 1px solid # f97c29;*/
@@ -180,7 +196,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
 /*  top: 60px;*/
 /*  height:calc(100% - 60px);*/
   height:100%;
-  width:calc(100% - 340px - 5rem);
+  width:calc(100% - 5rem);
 }   
 
 
@@ -203,7 +219,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   border-right: 1px solid lightgray;
   /*left:0px;
   top:60px;*/
-  background: #fff;
+  background: rgba(255, 255, 255, 0.8);
 /*  height: calc(100% - 60px);*/
   height:100%;
 /*  bottom: 0px;*/
@@ -212,6 +228,8 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   z-index: 1; /* Stay on top */
   overflow-x: hidden; /* Disable horizontal scroll */
   font-family: Lato !important; 
+  backdrop-filter: saturate(40%) blur(20px);
+
 
 
 }
@@ -554,19 +572,19 @@ body {
 
 
 #functions {
-    background-color: #f97c29 !important;
+    background-color: rgba(255, 255, 255, 0.8); !important;
     position: fixed;
-    left: 32.8rem;
+    left: 30rem;
     bottom: 0.7rem;
-    /* height: calc(100% - 60px); */
-    /* height: 6.3rem; */
-    /* width: 30.5rem; */
     border-radius: 10px;
     display: flex;
     padding: 8.7px;
     flex-direction: column;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 1; 
+    transform: translateY(0);
+    backdrop-filter: saturate(100%) blur(10px)
 }
-
 .first-row {
     display: flex;
     flex-direction: row;
@@ -583,7 +601,7 @@ body {
 }
 
 .axisWhite path{
-  stroke: white;
+  stroke: rgba(255, 255, 255, 0);
 }
 
 #slider-1{
@@ -624,4 +642,18 @@ width: 110px;
 .ui.button:hover {
   background-color: rgb(247, 178, 133);
   color: black;
+}
+
+.maplibregl-popup-content
+{
+  backdrop-filter: saturate(100%) blur(10px) !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+  line-height: 22px !important; /* Adjust the line spacing here */
+  padding: 10px 8px 8px 10px !important;
+  /*width: 270px !important;*/
+}
+
+
+.maplibregl-popup-tip {
+    display: none;
 }
