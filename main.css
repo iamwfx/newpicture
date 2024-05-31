@@ -56,12 +56,11 @@ h5 {
 
 /* CSS code for h6 heading */
 h6 {
-    margin: 0.6em 0.5em 0.5em 0em !important;
+    margin: 0em 0em 0em 0em !important;
     font-size: 1em; /* Adjust the font size as needed */
     color: #555; /* Optionally, adjust the color */
     font-family: 'Lato';
-    line-height: 0px;
-
+    line-height: 18px;
 }
 
 h7 {
@@ -189,6 +188,11 @@ body{
   outline: none;
   color: black;
 }
+
+.ui.fluid.search.selection.dropdown.active.visible {
+  border-color: #d3d3d3 !important;
+}
+
 
 #map {
   position:fixed;
@@ -627,12 +631,18 @@ width: 110px;
   padding: 0px 0px 0px 5px;
 }
 
+#weekDayEndButton{
+padding: 0px 3px 0px 0px;
+    width: 265px;
+}
+
 #dowButton{
   padding: 0px 0px 0px 2px;
 }
 
 #styleButton{
   padding: 0px 7px 0px 0px;
+      width: 268px
 }
 
 .ui.button{
@@ -641,19 +651,60 @@ width: 110px;
 
 .ui.button:hover {
   background-color: rgb(247, 178, 133);
-  color: black;
+  color: white;
 }
 
 .maplibregl-popup-content
 {
   backdrop-filter: saturate(100%) blur(10px) !important;
   background: rgba(255, 255, 255, 0.7) !important;
-  line-height: 22px !important; /* Adjust the line spacing here */
-  padding: 10px 8px 8px 10px !important;
-  /*width: 270px !important;*/
+  line-height: 10px !important; 
+  padding: 12px 15px 12px 13px !important;
+  max-width: 300px !important;
+  border-radius: 10px !important;
+}
+
+.maplibregl-popup.mapboxgl-popup.maplibregl-popup-anchor-bottom.mapboxgl-popup-anchor-bottom{
+  max-width: 300px !important;
 }
 
 
 .maplibregl-popup-tip {
     display: none;
+}
+
+.ui.basic.active.button {
+    background-color: rgb(249, 124, 42);
+    background-image: none;
+    box-shadow: 0 0 0 1px transparent inset;
+    color: rgba(255, 255, 255, .95);
+}
+
+
+  .ui.basic.active.button:hover {
+  background-color: rgb(247, 178, 133);
+  color: white;
+}
+
+.ui.slider .inner .track-fill {
+    position: absolute;
+    border-radius: 4px;
+    background-color: rgb(247, 178, 133);
+}
+
+#weekendButton,
+#weekdayButton,
+#mapStyle1,
+#mapStyle2 {
+  width: 72px;
+  height: 30px;
+}
+
+#morningButton,
+#afternoonButton,
+#eveningButton,
+#lateEveningButton,
+#lateNightButton {
+  width: 72px;
+  height: 30px;
 }

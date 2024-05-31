@@ -28,227 +28,241 @@ const catDict1 ={'White Experienced Diversity':'white_diversity_exp',
             "Difference":'diff'}
 
 // Color dict for the legend
-const censusCatDict = {
-            "white_diversity_exp":[
-                   '#deeed6', '#b5daa4', '#82c66f', '#58b347', '#2f8741', '#21441f'
-                ],
-            "black_diversity_exp": [
-              '#f7fbff', '#d6edfb', '#98c5e0', '#7ab5e2', '#449bcc', '#2173b2', '#1d3666'
-              ],
-            "asian_diversity_exp":  [
-               '#FFF7EE', '#FFF7EE', '#FDDFC1', '#FCB77E', '#F68A48', '#D5602E', '#91492F'
-               ],
-            "hispanic_diversity_exp": [
-                  '#FFF7F2', '#FFF7F2', '#FCD3C2', '#FB9D85', '#F36558', '#CB3741', '#7C2936'
-                ],
-            "other_diversity_exp": [
-                '#F3F0F8', '#F3F0F8', '#E0C8E3', '#DF93C9', '#E15EA7', '#D33383', '#A52461'
-            ],
-            "total_diversity_exp": [
-                '#440154', '#46327f', '#365c8d', '#277f8e', '#1fa288', '#4ac26d', '#9ed93a', '#fde725'
-                  // '#d53e4f', '#f46d43', '#fdae61', '#fee08b', '#e6f598', '#abdda4', '#66c2a5', '#3288bd'
-                ],
-            "total_diversity_resi": [
-                  '#440154', '#46327f', '#365c8d', '#277f8e', '#1fa288', '#4ac26d', '#9ed93a', '#fde725'
-                ],
-            "diff":[
-                   '#CF2245', '#E16A6C', '#F4B195', '#F7D5C6', '#fff', '#DBE3EE', '#CDE3EE', '#A3CEE3', '#6AA9CF', '#3385BB'
-                ]
-               }
+// const censusCatDict = {
+//             "white_diversity_exp":[
+//                    '#deeed6', '#b5daa4', '#82c66f', '#58b347', '#2f8741', '#21441f'
+//                 ],
+//             "black_diversity_exp": [
+//               '#f7fbff', '#d6edfb', '#98c5e0', '#7ab5e2', '#449bcc', '#2173b2', '#1d3666'
+//               ],
+//             "asian_diversity_exp":  [
+//                '#FFF7EE', '#FFF7EE', '#FDDFC1', '#FCB77E', '#F68A48', '#D5602E', '#91492F'
+//                ],
+//             "hispanic_diversity_exp": [
+//                   '#FFF7F2', '#FFF7F2', '#FCD3C2', '#FB9D85', '#F36558', '#CB3741', '#7C2936'
+//                 ],
+//             "other_diversity_exp": [
+//                 '#F3F0F8', '#F3F0F8', '#E0C8E3', '#DF93C9', '#E15EA7', '#D33383', '#A52461'
+//             ],
+//             "total_diversity_exp": [
+//                 '#440154', '#46327f', '#365c8d', '#277f8e', '#1fa288', '#4ac26d', '#9ed93a', '#fde725'
+//                   // '#d53e4f', '#f46d43', '#fdae61', '#fee08b', '#e6f598', '#abdda4', '#66c2a5', '#3288bd'
+//                 ],
+//             "total_diversity_resi": [
+//                   '#440154', '#46327f', '#365c8d', '#277f8e', '#1fa288', '#4ac26d', '#9ed93a', '#fde725'
+//                 ],
+//             "diff":[
+//                    '#CF2245', '#E16A6C', '#F4B195', '#F7D5C6', '#fff', '#DBE3EE', '#CDE3EE', '#A3CEE3', '#6AA9CF', '#3385BB'
+//                 ]
+//                }
 const censusCatDict_v2 = {
-            "white_diversity_exp":[[0, '#f7fcf5'],
-                                [0.033, '#deeed6'],
-                                [0.088, '#b5daa4'],
-                                [.133, '#82c66f'],
-                                [0.17, '#58b347'],
-                                [0.204, '#2f8741'],
-                                [.25, '#21441f']],
-            "black_diversity_exp": [[0, '#f7fbff'],
-                                [0.014, '#d6edfb'],
-                                [0.043, '#98c5e0'],
-                                [.079, '#7ab5e2'],
-                                [0.122, '#449bcc'],
-                                [0.17, '#2173b2'],
-                                [.25, '#1d3666']],
-            "asian_diversity_exp":  [[0, '#FFF7EE'],
-                                [0.01, '#FCD2C1'],
-                                [0.032, '#E0A586'],
-                                [.062, '#C58258'],
-                                [0.104, '#A7592F'],
-                                [0.162, '#89381D'],
-                                [.25, '#5C1C0C']],
-            "hispanic_diversity_exp": [[0, '#FFF7F2'],
-                                [0.018, '#FFF7F2'],
-                                [0.055, '#FCD3C2'],
-                                [.095, '#FB9D85'],
-                                [0.14, '#F36558'],
-                                [0.188, '#CB3741'],
-                                [.25, '#7C2936']],
-            "other_diversity_exp": [[0, '#F3F0F8'],
-                                [0.012, '#F3F0F8'],
-                                [0.031, '#E0C8E3'],
-                                [.048, '#DF93C9'],
-                                [0.077, '#E15EA7'],
-                                [0.135, '#D33383'],
-                                [.25, '#A52461']],
+            "white_diversity_exp":[[0, '#f6fbf4'],
+                                [0.03125, '#d1eac9'],
+                                [0.0625, '#aad79f'],
+                                [0.09375, '#83c277'],
+                                [0.125, '#5dab52'],
+                                [0.15625, '#467f41'],
+                                [0.1875, '#30552e'],
+                                [0.21875, '#1a2d1a']],
+
+            "black_diversity_exp": [[0, '#f5faff'],
+                                [0.03125, '#badafd'],
+                                [0.0625, '#83b8f7'],
+                                [0.09375, '#5094ed'],
+                                [0.125, '#216fdf'],
+                                [0.15625, '#1f53a3'],
+                                [0.1875, '#19386c'],
+                                [0.21875, '#101e38']],
+
+            "asian_diversity_exp":  [[0, '#fff8f0'],
+                                [0.03125, '#fed9b6'],
+                                [0.0625, '#fbb57e'],
+                                [0.09375, '#f68d48'],
+                                [0.125, '#ef6114'],
+                                [0.15625, '#b84410'],
+                                [0.1875, '#802b0d'],
+                                [0.21875, '#491709']],
+
+            "hispanic_diversity_exp": [[0, '#fff0f0'],
+                                [0.03125, '#fcbbbb'],
+                                [0.0625, '#f6898c'],
+                                [0.09375, '#eb5c62'],
+                                [0.125, '#dd323c'],
+                                [0.15625, '#b02730'],
+                                [0.1875, '#7d222a'],
+                                [0.21875, '#4d1a1f']],
+
+            "other_diversity_exp": [[0, '#f4f1f8'],
+                                [0.03125, '#dbc9e7'],
+                                [0.0625, '#ca9fd9'],
+                                [0.09375, '#c472cd'],
+                                [0.125, '#c442bd'],
+                                [0.15625, '#a22b88'],
+                                [0.1875, '#791c56'],
+                                [0.21875, '#4d0f2c']],
+
              "total_diversity_exp":  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
+                                [0.08125, '#440154'],
+                                [0.1625, '#46327f'],
+                                [0.24375, '#365c8d'],
+                                [0.325, '#277f8e'],
+                                [0.40625, '#1fa288'],
+                                [0.4875, '#4ac26d'],
+                                [0.56875, '#9ed93a'],
+                                [0.65, '#fde725']],
              // [[0, '#d53e4f'],
-             //                    [0.071, '#f46d43'],
-             //                    [0.19, '#fdae61'],
-             //                    [.282, '#fee08b'],
-             //                    [0.369, '#ffffbf'],
-             //                    [0.449, '#e6f598'],
-             //                    [.524, '#abdda4'],
-             //                    [0.603, '#66c2a5'],
-             //                    [0.8, '#3288bd']],
+             //                    [0.08125, '#f46d43'],
+             //                    [0.1625, '#fdae61'],
+             //                    [0.24375, '#fee08b'],
+             //                    [0.325, '#ffffbf'],
+             //                    [0.40625, '#e6f598'],
+             //                    [0.4875, '#abdda4'],
+             //                    [0.56875, '#66c2a5'],
+             //                    [0.65, '#3288bd']],
 
              //[[0, '#222a2e'],
-             //                   [0.071, '#21404c'],
-             //                   [0.19, '#21596d'],
-             //                   [.282, '#1d708a'],
-             //                   [0.369, '#238894'],
-             //                   [0.449, '#38afa6'],
-             //                   [.524, '#63c4b1'],
-             //                   [0.603, '#82ccb7'],
-             //                   [0.8, '#b0d5c5']]
+             //                   [0.08125, '#21404c'],
+             //                   [0.1625, '#21596d'],
+             //                   [0.24375, '#1d708a'],
+             //                   [0.325, '#238894'],
+             //                   [0.40625, '#38afa6'],
+             //                   [0.4875, '#63c4b1'],
+             //                   [0.56875, '#82ccb7'],
+             //                   [0.65, '#b0d5c5']]
 
 
             "total_diversity_resi":  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-            "diff":[[-0.182, '#CF2245'],
-                                [-0.088, '#E16A6C'],
-                                [-0.027, '#F4B195'],
-                                [0, '#F7D5C6'],
-                                [0, '#fff'],
-                                [0.01, '#DBE3EE'],
-                                [0.135, '#CDE3EE'],
-                                [.202, '#A3CEE3'],
-                                [.314, '#6AA9CF'],
-                                [.714, '#3385BB']]
+                                [.1, '#46327f'],
+                                [.2, '#365c8d'],
+                                [.3, '#277f8e'],
+                                [.4, '#1fa288'],
+                                [.5, '#4ac26d'],
+                                [.6, '#9ed93a'],
+                                [.7, '#fde725'],
+                                ],
+            "diff":[
+                                [-0.79, '#CF2245'],
+                                [-0.62375, '#E16A6C'],
+                                [-0.4575, '#F4B195'],
+                                [-0.29125, '#F7D5C6'],
+                                [-0.125, '#fff'],
+                                [0.04125, '#CDE3EE'],
+                                [.2075, '#A3CEE3'],
+                                [.37375, '#6AA9CF'],
+                                [.54, '#3385BB']]
                }
 
-
-const choroplethColors={'white_diversity_exp':{
-                            property:'white_diversity_exp',
-                            stops: [[0, '#f7fcf5'],
-                                [0.033, '#deeed6'],
-                                [0.088, '#b5daa4'],
-                                [.133, '#82c66f'],
-                                [0.17, '#58b347'],
-                                [0.204, '#2f8741'],
-                                [.25, '#21441f']],
-                            default: 'gray'
-                        },
-                        'black_diversity_exp':{
-                            property:'black_diversity_exp',
-                            stops: [[0, '#f7fbff'],
-                                [0.014, '#d6edfb'],
-                                [0.043, '#98c5e0'],
-                                [.079, '#7ab5e2'],
-                                [0.122, '#449bcc'],
-                                [0.17, '#2173b2'],
-                                [.25, '#1d3666']],
-                             default: 'gray'
-                        }, 
-                        'asian_diversity_exp':{
-                            property:'asian_diversity_exp',
-                            stops: [[0, '#FFF7EE'],
-                                [0.01, '#FFF7EE'],
-                                [0.032, '#FDDFC1'],
-                                [.062, '#FCB77E'],
-                                [0.104, '#F68A48'],
-                                [0.162, '#D5602E'],
-                                [.25, '#91492F']],
-                            default: 'gray'
-                        },
-                         'hispanic_diversity_exp':{
-                            property:'hispanic_diversity_exp',
-                            stops: [[0, '#FFF7F2'],
-                                [0.018, '#FFF7F2'],
-                                [0.055, '#FCD3C2'],
-                                [.095, '#FB9D85'],
-                                [0.14, '#F36558'],
-                                [0.188, '#CB3741'],
-                                [.25, '#7C2936']],
-                            default: 'gray'
-                         },
-                         'other_diversity_exp':{
-                            property:'other_diversity_exp',
-                            stops: [[0, '#F3F0F8'],
-                                [0.012, '#F3F0F8'],
-                                [0.031, '#E0C8E3'],
-                                [.048, '#DF93C9'],
-                                [0.077, '#E15EA7'],
-                                [0.135, '#D33383'],
-                                [.25, '#A52461']],
-                            default: 'gray'
-                         },
-                         'total_diversity_exp':{
-                            property:'total_diversity_exp',
-                            stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                            // stops: [[0, '#d53e4f'],
-                            //     [0.071, '#f46d43'],
-                            //     [0.19, '#fdae61'],
-                            //     [.282, '#fee08b'],
-                            //     [0.369, '#ffffbf'],
-                            //     [0.449, '#e6f598'],
-                            //     [.524, '#abdda4'],
-                            //     [0.603, '#66c2a5'],
-                            //     [0.8, '#3288bd']],
-                            default: 'gray'
-                         }, 
-                         'total_diversity_resi':{
-                            property:'total_diversity_resi',
-                             stops: [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                             default: 'gray'
-                         },
-                         'diff':{
-                            property:'diff',
-                            stops: [[-0.182, '#CF2245'],
-                                [-0.088, '#E16A6C'],
-                                [-0.027, '#F4B195'],
-                                [0, '#F7D5C6'],
-                                [0, '#fff'],
-                                [0.01, '#DBE3EE'],
-                                [0.135, '#CDE3EE'],
-                                [.202, '#A3CEE3'],
-                                [.314, '#6AA9CF'],
-                                [.714, '#3385BB']],
-                            default: 'gray'
-                         }
-                };
-
+const choroplethColors = {
+                'white_diversity_exp': [
+                    "step",
+                    ["get", "white_diversity_exp"],
+                    'gray',  // default color if value is less than the first stop
+                    0, '#f6fbf4',
+                    0.03125, '#d1eac9',
+                    0.0625, '#aad79f',
+                    0.09375, '#83c277',
+                    0.125, '#5dab52',
+                    0.15625, '#467f41',
+                    0.1875, '#30552e',
+                    0.21875, '#1a2d1a',
+                    0.25, '#1a2d1a'
+                ],
+                'black_diversity_exp': [
+                    "step",
+                    ["get", "black_diversity_exp"],
+                    'gray',  // default color if value is less than the first stop
+                    0, '#f5faff',
+                    0.03125, '#badafd',
+                    0.0625, '#83b8f7',
+                    0.09375, '#5094ed',
+                    0.125, '#216fdf',
+                    0.15625, '#1f53a3',
+                    0.1875, '#19386c',
+                    0.21875, '#101e38',
+                    0.25, '#101e38',
+                ],
+                'asian_diversity_exp': [
+                    "step",
+                    ["get", "asian_diversity_exp"],
+                    'gray',  // default color if value is less than the first stop
+                    0, '#fff8f0',
+                    0.03125, '#fed9b6',
+                    0.0625, '#fbb57e',
+                    0.09375, '#f68d48',
+                    0.125, '#ef6114',
+                    0.15625, '#b84410',
+                    0.1875, '#802b0d',
+                    0.21875, '#491709',
+                    0.25, '#491709',
+                ],
+                'hispanic_diversity_exp': [
+                    "step",
+                    ["get", "hispanic_diversity_exp"],
+                    'gray',  // default color if value is less than the first stop
+                    0, '#fff0f0',
+                    0.03125, '#fcbbbb',
+                    0.0625, '#f6898c',
+                    0.09375, '#eb5c62',
+                    0.125, '#dd323c',
+                    0.15625, '#b02730',
+                    0.1875, '#7d222a',
+                    0.21875, '#4d1a1f'
+                ],
+                'other_diversity_exp': [
+                    "step",
+                    ["get", "other_diversity_exp"],
+                    'gray',  // default color if value is less than the first stop
+                    0, '#f4f1f8',
+                    0.03125, '#dbc9e7',
+                    0.0625, '#ca9fd9',
+                    0.09375, '#c472cd',
+                    0.125, '#c442bd',
+                    0.15625, '#a22b88',
+                    0.1875, '#791c56',
+                    0.21875, '#4d0f2c'
+                ],
+                'total_diversity_exp': [
+                    "step",
+                    ["get", "total_diversity_exp"],
+                    'gray',  // default color if value is less than the first stop
+                    0, '#440154',
+                    0.08125, '#440154',
+                    0.1625, '#46327f',
+                    0.24375, '#365c8d',
+                    0.325, '#277f8e',
+                    0.40625, '#1fa288',
+                    0.4875, '#4ac26d',
+                    0.56875, '#9ed93a',
+                    0.65, '#fde725'
+                ],
+                'total_diversity_resi': [
+                    "step",
+                    ["get", "total_diversity_resi"],
+                    'gray',  // default color if value is less than the first stop
+                    0, '#440154',
+                    0.1, '#46327f',
+                    0.2, '#365c8d',
+                    0.3, '#277f8e',
+                    0.4, '#1fa288',
+                    0.5, '#4ac26d',
+                    0.6, '#9ed93a',
+                    0.7, '#fde725'
+                ],
+                'diff': [
+                    "step",
+                    ["get", "diff"],
+                    'gray',  // default color if value is less than the first stop
+                    -0.79, '#CF2245',
+                    -0.62375, '#E16A6C',
+                    -0.4575, '#F4B195',
+                    -0.29125, '#F7D5C6',
+                    -0.125, '#fff',
+                    0.04125, '#CDE3EE',
+                    0.2075, '#A3CEE3',
+                    0.37375, '#6AA9CF',
+                    0.54, '#3385BB'
+                ]
+};
 
 const censusList1 = ['white_diversity_exp',
        'black_diversity_exp', 'asian_diversity_exp', 'hispanic_diversity_exp',
@@ -3671,11 +3685,7 @@ $('.introButton').on('click',function(){
 
 
 let protocol = new pmtiles.Protocol();
-maplibregl.addProtocol("pmtiles",protocol.tile);
-
-let PMTILES_URL_tract = "https://dewsfcxuf47u5.cloudfront.net/segregation_all-10-13.pmtiles";
-let PMTILES_URL_county = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties-2-11.pmtiles";
-let PMTILES_URL_CBSA = "https://dewsfcxuf47u5.cloudfront.net/tl_2020_us_cbsa.pmtiles";
+maplibregl.addProtocol("pmtiles",protocol.tile)
 
 let PMTILES_URL_tract_weekday_late_night = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_weekday_late_night_10-14.pmtiles";
 let PMTILES_URL_tract_weekend_late_night = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_intervals_weekend_late_night_10-14.pmtiles";
@@ -3699,10 +3709,6 @@ let PMTILES_URL_county_weekend_evening = "https://dewsfcxuf47u5.cloudfront.net/s
 let PMTILES_URL_county_weekday_late_evening = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_weekday_late_evening_0-11.pmtiles";
 let PMTILES_URL_county_weekend_late_evening = "https://dewsfcxuf47u5.cloudfront.net/segregation_all_counties_intervals_weekend_late_evening_0-11.pmtiles";
 
-const p_tract = new pmtiles.PMTiles(PMTILES_URL_tract)
-const p_county = new pmtiles.PMTiles(PMTILES_URL_county)
-const p_CBSA = new pmtiles.PMTiles(PMTILES_URL_CBSA)
-
 const p_tract_weekday_late_night = new pmtiles.PMTiles(PMTILES_URL_tract_weekday_late_night)
 const p_tract_weekend_late_night = new pmtiles.PMTiles(PMTILES_URL_tract_weekend_late_night)
 const p_tract_weekday_morning = new pmtiles.PMTiles(PMTILES_URL_tract_weekday_morning)
@@ -3724,10 +3730,6 @@ const p_county_weekday_evening = new pmtiles.PMTiles(PMTILES_URL_county_weekday_
 const p_county_weekend_evening = new pmtiles.PMTiles(PMTILES_URL_county_weekend_evening)
 const p_county_weekday_late_evening = new pmtiles.PMTiles(PMTILES_URL_county_weekday_late_evening)
 const p_county_weekend_late_evening = new pmtiles.PMTiles(PMTILES_URL_county_weekend_late_evening)
-
-protocol.add(p_tract);
-protocol.add(p_county);
-protocol.add(p_CBSA);
 
 protocol.add(p_tract_weekday_late_night);
 protocol.add(p_tract_weekend_late_night);
@@ -3857,23 +3859,21 @@ function createPopUp(popUp,layer,layerA,map,hoveredStateId,svg){
    
 
     var layerPopUpInfo = {
-         'county_weird':{
-            'sourceLayer':'segregation_all_countiesfgb',
-            'source':'seg_2_11'
+         'county_source':{
+            'sourceLayer':'segregation_all_counties_intervals_weekday_afternoon_new',
+            'source':'county_weekday_afternoon'
         },
 
-        'tracts_weird':{
-            'sourceLayer':'segregation_allfgb',
-            'source':'seg_10_13'
+        'tracts_source':{
+            'sourceLayer':'segregation_all_intervals_weekday_afternoon',
+            'source':'tract_weekday_afternoon'
             },
-
 
         'county_outline':{
-            'sourceLayer':'segregation_all_countiesfgb',
-            'source':'seg_2_11'
+            'sourceLayer':'segregation_all_counties_intervals_weekday_afternoon_new',
+            'source':'county_weekday_afternoon'
             },
           
-
     }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -3891,6 +3891,31 @@ function createPopUp(popUp,layer,layerA,map,hoveredStateId,svg){
         // e.stopPropagation();
         metric = $("#censusDropdown1 input").val();
         city = $("#cityDropdown1 input").val();
+
+        if (metric === 'hispanic_diversity_exp') {
+    comparedMetric = 'Percentage of Hispanic Population';
+    var hismetric = e.features[0]['properties']['hispanic_perc'];
+}
+
+        if (metric === 'asian_diversity_exp') {
+    comparedMetric = 'Percentage of Asian Population';
+    var hismetric = e.features[0]['properties']['asian_perc'];
+}
+
+        if (metric === 'white_diversity_exp') {
+    comparedMetric = 'Percentage of White Population';
+    var hismetric = e.features[0]['properties']['white_perc'];
+}
+
+        if (metric === 'total_diversity_exp') {
+    comparedMetric = 'Total Residential Diversity';
+    var hismetric = e.features[0]['properties']['total_diversity_resi'];
+}
+
+        if (metric === 'diff') {
+    comparedMetric = 'Total Residential Diversity';
+    var hismetric = e.features[0]['properties']['total_diversity_resi'];
+}
 
         var div_score_exp  = e.features[0]['properties'][metric];
 
@@ -3936,7 +3961,23 @@ function createPopUp(popUp,layer,layerA,map,hoveredStateId,svg){
         $('#medianIncValue').text(' ' + d3.format(".0f")(medianIncValue));
         $('#totolPopValue').text(' ' + d3.format(".1f")(totolPopValue));
 
+    // var featuress = map.querySourceFeatures('seg_2_11', {
+    //     sourceLayer: 'segregation_all_countiesfgb'
+    // });
 
+    // //console.log(featuress);
+    
+    // featuress.forEach(feature => {
+    //     // Extract properties from each feature
+    //     const div_score_exp = feature.properties[metric];
+    //     // Extract other properties as needed
+    //     // ...
+    //     // Perform operations with the properties
+    //     // ...
+    //     //console.log(div_score_exp)
+    // });
+
+    //console.log(newLayerID)
 
     Papa.parse(CBSA_boxplot, {
       download: true,
@@ -4073,8 +4114,17 @@ drawMIBoxPlot(svg, newMIData, medianIncValue);
               complete: function (nationalhistogramResults) {
                 const nationalhistorgramData = nationalhistogramResults.data;
 
-                const result_hitogram = nationalhistorgramData.find((row) => row[0] === metric);
-                const result_WHhistogram = histogramData.find((row) => row[1] === metro && row[3] === metric);
+                const result_histogram = nationalhistorgramData.find(row => 
+                                            row[0] === metric &&
+                                            row[18] === newWeekdayID &&
+                                            row[19] === newIntervalID
+                                                        );
+
+                const result_WHhistogram = histogramData.find((row) => 
+                                            row[1] === metro &&
+                                            row[3] === metric &&
+                                            row[21] === newWeekdayID &&
+                                            row[22] === newIntervalID);
 
                         var currentZoom = map.getZoom();
                         var zoomThreshold = 10;
@@ -4113,23 +4163,23 @@ drawMIBoxPlot(svg, newMIData, medianIncValue);
                 };
 
 if (currentZoom < zoomThreshold) {
-      var bin_0 = parseFloat(result_hitogram[1]);
-      var bin_1 = parseFloat(result_hitogram[2]);
-      var bin_2 = parseFloat(result_hitogram[3]);
-      var bin_3 = parseFloat(result_hitogram[4]);
-      var bin_4 = parseFloat(result_hitogram[5]);
-      var bin_5 = parseFloat(result_hitogram[6]);
-      var bin_6 = parseFloat(result_hitogram[7]);
-      var bin_7 = parseFloat(result_hitogram[8]);
-      var bin_8 = parseFloat(result_hitogram[9]);
-      var bin_0_perc = parseFloat(result_hitogram[10] * 100);
-      var bin_1_perc = parseFloat(result_hitogram[11] * 100);
-      var bin_2_perc = parseFloat(result_hitogram[12] * 100);
-      var bin_3_perc = parseFloat(result_hitogram[13] * 100);
-      var bin_4_perc = parseFloat(result_hitogram[14] * 100);
-      var bin_5_perc = parseFloat(result_hitogram[15] * 100);
-      var bin_6_perc = parseFloat(result_hitogram[16] * 100);
-      var bin_7_perc = parseFloat(result_hitogram[17] * 100);
+      var bin_0 = parseFloat(result_histogram[1]);
+      var bin_1 = parseFloat(result_histogram[2]);
+      var bin_2 = parseFloat(result_histogram[3]);
+      var bin_3 = parseFloat(result_histogram[4]);
+      var bin_4 = parseFloat(result_histogram[5]);
+      var bin_5 = parseFloat(result_histogram[6]);
+      var bin_6 = parseFloat(result_histogram[7]);
+      var bin_7 = parseFloat(result_histogram[8]);
+      var bin_8 = parseFloat(result_histogram[9]);
+      var bin_0_perc = parseFloat(result_histogram[10] * 100);
+      var bin_1_perc = parseFloat(result_histogram[11] * 100);
+      var bin_2_perc = parseFloat(result_histogram[12] * 100);
+      var bin_3_perc = parseFloat(result_histogram[13] * 100);
+      var bin_4_perc = parseFloat(result_histogram[14] * 100);
+      var bin_5_perc = parseFloat(result_histogram[15] * 100);
+      var bin_6_perc = parseFloat(result_histogram[16] * 100);
+      var bin_7_perc = parseFloat(result_histogram[17] * 100);
 
         var binRanges = [
            {bin: bin_0, value: bin_0_perc},
@@ -4164,11 +4214,31 @@ if (currentZoom < zoomThreshold) {
     } else if (currentZoom >= 18) {
         popupDistanceMultiplier = 0.001;
     }
-    
+
+    const popfeatures = map.queryRenderedFeatures(e.point);
+    const eefeature = popfeatures[0];
+        const coordinates = eefeature.geometry.coordinates[0]; // Assuming it's a polygon, selecting the first array of coordinates
+
+        // Find the coordinate with the lowest longitude (x-coordinate) and the lowest latitude (y-coordinate)
+        let bottomLeftCoordinate = coordinates[0];
+        for (const coord of coordinates) {
+            if (coord[0] < bottomLeftCoordinate[0]) {
+                bottomLeftCoordinate = coord;
+            } else if (coord[0] === bottomLeftCoordinate[0] && coord[1] < bottomLeftCoordinate[1]) {
+                bottomLeftCoordinate = coord;
+            }
+        }
+
+        // Calculate the popup position
+        const popupLngLat = [bottomLeftCoordinate[0], bottomLeftCoordinate[1]];
+    console.log(e.lngLat.lng, e.lngLat.lat)
         // Get the text
         popUpStr = `<div class='popup'>
 
             <h6>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h6>
+            
+            <h6>${comparedMetric}: ${d3.format(",.2%")(hismetric)}</h6>
+            <h6><br></h6>
             <h7>${geom_name}, ${geom_statename}</h7>
 
         </div>`;
@@ -4182,40 +4252,7 @@ if (currentZoom < zoomThreshold) {
         // else {
         // popUp.remove();
         // }
-/*
- map.on('click', 'county_outline', (e) => {
-            if (e.features.length > 0) {
-                if (hoveredStateId) {
-                    map.setFeatureState(
-                        {source: 'seg_2_11', id: hoveredStateId},
-                        {hover: false}
-                    );
-                }
-                hoveredStateId = e.features[0].id;
-                map.setFeatureState(
-                    {source: 'seg_2_11', id: hoveredStateId},
-                    {hover: true}
-                );
-           console.log(hoveredStateId)
-            }
-        });
 
-        // When the mouse leaves the state-fill layer, update the feature state of the
-        // previously hovered feature.
-        map.on('mouseleave', 'county_outline', () => {
-            if (hoveredStateId) {
-                map.setFeatureState(
-                    {source: 'seg_2_11', id: hoveredStateId},
-                    {hover: false}
-                );
-            }
-            hoveredStateId = null;
-        });*/
-
-
-
-        // Change the opacity 
-        
     });
 
 
@@ -4525,10 +4562,6 @@ svg.append("line")
   .attr("stroke", "#555")
   .attr("stroke-dasharray", "3,3");
 
-
-
-
-
 svg.append("line")
 
   .attr("x1", x(data[3]))
@@ -4537,7 +4570,6 @@ svg.append("line")
   .attr("y2", center) // Swap y2 and x2
   .attr("stroke", "#555")
   .attr("stroke-dasharray", "3,3");
-
 
 svg.append("rect")
 
@@ -4556,8 +4588,6 @@ svg.selectAll("toto")
   .data([d3.min(data), d3.median(data), d3.max(data)])
   .enter()
   .append("line")
-
-
   .attr("x1", function (d) { return x(d); })
   .attr("x2", function (d) { return x(d); })
   .attr("y1", center - height / 2 ) // Swap x1 and y1
@@ -4571,8 +4601,6 @@ svg.selectAll(".whisker-label")
   .data([(d3.quantile(data, .25)), (d3.quantile(data, .75))])
   .enter()
   .append("text")
-
-
   .attr("x", function(d) { return x(d); })
   .attr("y", center - height / 2 )
   .text(function(d) { return formatTicks(d); }) // Display the value as text
@@ -4586,7 +4614,6 @@ svg.selectAll(".whisker-label_below")
   .data([d3.min(data), d3.median(data), d3.max(data)])
   .enter()
   .append("text")
-
   .attr("x", function(d) { return x(d); })
   .attr("y", center + height * 2 + 3)
   .text(function(d) { return formatTicks(d); }) // Display the value as text
@@ -4600,11 +4627,9 @@ svg.selectAll(".whisker-label_below")
 if (newWHData.length > 0){
 // Show the main horizontal line (swap x and y)
 
-    
        svg.append("line")
       .attr("x1", x(newWHData[0]))
       .attr("x2", x(newWHData[4]))
-
       .attr("y1", center) // Swap y1 and x1
       .attr("y2", center) // Swap y2 and x2
       .attr("stroke", "#555")
@@ -4615,7 +4640,6 @@ if (newWHData.length > 0){
     .attr("x", x(newWHData[1])) // Assuming newData[0] is the lower bound
     .attr("y", center - height / 2 ) // Swap x and y
     .attr("width", x(newWHData[3]) - x(newWHData[1]))
-    
     .attr("height", height)
     .attr("stroke", "#555")
     .attr("fill", "#f7b285")
@@ -4628,8 +4652,6 @@ svg.selectAll("toto")
   .data([newWHData[0], newWHData[4]])
   .enter()
   .append("line")
-
-
   .attr("x1", function (d) { return x(d); })
   .attr("x2", function (d) { return x(d); })
   .attr("y1", center - height / 2) // Swap x1 and y1
@@ -4640,7 +4662,6 @@ svg.selectAll("toto")
   .data([newWHData[2]])
   .enter()
   .append("line")
-
   .attr("x1", function (d) { return x(d); })
   .attr("x2", function (d) { return x(d); })
   .attr("y1", center - height / 2) // Swap x1 and y1
@@ -6006,7 +6027,10 @@ svg.selectAll(".whisker-label_below")
 // Define the URL of your hosted CSV file
 const csvFileURL = 'https://gist.githubusercontent.com/acopod/35967e9183f6de7c9db49389aed36681/raw/5885128198a67c7d3000296230962f390c776a69/CBSA_latlong.csv';
 const CBSA_boxplot = 'https://gist.githubusercontent.com/acopod/e8a65ad8156e9caf05625107996bd501/raw/1cb5474175a851ef84a766e9e33ae6eaadaaf443/boxplot_summary_cbsa_national.csv';
-const CBSA_histogram = 'https://gist.githubusercontent.com/acopod/ad35eca551b3d3d86efe6ceb7553f94e/raw/a9f070cc22b285ad810230552e8179e3c56412ca/histogram_summary_cbsa_national.csv';
+const CBSA_histogram_old = 'https://gist.githubusercontent.com/acopod/ad35eca551b3d3d86efe6ceb7553f94e/raw/a9f070cc22b285ad810230552e8179e3c56412ca/histogram_summary_cbsa_national.csv';
+
+const CBSA_histogram = 'https://gist.githubusercontent.com/acopod/170b05c1723996a0c312c180a9c46943/raw/401841ba0c6327270aec94bb2e502aec23f16978/histogram_summary_cbsa_interval';
+
 let cityName; // Declare cityName variable in a broader scope
 let min_b;
 newTPData = [];
@@ -6053,7 +6077,7 @@ Papa.parse(csvFileURL, {
                               // Fly to the selected location
                               map.flyTo({
                                 center: [intptlon, intptlat],
-                                zoom: 10,
+                                zoom: 10.5,
                                 essential: true,
                               });
 
@@ -6183,14 +6207,19 @@ Papa.parse(csvFileURL, {
 
     $('#censusDropdown1').dropdown({
       onChange: function (value, text, $selectedItem) {
+
         var selectedcensus = text;
         var selectedtext_translated = catDict1[selectedcensus];
 
         var currentZoom = map.getZoom();
         var zoomThreshold = 10;
 
-                const result_WHhistogram = histogramData.find((row) => row[1] === cityName && row[3] === selectedtext_translated);
-                const result_hitogram = nationalhistorgramData.find((row) => row[0] === selectedtext_translated);
+                const result_WHhistogram = histogramData.find((row) => row[1] === cityName && row[3] === selectedtext_translated&&
+                                            row[21] === newWeekdayID &&
+                                            row[22] === newIntervalID);
+                const result_histogram = nationalhistorgramData.find((row) => row[0] === selectedtext_translated&&
+                row[18] === newWeekdayID &&
+                row[19] === newIntervalID);
 
                 if (currentZoom >= zoomThreshold) {
                       var CBSAbin_0 = parseFloat(result_WHhistogram[4]);
@@ -6228,23 +6257,23 @@ Papa.parse(csvFileURL, {
                 };
 
             if (currentZoom < zoomThreshold) {
-      var bin_0 = parseFloat(result_hitogram[1]);
-      var bin_1 = parseFloat(result_hitogram[2]);
-      var bin_2 = parseFloat(result_hitogram[3]);
-      var bin_3 = parseFloat(result_hitogram[4]);
-      var bin_4 = parseFloat(result_hitogram[5]);
-      var bin_5 = parseFloat(result_hitogram[6]);
-      var bin_6 = parseFloat(result_hitogram[7]);
-      var bin_7 = parseFloat(result_hitogram[8]);
-      var bin_8 = parseFloat(result_hitogram[9]);
-      var bin_0_perc = parseFloat(result_hitogram[10] * 100);
-      var bin_1_perc = parseFloat(result_hitogram[11] * 100);
-      var bin_2_perc = parseFloat(result_hitogram[12] * 100);
-      var bin_3_perc = parseFloat(result_hitogram[13] * 100);
-      var bin_4_perc = parseFloat(result_hitogram[14] * 100);
-      var bin_5_perc = parseFloat(result_hitogram[15] * 100);
-      var bin_6_perc = parseFloat(result_hitogram[16] * 100);
-      var bin_7_perc = parseFloat(result_hitogram[17] * 100);
+      var bin_0 = parseFloat(result_histogram[1]);
+      var bin_1 = parseFloat(result_histogram[2]);
+      var bin_2 = parseFloat(result_histogram[3]);
+      var bin_3 = parseFloat(result_histogram[4]);
+      var bin_4 = parseFloat(result_histogram[5]);
+      var bin_5 = parseFloat(result_histogram[6]);
+      var bin_6 = parseFloat(result_histogram[7]);
+      var bin_7 = parseFloat(result_histogram[8]);
+      var bin_8 = parseFloat(result_histogram[9]);
+      var bin_0_perc = parseFloat(result_histogram[10] * 100);
+      var bin_1_perc = parseFloat(result_histogram[11] * 100);
+      var bin_2_perc = parseFloat(result_histogram[12] * 100);
+      var bin_3_perc = parseFloat(result_histogram[13] * 100);
+      var bin_4_perc = parseFloat(result_histogram[14] * 100);
+      var bin_5_perc = parseFloat(result_histogram[15] * 100);
+      var bin_6_perc = parseFloat(result_histogram[16] * 100);
+      var bin_7_perc = parseFloat(result_histogram[17] * 100);
 
 
 var binRanges = [
@@ -6500,10 +6529,10 @@ function updatewHhistoRanges(updatedData) {
 
 
 
-const national_histogram = 'https://gist.githubusercontent.com/acopod/32a8afe3dddb034f477ecce19961f4c7/raw/54fca9757905899fd4882384a72ab503f555f7c5/histogram_summary_national.csv';
+const national_histogram_old = 'https://gist.githubusercontent.com/acopod/32a8afe3dddb034f477ecce19961f4c7/raw/54fca9757905899fd4882384a72ab503f555f7c5/histogram_summary_national.csv';
 
 
-
+const national_histogram = 'https://gist.githubusercontent.com/acopod/b0512ff7fcf45872ba806e040416d963/raw/2844f8c46995c933a12a4d87cdb605760d0033e1/histogram_summary_national_interval';
 
 Papa.parse(national_histogram, {
   download: true,
@@ -6515,30 +6544,39 @@ Papa.parse(national_histogram, {
 
     // Add an event listener to the dropdown selection change
     $('#censusDropdown1').dropdown({
-          onChange: function (value, text, $selectedItem) {
+        onChange: function (value, text, $selectedItem) {
             var selectedcensus = text;
             var selectedtext_translated = catDict1[selectedcensus];
-            const result_hitogram = historgramData.find((row) => row[0] === selectedtext_translated);
+            console.log(newWeekdayID);
+            console.log(newIntervalID);
+            console.log(selectedtext_translated);
 
-            if (result_hitogram) {
-      var bin_0 = parseFloat(result_hitogram[1]);
-      var bin_1 = parseFloat(result_hitogram[2]);
-      var bin_2 = parseFloat(result_hitogram[3]);
-      var bin_3 = parseFloat(result_hitogram[4]);
-      var bin_4 = parseFloat(result_hitogram[5]);
-      var bin_5 = parseFloat(result_hitogram[6]);
-      var bin_6 = parseFloat(result_hitogram[7]);
-      var bin_7 = parseFloat(result_hitogram[8]);
-      var bin_8 = parseFloat(result_hitogram[9]);
-      var bin_0_perc = parseFloat(result_hitogram[10] * 100);
-      var bin_1_perc = parseFloat(result_hitogram[11] * 100);
-      var bin_2_perc = parseFloat(result_hitogram[12] * 100);
-      var bin_3_perc = parseFloat(result_hitogram[13] * 100);
-      var bin_4_perc = parseFloat(result_hitogram[14] * 100);
-      var bin_5_perc = parseFloat(result_hitogram[15] * 100);
-      var bin_6_perc = parseFloat(result_hitogram[16] * 100);
-      var bin_7_perc = parseFloat(result_hitogram[17] * 100);
+            const result_histogram = historgramData.find(row =>
+                row[0] === selectedtext_translated &&
+                row[18] === newWeekdayID &&
+                row[19] === newIntervalID
+            );
 
+            console.log(result_histogram)
+
+            if (result_histogram) {
+      var bin_0 = parseFloat(result_histogram[1]);
+      var bin_1 = parseFloat(result_histogram[2]);
+      var bin_2 = parseFloat(result_histogram[3]);
+      var bin_3 = parseFloat(result_histogram[4]);
+      var bin_4 = parseFloat(result_histogram[5]);
+      var bin_5 = parseFloat(result_histogram[6]);
+      var bin_6 = parseFloat(result_histogram[7]);
+      var bin_7 = parseFloat(result_histogram[8]);
+      var bin_8 = parseFloat(result_histogram[9]);
+      var bin_0_perc = parseFloat(result_histogram[10] * 100);
+      var bin_1_perc = parseFloat(result_histogram[11] * 100);
+      var bin_2_perc = parseFloat(result_histogram[12] * 100);
+      var bin_3_perc = parseFloat(result_histogram[13] * 100);
+      var bin_4_perc = parseFloat(result_histogram[14] * 100);
+      var bin_5_perc = parseFloat(result_histogram[15] * 100);
+      var bin_6_perc = parseFloat(result_histogram[16] * 100);
+      var bin_7_perc = parseFloat(result_histogram[17] * 100);
 
 var binRanges = [
    {bin: bin_0, value: bin_0_perc},
@@ -6550,7 +6588,6 @@ var binRanges = [
    {bin: bin_6, value: bin_6_perc},
    {bin: bin_7, value: bin_7_perc},
    {bin: bin_8, value: 0},
-
 ];
       drawHistogram(binRanges);
 
@@ -6579,6 +6616,83 @@ var binRanges = [
         });
       },
     });
+
+
+
+function parseHistogramData() {
+    Papa.parse(national_histogram, {
+        download: true,
+        complete: function(histogramResults) {
+            const histogramData = histogramResults.data;
+
+            var selectedTextTranslated = 'total_diversity_exp';
+            console.log(newWeekdayID);
+            console.log(newIntervalID);
+            console.log(selectedTextTranslated);
+
+            const resultHistogram = histogramData.find(row =>
+                row[0] === selectedTextTranslated &&
+                row[18] === newWeekdayID &&
+                row[19] === newIntervalID
+            );
+
+            console.log(resultHistogram);
+
+            if (resultHistogram) {
+                var bin_0 = parseFloat(resultHistogram[1]);
+                var bin_1 = parseFloat(resultHistogram[2]);
+                var bin_2 = parseFloat(resultHistogram[3]);
+                var bin_3 = parseFloat(resultHistogram[4]);
+                var bin_4 = parseFloat(resultHistogram[5]);
+                var bin_5 = parseFloat(resultHistogram[6]);
+                var bin_6 = parseFloat(resultHistogram[7]);
+                var bin_7 = parseFloat(resultHistogram[8]);
+                var bin_8 = parseFloat(resultHistogram[9]);
+                var bin_0_perc = parseFloat(resultHistogram[10] * 100);
+                var bin_1_perc = parseFloat(resultHistogram[11] * 100);
+                var bin_2_perc = parseFloat(resultHistogram[12] * 100);
+                var bin_3_perc = parseFloat(resultHistogram[13] * 100);
+                var bin_4_perc = parseFloat(resultHistogram[14] * 100);
+                var bin_5_perc = parseFloat(resultHistogram[15] * 100);
+                var bin_6_perc = parseFloat(resultHistogram[16] * 100);
+                var bin_7_perc = parseFloat(resultHistogram[17] * 100);
+
+                var binRanges = [
+                    { bin: bin_0, value: bin_0_perc },
+                    { bin: bin_1, value: bin_1_perc },
+                    { bin: bin_2, value: bin_2_perc },
+                    { bin: bin_3, value: bin_3_perc },
+                    { bin: bin_4, value: bin_4_perc },
+                    { bin: bin_5, value: bin_5_perc },
+                    { bin: bin_6, value: bin_6_perc },
+                    { bin: bin_7, value: bin_7_perc },
+                    { bin: bin_8, value: 0 },
+                ];
+                drawHistogram(binRanges);
+            }
+
+            updatebin_0(bin_0);
+            updatebin_1(bin_1);
+            updatebin_2(bin_2);
+            updatebin_3(bin_3);
+            updatebin_4(bin_4);
+            updatebin_5(bin_5);
+            updatebin_6(bin_6);
+            updatebin_7(bin_7);
+            updatebin_8(bin_8);
+            updatebin_0_perc(bin_0_perc);
+            updatebin_1_perc(bin_1_perc);
+            updatebin_2_perc(bin_2_perc);
+            updatebin_3_perc(bin_3_perc);
+            updatebin_4_perc(bin_4_perc);
+            updatebin_5_perc(bin_5_perc);
+            updatebin_6_perc(bin_6_perc);
+            updatebin_7_perc(bin_7_perc);
+
+            console.log(`${bin_0_perc}`);
+        }
+    });
+}
 
 
 function updatebin_0(updatedData) {
@@ -6685,6 +6799,7 @@ drawHistogram(initialRanges);
 
 
 function drawHistogram(data, div_score_exp) {
+
     // Set the dimensions and margins of the graph for the histogram
     var maxPercentage = d3.max(data, function(d) { return d.value });
     var minPercentage = d3.min(data, function(d) { return d.value });
@@ -6715,55 +6830,60 @@ function drawHistogram(data, div_score_exp) {
 
     //console.log(currentZoom);
 
-    NationalHis
-        .enter()
-        .append("rect")
-        .merge(NationalHis)
-        .transition()
-        .duration(1000)
-        .attr("x", function(d) { return x(d.bin); })
-        .attr("y", function(d) { return y(d.value); })
-        .attr("width", 27)
-        .attr("height", function(d) { return histogramHeight - y(d.value); })
-        .attr("fill", function(d) {
-            if (zoomThreshold > currentZoom) {
-                if (d.bin <= div_score_exp && d.bin +  binWidths[0]  >= div_score_exp) {
-            return "#F97C2A"; // Highlight color
-        } else {
-            return "#ffe1cc"; // Default color
-        }
+NationalHis
+    .enter()
+    .append("rect")
+    .merge(NationalHis)
+    .transition()
+    .duration(1000)
+    .attr("x", function(d) { return x(d.bin); })
+    .attr("y", function(d) { return y(d.value); })
+    .attr("width", 27)
+    .attr("height", function(d) { return histogramHeight - y(d.value); })
+    .attr("fill", function(d) {
+        console.log('start')
+        if (zoomThreshold > currentZoom) {
+            if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
+                console.log('end')
+                return "#F97C2A"; // Highlight color
+                
+            } else {
+                return "#ffe1cc"; // Default color
             }
-             else {
-                if (zoomThreshold <= currentZoom) {
-                if (d.bin <= div_score_exp && d.bin +  binWidths[0]  >= div_score_exp) {
-            return "#F97C2A"; // Highlight color
+
         } else {
-            return "#f7b285"; // Default color
+            if (zoomThreshold <= currentZoom) {
+                if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
+                    console.log('end')
+                    return "#F97C2A"; // Highlight color
+                    
+                } else {
+                    return "#f7b285"; // Default color
+                }
+            }
         }
+
+    })
+    .attr("fill-opacity", "1")
+    .attr("rx", 5)
+    .attr("ry", 5)
+    .attr("stroke", function(d) {
+        if (zoomThreshold > currentZoom) {
+            if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
+                return "black"; // Highlight stroke color
+            } else {
+                return "#555"; // Default stroke color
+            }
+        } else {
+            if (zoomThreshold <= currentZoom) {
+                if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
+                    return "black"; // Highlight stroke color
+                } else {
+                    return "#555"; // Default stroke color
+                }
             }
         }
     })
-        .attr("fill-opacity", "1")
-        .attr("stroke", function(d) {
-            if (zoomThreshold > currentZoom) {
-                if (d.bin <= div_score_exp && d.bin +  binWidths[0]  >= div_score_exp) {
-            return "white"; // Highlight color
-        } else {
-            return "#555"; // Default color
-        }
-            }
-             else {
-                if (zoomThreshold <= currentZoom) {
-                if (d.bin <= div_score_exp && d.bin +  binWidths[0]  >= div_score_exp) {
-            return "white"; // Highlight color
-        } else {
-            return "#555"; // Default color
-        }
-            }
-        }
-    })
-        .attr("rx", 5)
-        .attr("ry", 5)
 
 };
             ///// Change the opacity back
@@ -6779,6 +6899,7 @@ map.on('click', layerA, (e) =>
                     );
                 }
                 hoveredStateId = e.features[0].id;
+                console.log(hoveredStateId)
                 map.setFeatureState(
                      {source: layerPopUpInfo[layerA]['source'], 
                                 sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
@@ -6808,7 +6929,6 @@ map.on('click', layerA, (e) =>
 
             map.on('mouseleave',layerA, event => {
                 
-               
                 if (hoveredStateId) {
                         map.setFeatureState(
                             {source: layerPopUpInfo[layerA]['source'], 
@@ -6922,22 +7042,6 @@ function loadLayers(map) {
         $("#undim").removeClass("loading disabled");
 
 
-        map.addSource('seg_10_13',{
-        type: "vector",
-        url: "pmtiles://" + PMTILES_URL_tract,
-        });
-
-        map.addSource('seg_2_11',{
-        type: "vector",
-        url: "pmtiles://" + PMTILES_URL_county,
-        });
-
-        map.addSource('NAME',{
-        type: "vector",
-        url: "pmtiles://" + PMTILES_URL_CBSA,
-        });
-
-
         map.addSource('tract_weekday_late_night',{
         type: "vector",
         url: "pmtiles://" + PMTILES_URL_tract_weekday_late_night,
@@ -7041,65 +7145,6 @@ function loadLayers(map) {
 
 
 
-        map.addLayer({
-                "id":"tracts",
-                "source": "seg_10_13",
-                "source-layer":"segregation_allfgb",
-                "type": "fill",
-                 'layout': {
-                // Make the layer visible by default.
-                'visibility': 'visible'
-                  },
-                "paint": {
-                    "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        /*stops: [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],*/
-                    default: 'gray',
-
-                         },
-                    'fill-opacity': 1,        
-                //     'fill-opacity': [
-                //     'interpolate',
-
-                //     ['linear'],
-                //     ['zoom'],
-                //     // When zoom is 10, buildings will be 100% transparent.
-                //     12,
-                //                         ['case',
-                //     ['boolean', ['feature-state', 'hover'], false],
-                //     0.9,
-                //     0.7],
-                //     // When zoom is 18 or higher, buildings will be 100% opaque.
-                //     20,
-                //     ['case',
-                //     ['boolean', ['feature-state', 'hover'], false],
-                //     0.9,
-                //     0.1]
-                    
-
-                // ]
-                    
-                }
-            },firstLineId);
-
-
                 map.addLayer({
                 "id":"tract_wdln",
                 "source": "tract_weekday_late_night",
@@ -7109,20 +7154,21 @@ function loadLayers(map) {
                 'visibility': 'none'
                   },
                 "paint": {
-                    "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                                  },
-                                 'fill-opacity': 1, 
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 
                          }
                  },firstLineId);
 
@@ -7135,50 +7181,52 @@ function loadLayers(map) {
                 'visibility': 'none'
                   },
                 "paint": {
-                    "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                                  },
-                                 'fill-opacity': 1, 
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 
                          }
                  },firstLineId);
 
 
 
                 map.addLayer({
-                "id":"tract_wdm",
-                "source": "tract_weekday_morning",
-                "source-layer":"segregation_all_intervals_weekday_morning",
-                "type": "fill",
-                 'layout': {
-                'visibility': 'none'
-                  },
-                "paint": {
-                    "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                                  },
-                                 'fill-opacity': 1, 
-                         }
-                 },firstLineId);
+                    "id": "tract_wdm",
+                    "source": "tract_weekday_morning",
+                    "source-layer": "segregation_all_intervals_weekday_morning",
+                    "type": "fill",
+                    'layout': {
+                        'visibility': 'none'
+                    },
+                    "paint": {
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1
+                    }
+                }, firstLineId);
 
                 map.addLayer({
                 "id":"tract_wem",
@@ -7189,20 +7237,21 @@ function loadLayers(map) {
                 'visibility': 'none'
                   },
                 "paint": {
-                    "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                                  },
-                                 'fill-opacity': 1, 
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 
                          }
                  },firstLineId);
 
@@ -7212,23 +7261,24 @@ function loadLayers(map) {
                 "source-layer":"segregation_all_intervals_weekday_afternoon",
                 "type": "fill",
                  'layout': {
-                'visibility': 'none'
+                'visibility': 'visible'
                   },
                 "paint": {
-                    "fill-color": {
-                        property:'total_diversity_exp',
-                        stops: [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                                  },
-                                 'fill-opacity': 1, 
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 
                          }
                  },firstLineId);
 
@@ -7241,20 +7291,21 @@ function loadLayers(map) {
                 'visibility': 'none'
                   },
                 "paint": {
-                    "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                                  },
-                                 'fill-opacity': 1, 
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 
                          }
                  },firstLineId);
 
@@ -7267,20 +7318,21 @@ function loadLayers(map) {
                 'visibility': 'none'
                   },
                 "paint": {
-                    "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                                  },
-                                 'fill-opacity': 1, 
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 
                          }
                  },firstLineId);
 
@@ -7293,20 +7345,21 @@ function loadLayers(map) {
                 'visibility': 'none'
                   },
                 "paint": {
-                    "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                                  },
-                                 'fill-opacity': 1, 
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 
                          }
                  },firstLineId);
 
@@ -7319,20 +7372,21 @@ function loadLayers(map) {
                 'visibility': 'none'
                   },
                 "paint": {
-                    "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                                  },
-                                 'fill-opacity': 1, 
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 
                          }
                  },firstLineId);
 
@@ -7345,20 +7399,21 @@ function loadLayers(map) {
                 'visibility': 'none'
                   },
                 "paint": {
-                    "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                                  },
-                                 'fill-opacity': 1, 
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 
                          }
                  },firstLineId);
 
@@ -7366,6 +7421,100 @@ function loadLayers(map) {
 
 let recordedLayerIds = [];
 
+  let isWeekday = true;
+
+  // Function to toggle between weekday and weekend
+
+function toggleWeekend(isWeekdayToggle) {
+    const weekdayButton = document.getElementById('weekdayButton');
+    const weekendButton = document.getElementById('weekendButton');
+    if (isWeekdayToggle) {
+      weekdayButton.classList.add('active'); // Add CSS class for active state
+      weekendButton.classList.remove('active');
+    } else {
+      weekendButton.classList.add('active'); // Add CSS class for active state
+      weekdayButton.classList.remove('active');
+    }
+
+    isWeekday = isWeekdayToggle;
+}
+
+/*
+function updateWeekdayWeekend(updatedData) {
+    let togglelayerIds;
+    if (updatedData === 'tract_wdm' || updatedData === 'counties_wdm') {
+      togglelayerIds = ['tract_wem', 'counties_wem'];
+    }
+    console.log(togglelayerIds)
+    toggleLayers(togglelayerIds);
+}
+*/
+
+console.log(newLayerID)
+  // Add event listeners to the new buttons
+  document.getElementById('weekdayButton').addEventListener('click', function() {
+    toggleWeekend(true); // Set it to weekday
+    //console.log(newLayerID)
+    translateLayerID(newLayerID)
+  });
+
+  document.getElementById('weekendButton').addEventListener('click', function() {
+    toggleWeekend(false); // Set it to weekend
+    //console.log(newLayerID)
+    translateLayerID(newLayerID)
+  });
+
+  // Initial call to set the button text based on the initial state
+  toggleWeekend(isWeekday);
+
+function translateLayerID(newLayerID) {
+    var translatedID;
+
+    if (newLayerID.includes('tract_wdle')) {
+        translatedID = ['tract_wele', 'counties_wele'];
+    }
+
+    if (newLayerID.includes('tract_wdm')) {
+        translatedID = ['tract_wem', 'counties_wem'];
+    }
+
+    if (newLayerID.includes('tract_wda')) {
+        translatedID = ['tract_wea', 'counties_wea'];
+    }
+
+    if (newLayerID.includes('tract_wde')) {
+        translatedID = ['tract_wee', 'counties_wee'];
+    }
+
+    if (newLayerID.includes('tract_wdln')) {
+        translatedID = ['tract_weln', 'counties_weln'];
+    }
+
+    if (newLayerID.includes('tract_wele')) {
+        translatedID = ['tract_wdle', 'counties_wdle'];
+    }
+
+    if (newLayerID.includes('tract_wem')) {
+        translatedID = ['tract_wdm', 'counties_wdm'];
+    }
+
+    if (newLayerID.includes('tract_wea')) {
+        translatedID = ['tract_wda', 'counties_wda'];
+    }
+
+    if (newLayerID.includes('tract_wee')) {
+        translatedID = ['tract_wde', 'counties_wde'];
+    }
+
+    if (newLayerID.includes('tract_weln')) {
+        translatedID = ['tract_wdln', 'counties_wdln'];
+    }
+
+    console.log(translatedID);
+    toggleLayers(translatedID);
+    updateLayerID(translatedID);
+
+}
 
 // Function to toggle layer visibility
 function toggleLayers(layerIds) {
@@ -7398,63 +7547,95 @@ function toggleLayers(layerIds) {
     });
 }
 
-const buttons = document.querySelectorAll('.ui.button');
-buttons.forEach(button => {
+const intervalButtons = document.querySelectorAll('#intervalButton .ui.button');
+intervalButtons.forEach(button => {
     button.addEventListener('click', () => {
+        //parseHistogramData();
         const buttonId = button.id;
         let layerIds = [];
-
+        let intervalIndex;
+        let weekdayIndex;
         // Check if the toggle is on weekday or weekend
         if (isWeekday) {
             if (buttonId === 'morningButton') {
                 layerIds.push('tract_wdm', 'counties_wdm');
+                intervalIndex = 'morning';
+                weekdayIndex = 'weekday';
+
             } else if (buttonId === 'afternoonButton') {
                 layerIds.push('tract_wda', 'counties_wda');
+                intervalIndex = 'afternoon';
+                weekdayIndex = 'weekday';
             } else if (buttonId === 'eveningButton') {
                 layerIds.push('tract_wde', 'counties_wde');
+                intervalIndex = 'evening';
+                weekdayIndex = 'weekday';
             } else if (buttonId === 'lateEveningButton') {
                 layerIds.push('tract_wdle','counties_wdle');
+                intervalIndex = 'late evening';
+                weekdayIndex = 'weekday';
             } else if (buttonId === 'lateNightButton') {
                 layerIds.push('tract_wdln', 'counties_wdln');
+                intervalIndex = 'late night';
+                weekdayIndex = 'weekday';
             }
 
         } else { // Weekend
             if (buttonId === 'morningButton') {
                 layerIds.push('tract_wem', 'counties_wem');
+                intervalIndex = 'morning';
+                weekdayIndex = 'weekend';
             } else if (buttonId === 'afternoonButton') {
                 layerIds.push('tract_wea', 'counties_wea');
+                intervalIndex = 'afternoon';
+                weekdayIndex = 'weekend';
             } else if (buttonId === 'eveningButton') {
                 layerIds.push('tract_wee', 'counties_wee');
+                intervalIndex = 'evening';
+                weekdayIndex = 'weekend';
             } else if (buttonId === 'lateEveningButton') {
                 layerIds.push('tract_wele', 'counties_wele');
+                intervalIndex = 'late evening';
+                weekdayIndex = 'weekend';
             } else if (buttonId === 'lateNightButton') {
                 layerIds.push('tract_weln', 'counties_weln');
+                intervalIndex = 'late night';
+                weekdayIndex = 'weekend';
             }
         }
         // Reset button logic
         if (buttonId === 'reset') {
             layerIds.push('tracts', 'counties'); // Add general layers
         }
+        console.log(layerIds);
         updateLayerID(layerIds);
+        updateIntervalID(intervalIndex);
+        updateWeekdayID(weekdayIndex)
         // Call toggleLayers function with the appropriate layer IDs
         toggleLayers(layerIds);
+
+        // Add 'active' class to the clicked button
+        intervalButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
     });
 });
 
 function updateLayerID(updatedData) {
   newLayerID = updatedData;
   //console.log(newLayerID)
+  return newLayerID
 }
 
+function updateIntervalID(updatedData) {
+  newIntervalID = updatedData;
+  //console.log(newLayerID)
+  return newIntervalID
+}
 
-
-function updateWeekdayWeekend(updatedData) {
-    let togglelayerIds;
-    if (updatedData === 'tract_wdm' || updatedData === 'counties_wdm') {
-        togglelayerIds = ['tract_wem', 'counties_wem'];
-    }
-    console.log(togglelayerIds)
-    toggleLayers(togglelayerIds);
+function updateWeekdayID(updatedData) {
+  newWeekdayID = updatedData;
+  //console.log(newLayerID)
+  return newWeekdayID
 }
 
 
@@ -7482,33 +7663,6 @@ slider.addEventListener('input', function() {
 });
 
         map.addLayer({
-                    "id":"counties",
-                    "source": "seg_2_11",
-                    "source-layer":"segregation_all_countiesfgb",
-                    "type": "fill",
-                    'layout': {
-                    'visibility': 'visible'
-                      },
-                    "maxzoom": 10, // Set zoom level to whatever suits your needs
-                    "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,},
-                      },firstLineId);
-
-
-        map.addLayer({
                     "id":"counties_wdln",
                     "source": "county_weekday_late_night",
                     "source-layer":"segregation_all_counties_intervals_weekday_late_night_new",
@@ -7518,20 +7672,21 @@ slider.addEventListener('input', function() {
                       },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
                     "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,},
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 },
                       },firstLineId);
 
 
@@ -7545,20 +7700,21 @@ slider.addEventListener('input', function() {
                       },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
                     "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,},
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 },
                       },firstLineId);
 
 
@@ -7572,20 +7728,21 @@ slider.addEventListener('input', function() {
                       },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
                     "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,},
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 },
                       },firstLineId);
 
 
@@ -7599,20 +7756,21 @@ slider.addEventListener('input', function() {
                       },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
                     "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,},
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 },
                       },firstLineId);
 
 
@@ -7622,24 +7780,25 @@ slider.addEventListener('input', function() {
                     "source-layer":"segregation_all_counties_intervals_weekday_afternoon_new",
                     "type": "fill",
                     'layout': {
-                    'visibility': 'none'
+                    'visibility': 'visible'
                       },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
                     "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,},
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 },
                       },firstLineId);
 
 
@@ -7653,20 +7812,21 @@ slider.addEventListener('input', function() {
                       },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
                     "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,},
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 },
                       },firstLineId);
 
 
@@ -7680,20 +7840,21 @@ slider.addEventListener('input', function() {
                       },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
                     "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,},
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 },
                       },firstLineId);
 
 
@@ -7707,20 +7868,21 @@ slider.addEventListener('input', function() {
                       },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
                     "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,},
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 },
                       },firstLineId);
 
 
@@ -7734,20 +7896,21 @@ slider.addEventListener('input', function() {
                       },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
                     "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,},
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 },
                       },firstLineId);
 
 
@@ -7761,20 +7924,21 @@ slider.addEventListener('input', function() {
                       },
                     "maxzoom": 10, // Set zoom level to whatever suits your needs
                     "paint": {
-                        "fill-color": {
-                        property:'total_diversity_exp',
-                        stops:  [[0, '#440154'],
-                                [0.071, '#440154'],
-                                [0.19, '#46327f'],
-                                [.282, '#365c8d'],
-                                [0.369, '#277f8e'],
-                                [0.449, '#1fa288'],
-                                [.524, '#4ac26d'],
-                                [0.603, '#9ed93a'],
-                                [0.8, '#fde725']],
-                        default: 'gray',
-                        },
-                        'fill-opacity': 1,},
+                        "fill-color": [
+                            "step",
+                            ["get", "total_diversity_exp"],
+                            'gray',  // default color if value is less than the first stop
+                            0, '#440154',
+                            0.08125, '#440154',
+                            0.1625, '#46327f',
+                            0.24375, '#365c8d',
+                            0.325, '#277f8e',
+                            0.40625, '#1fa288',
+                            0.4875, '#4ac26d',
+                            0.56875, '#9ed93a',
+                            0.65, '#fde725'
+                        ],
+                        'fill-opacity': 1 },
                       },firstLineId);
 
 
@@ -7783,11 +7947,11 @@ slider.addEventListener('input', function() {
 
                 map.addLayer({
                     "id":"tracts_outline",
-                    "source": "seg_10_13",
-                    "source-layer":"segregation_allfgb",
+                    "source": "tract_weekday_afternoon",
+                    "source-layer":"segregation_all_intervals_weekday_afternoon",
                     "type": "line",
                     "paint": {
-                        'line-color': 'red',
+                        'line-color': 'rgb(186, 50, 79)',
                     'line-width':[
                             'case',
                             ['boolean', ['feature-state', 'hover'], false],
@@ -7807,11 +7971,11 @@ slider.addEventListener('input', function() {
 
         map.addLayer({
                     "id":"county_outline",
-                    "source": "seg_2_11",
-                    "source-layer":"segregation_all_countiesfgb",
+                    "source": "county_weekday_afternoon",
+                    "source-layer":"segregation_all_counties_intervals_weekday_afternoon_new",
                     "type": "line",
                     "paint": {
-                        'line-color': 'red',
+                        'line-color': 'rgb(186, 50, 79)',
                     'line-width':[
                             'case',
                             ['boolean', ['feature-state', 'hover'], false],
@@ -7833,9 +7997,9 @@ slider.addEventListener('input', function() {
 
 
        map.addLayer({
-                    "id":"county_weird",
-                    "source": "seg_2_11",
-                    "source-layer":"segregation_all_countiesfgb",
+                    "id":"county_source",
+                    "source": "county_weekday_afternoon",
+                    "source-layer":"segregation_all_counties_intervals_weekday_afternoon_new",
                     "type": "fill",
                     "maxzoom": 10,
                     "paint": {
@@ -7846,9 +8010,9 @@ slider.addEventListener('input', function() {
         },firstLineId);
 
         map.addLayer({
-                "id":"tracts_weird",
-                "source": "seg_10_13",
-                "source-layer":"segregation_allfgb",
+                "id":"tracts_source",
+                "source": "tract_weekday_afternoon",
+                "source-layer":"segregation_all_intervals_weekday_afternoon",
                 "type": "fill",
                 "paint": {
                     "fill-color": 'red',
@@ -7859,16 +8023,6 @@ slider.addEventListener('input', function() {
 
 
 
-function changeDow(day) {
-    console.log("A")
-    map.setFilter('counties_intervals_layer', ['==', 'weekday', day]);
-}
-
-
-function changeInterval(interval) {
-    map.setFilter('counties_intervals_layer', ['all', ['==', 'interval', interval], ['==', 'dow', getSelectedDow()]]);
-}
-    
         // Change paint on metric change
         
         $('#censusDropdown1').on('change',function(){
@@ -7882,14 +8036,9 @@ function changeInterval(interval) {
             map.setPaintProperty(                
             'counties', 'fill-color', choroplethColors[metric]
             );
-            map.setPaintProperty(                
-            'counties_intervals_layer', 'fill-color', choroplethColors[metric]
-            );
+
             map.setPaintProperty(                
             'tracts', 'fill-color', choroplethColors[metric]
-            );
-            map.setPaintProperty(                
-            'tract_11_14', 'fill-color', choroplethColors[metric]
             );
 
 
@@ -8029,76 +8178,75 @@ function changeInterval(interval) {
         const delay = 70;
         let clickedFeatureId = null;
 
-        createPopUp(popup,'counties','county_weird',map,hoveredStateId);
-        createPopUp(popup,'tracts','tracts_weird',map,hoveredStateId);
+        createPopUp(popup,'counties_weln','county_source',map,hoveredStateId);
+        createPopUp(popup,'counties_wdln','county_source',map,hoveredStateId);
+        createPopUp(popup,'counties_wdm','county_source',map,hoveredStateId);
+        createPopUp(popup,'counties_wem','county_source',map,hoveredStateId);
+        createPopUp(popup,'counties_wda','county_source',map,hoveredStateId);
+        createPopUp(popup,'counties_wea','county_source',map,hoveredStateId);
+        createPopUp(popup,'counties_wde','county_source',map,hoveredStateId);
+        createPopUp(popup,'counties_wee','county_source',map,hoveredStateId);
+        createPopUp(popup,'counties_wdle','county_source',map,hoveredStateId);
+        createPopUp(popup,'counties_wele','county_source',map,hoveredStateId);
 
-        createPopUp(popup,'counties_weln','county_weird',map,hoveredStateId);
-        createPopUp(popup,'counties_wdln','county_weird',map,hoveredStateId);
-        createPopUp(popup,'counties_wdm','county_weird',map,hoveredStateId);
-        createPopUp(popup,'counties_wem','county_weird',map,hoveredStateId);
-        createPopUp(popup,'counties_wda','county_weird',map,hoveredStateId);
-        createPopUp(popup,'counties_wea','county_weird',map,hoveredStateId);
-        createPopUp(popup,'counties_wde','county_weird',map,hoveredStateId);
-        createPopUp(popup,'counties_wee','county_weird',map,hoveredStateId);
-        createPopUp(popup,'counties_wdle','county_weird',map,hoveredStateId);
-        createPopUp(popup,'counties_wele','county_weird',map,hoveredStateId);
-
-        createPopUp(popup,'tract_wdln','tracts_weird',map,hoveredStateId);
-        createPopUp(popup,'tract_weln','tracts_weird',map,hoveredStateId);
-        createPopUp(popup,'tract_wdm','tracts_weird',map,hoveredStateId);
-        createPopUp(popup,'tract_wem','tracts_weird',map,hoveredStateId);
-        createPopUp(popup,'tract_wda','tracts_weird',map,hoveredStateId);
-        createPopUp(popup,'tract_wea','tracts_weird',map,hoveredStateId);
-        createPopUp(popup,'tract_wde','tracts_weird',map,hoveredStateId);
-        createPopUp(popup,'tract_wee','tracts_weird',map,hoveredStateId);
-        createPopUp(popup,'tract_wdle','tracts_weird',map,hoveredStateId);
-        createPopUp(popup,'tract_wele','tracts_weird',map,hoveredStateId);
+        createPopUp(popup,'tract_wdln','tracts_source',map,hoveredStateId);
+        createPopUp(popup,'tract_weln','tracts_source',map,hoveredStateId);
+        createPopUp(popup,'tract_wdm','tracts_source',map,hoveredStateId);
+        createPopUp(popup,'tract_wem','tracts_source',map,hoveredStateId);
+        createPopUp(popup,'tract_wda','tracts_source',map,hoveredStateId);
+        createPopUp(popup,'tract_wea','tracts_source',map,hoveredStateId);
+        createPopUp(popup,'tract_wde','tracts_source',map,hoveredStateId);
+        createPopUp(popup,'tract_wee','tracts_source',map,hoveredStateId);
+        createPopUp(popup,'tract_wdle','tracts_source',map,hoveredStateId);
+        createPopUp(popup,'tract_wele','tracts_source',map,hoveredStateId);
 
     };
 
 
-p_tract.getHeader().then(h => {
+p_tract_weekday_afternoon.getHeader().then(h => {
     const map = new maplibregl.Map({
         container: 'map',
         attributionControl: false,
         zoom: baseZoom,
         minZoom: 4,
         center: [-97.54593, 38.99387],
-        style: 'https://api.maptiler.com/maps/5f5a5e3a-bf8e-4515-b05b-423feccaabbd/style.json?key=is6mQIv8IXor3VbmKwq8',
+        style: 'https://api.maptiler.com/maps/45992c66-fe73-4986-89c0-06dec1da3923/style.json?key=HNi5BjBnVWZQP32PQRdv',
     });
 
         
     map.on('style.load', function() {
         loadLayers(map);
-
-
-
     });
 
 map.on('load', e => {
 
-    var featuress = map.querySourceFeatures('seg_2_11', {
-        sourceLayer: 'segregation_all_countiesfgb'
-    });
+    // var featuress = map.querySourceFeatures('seg_2_11', {
+    //     sourceLayer: 'segregation_all_countiesfgb'
+    // });
 
-    console.log(featuress);
-    featuress.forEach(feature => {
-        // Extract properties from each feature
-        const div_score_exp = feature.properties['asian_diversity_exp'];
-        // Extract other properties as needed
-        // ...
-        // Perform operations with the properties
-        // ...
-        console.log(div_score_exp)
-    });
+    // //console.log(featuress);
+
+    // featuress.forEach(feature => {
+    //     // Extract properties from each feature
+    //     const div_score_exp = feature.properties['asian_diversity_exp'];
+    //     // Extract other properties as needed
+    //     // ...
+    //     // Perform operations with the properties
+    //     // ...
+    //     //console.log(div_score_exp)
+    // });
 });
-
+//https://api.maptiler.com/maps/5f5a5e3a-bf8e-4515-b05b-423feccaabbd/style.json?key=is6mQIv8IXor3VbmKwq8
 document.getElementById('mapStyle1').addEventListener('click', function() {
     map.setStyle('https://api.maptiler.com/maps/bd3a8a99-b061-4a3a-a1c2-20d08f6ee042/style.json?key=HNi5BjBnVWZQP32PQRdv');
+    mapStyle1.classList.add('active'); // Add CSS class for active state
+    mapStyle2.classList.remove('active');
 });
 
 document.getElementById('mapStyle2').addEventListener('click', function() {
-    map.setStyle('https://api.maptiler.com/maps/5f5a5e3a-bf8e-4515-b05b-423feccaabbd/style.json?key=is6mQIv8IXor3VbmKwq8');
+    map.setStyle('https://api.maptiler.com/maps/45992c66-fe73-4986-89c0-06dec1da3923/style.json?key=HNi5BjBnVWZQP32PQRdv');
+    mapStyle2.classList.add('active'); // Add CSS class for active state
+    mapStyle1.classList.remove('active');
 });
 
     map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
@@ -8178,13 +8326,10 @@ document.querySelector("#close").addEventListener("click", function(){
     document.querySelector(".popupIntro").style.display = "none";
 });
 
-
-
 $(document).ready(function() {
 /////////////////////////////
 ///////// Page functions ////
 /////////////////////////////
-
 
 $('.homeIcon').on('click',function(){
     $('.dimmer').addClass('active');
@@ -8205,10 +8350,7 @@ $('.message .close')
       .transition('fade')
     ;
   });
-
 });
-
-
 
         var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
             histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
@@ -8236,39 +8378,6 @@ $('.message .close')
               .attr("class", "axisWhite")
 
 
-
-
-
-
-let isWeekday = true;
-// Function to toggle between weekday and weekend
-function toggleWeekend() 
-{
-            const button = document.getElementById('tgl');
-            if (isWeekday) {
-                button.textContent = 'Weekend';
-                button.classList.add('weekend'); // Add CSS class for weekend
-                button.classList.remove('weekday'); // Remove CSS class for weekday
-            } else {
-                button.textContent = 'Weekday';
-                button.classList.add('weekday'); // Add CSS class for weekday
-                button.classList.remove('weekend'); // Remove CSS class for weekend
-            }
-            isWeekday = !isWeekday;
-
-        function updateWeekdayWeekend(updatedData) {
-            let togglelayerIds;
-            if (updatedData === 'tract_wdm' || updatedData === 'counties_wdm') {
-                togglelayerIds = ['tract_wem', 'counties_wem'];
-            }
-            console.log(togglelayerIds)
-            toggleLayers(togglelayerIds);
-        };
-
-          console.log(layerIds)
-
-            updateWeekdayWeekend(updatedData);
-}
-
-
-
+var newLayerID = ['tract_wda', 'counties_wda']
+var newIntervalID = 'afternoon'
+var newWeekdayID = 'weekday'

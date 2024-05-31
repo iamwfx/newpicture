@@ -395,21 +395,28 @@
 
 <div id="functions" class="hidden">
     <div class="first-row">
-        <button class="ui tiny toggle button weekday" id="tgl" onclick="toggleWeekend(), updateWeekdayWeekend()">Weekday</button>
+        <div id="weekDayEndButton" class="ui fluid tiny icon buttons">
+          <button id="weekdayButton" class="ui basic button active">Weekday</button>
+          <button id="weekendButton" class="ui basic button">Weekend</button>
+        </div>
+<!--         <button class="ui tiny toggle button weekday" id="tgl" onclick="toggleWeekend(), updateWeekdayWeekend()">Weekday</button> -->
         <div id="intervalButton" class=" ui fluid tiny icon buttons">
-            <button id="morningButton" class="ui button">Morning</button>
-            <button id="afternoonButton" class="ui button">Afternoon</button>
-            <button id="eveningButton" class="ui button">Evening</button>
-            <button id="lateEveningButton" class="ui button">Late evening</button>
-            <button id="lateNightButton" class="ui button">Late night</button>
+            <button id="morningButton" class="ui basic button">Morning</button>
+            <button id="afternoonButton" class="ui basic button active">Afternoon</button>
+            <button id="eveningButton" class="ui basic button">Evening</button>
+            <button id="lateEveningButton" class="ui basic button">Late evening</button>
+            <button id="lateNightButton" class="ui basic button">Late night</button>
         </div>
     </div>
     <div class="second-row">
         <div id="styleButton" class=" ui fluid tiny icon buttons">
-        <button id="mapStyle1" class="ui tiny button">Satellite</button>
-        <button id="mapStyle2" class="tiny ui button">Basic</button>
+          <button id="mapStyle2" class="tiny ui basic button active">Basic</button>
+        <button id="mapStyle1" class="ui tiny basic button">Satellite</button>
+        
         </div>
+<!--          <div id="intervalButton" class=" ui fluid tiny icon buttons">
         <button class="ui tiny button" id="reset">Reset</button>
+        </div> -->
         <div class="ui slider" id="slider-1"></div>
         
     </div>
