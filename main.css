@@ -50,8 +50,26 @@ a {
 h5 {
   margin: 1em 0em 1em 0em !important;
   font-family: 'Lato';
+
 }
 
+
+/* CSS code for h6 heading */
+h6 {
+    margin: 0em 0em 0em 0em !important;
+    font-size: 1em; /* Adjust the font size as needed */
+    color: #555; /* Optionally, adjust the color */
+    font-family: 'Lato';
+    line-height: 18px;
+}
+
+h7 {
+    margin: 0em 0em 0em 0em !important;
+    font-size: 0.8em; /* Adjust the font size as needed */
+    color: #555; /* Optionally, adjust the color */
+    font-family: 'Lato';
+
+}
 
 /*.map {
   position: absolute;
@@ -130,10 +148,7 @@ body{
   
 }
 
-.mapboxgl-popup {
-max-width: 400px;
-font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
-}
+
 
 #my-result-container {
 /*  border: 1px solid # f97c29;*/
@@ -174,13 +189,18 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   color: black;
 }
 
+.ui.fluid.search.selection.dropdown.active.visible {
+  border-color: #d3d3d3 !important;
+}
+
+
 #map {
   position:fixed;
   right: 0px;
 /*  top: 60px;*/
 /*  height:calc(100% - 60px);*/
   height:100%;
-  width:calc(100% - 340px - 5rem);
+  width:calc(100% - 5rem);
 }   
 
 
@@ -203,7 +223,7 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   border-right: 1px solid lightgray;
   /*left:0px;
   top:60px;*/
-  background: #fff;
+  background: rgba(255, 255, 255, 0.8);
 /*  height: calc(100% - 60px);*/
   height:100%;
 /*  bottom: 0px;*/
@@ -212,6 +232,8 @@ font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
   z-index: 1; /* Stay on top */
   overflow-x: hidden; /* Disable horizontal scroll */
   font-family: Lato !important; 
+  backdrop-filter: saturate(40%) blur(20px);
+
 
 
 }
@@ -554,32 +576,135 @@ body {
 
 
 #functions {
-    background-color: #f97c29 !important;
+    background-color: rgba(255, 255, 255, 0.8); !important;
     position: fixed;
-    left: 32.8rem;
+    left: 30rem;
     bottom: 0.7rem;
-    /* height: calc(100% - 60px); */
-    height: 6.3rem;
-    width: 30.5rem;
     border-radius: 10px;
-    align-items: flex-end;
     display: flex;
     padding: 8.7px;
-    flex-wrap: wrap;
-    align-content: space-between;
-    justify-content: flex-start;
+    flex-direction: column;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 1; 
+    transform: translateY(0);
+    backdrop-filter: saturate(100%) blur(10px)
+}
+.first-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
 
-}   
-
+.second-row {
+    display: inline-flex;
+    margin-top: 10px; /* Adjust as needed */
+}
 
 .axisWhite line{
   stroke: #555;
 }
 
 .axisWhite path{
-  stroke: white;
+  stroke: rgba(255, 255, 255, 0);
 }
 
 #slider-1{
   width: 97%;
+  padding: 6px 14px 0px 15px;
+}
+
+#tgl{
+width: 110px;
+
+}
+
+    .ui.tiny.toggle.button.weekday {
+        background-color: white; /* Blue color for weekday */
+        color: rgba(0, 0, 0, .6); /* White text color */
+    }
+    .ui.tiny.toggle.button.weekend {
+        background-color: rgb(247, 178, 133); /* Green color for weekend */
+        color: rgba(0, 0, 0, .6); /* White text color */
+    }
+
+#intervalButton{
+  padding: 0px 0px 0px 5px;
+}
+
+#weekDayEndButton{
+padding: 0px 3px 0px 0px;
+    width: 265px;
+}
+
+#dowButton{
+  padding: 0px 0px 0px 2px;
+}
+
+#styleButton{
+  padding: 0px 7px 0px 0px;
+      width: 268px
+}
+
+.ui.button{
+  background: white;
+}
+
+.ui.button:hover {
+  background-color: rgb(247, 178, 133);
+  color: white;
+}
+
+.maplibregl-popup-content
+{
+  backdrop-filter: saturate(100%) blur(10px) !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+  line-height: 10px !important; 
+  padding: 12px 15px 12px 13px !important;
+  max-width: 300px !important;
+  border-radius: 10px !important;
+}
+
+.maplibregl-popup.mapboxgl-popup.maplibregl-popup-anchor-bottom.mapboxgl-popup-anchor-bottom{
+  max-width: 300px !important;
+}
+
+
+.maplibregl-popup-tip {
+    display: none;
+}
+
+.ui.basic.active.button {
+    background-color: rgb(249, 124, 42);
+    background-image: none;
+    box-shadow: 0 0 0 1px transparent inset;
+    color: rgba(255, 255, 255, .95);
+}
+
+
+  .ui.basic.active.button:hover {
+  background-color: rgb(247, 178, 133);
+  color: white;
+}
+
+.ui.slider .inner .track-fill {
+    position: absolute;
+    border-radius: 4px;
+    background-color: rgb(247, 178, 133);
+}
+
+#weekendButton,
+#weekdayButton,
+#mapStyle1,
+#mapStyle2 {
+  width: 72px;
+  height: 30px;
+}
+
+#morningButton,
+#afternoonButton,
+#eveningButton,
+#lateEveningButton,
+#lateNightButton {
+  width: 72px;
+  height: 30px;
 }
