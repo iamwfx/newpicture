@@ -4352,9 +4352,9 @@ svg.append("rect")
   .attr("height", height ) // Swap width and height
   .attr("stroke", "#555")
   .style("fill", "#ffe1cc")
-  .attr("fill-opacity", 1)
-  .attr("rx", 3)
-  .attr("ry", 3);
+  .attr("fill-opacity", 1);
+  // .attr("rx", 3)
+  // .attr("ry", 3);
 
 svg.selectAll("toto")
   .data([d3.min(data), d3.median(data), d3.max(data)])
@@ -4414,10 +4414,10 @@ svg.append("rect")
     .attr("width", x(newTPData[3]) - x(newTPData[1]))
     .attr("height", height)
     .attr("stroke", "#555")
-    .attr("fill", "#f7b285")
+    .attr("fill", "#f7b285");
     //.attr("fill-opacity", 0)
-    .attr("rx", 3)
-    .attr("ry", 3);
+    // .attr("rx", 3)
+    // .attr("ry", 3);
 
     // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -4579,9 +4579,9 @@ svg.append("rect")
   .attr("height", height ) // Swap width and height
   .attr("stroke", "#555")
   .style("fill", "#ffe1cc")
-  .attr("fill-opacity", 1)
-  .attr("rx", 3)
-  .attr("ry", 3);
+  .attr("fill-opacity", 1);
+  // .attr("rx", 3)
+  // .attr("ry", 3);
 
 svg.selectAll("toto")
 
@@ -4642,10 +4642,10 @@ if (newWHData.length > 0){
     .attr("width", x(newWHData[3]) - x(newWHData[1]))
     .attr("height", height)
     .attr("stroke", "#555")
-    .attr("fill", "#f7b285")
+    .attr("fill", "#f7b285");
     //.attr("fill-opacity", 0)
-    .attr("rx", 3)
-    .attr("ry", 3);
+    // .attr("rx", 3)
+    // .attr("ry", 3);
 
     // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -4819,9 +4819,9 @@ svg.append("rect")
   .attr("height", height ) // Swap width and height
   .attr("stroke", "#555")   
   .style("fill", "#ffe1cc")
-  .attr("fill-opacity", 1)
-  .attr("rx", 3)
-  .attr("ry", 3);
+  .attr("fill-opacity", 1);
+  // .attr("rx", 3)
+  // .attr("ry", 3);
 
 svg.selectAll("toto")
   .data([d3.min(data), d3.median(data), d3.max(data)])
@@ -4881,10 +4881,10 @@ if (newBLData.length > 0){
     .attr("width", x(newBLData[3]) - x(newBLData[1]))
     .attr("height", height)
     .attr("stroke", "#555")
-    .attr("fill", "#f7b285")
+    .attr("fill", "#f7b285");
     //.attr("fill-opacity", 0)
-    .attr("rx", 3)
-    .attr("ry", 3);
+    // .attr("rx", 3)
+    // .attr("ry", 3);
 
     // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -5033,9 +5033,9 @@ svg.append("rect")
   .attr("height", height ) // Swap width and height
   .attr("stroke", "#555")
   .style("fill", "#ffe1cc")
-  .attr("fill-opacity", 1)
-  .attr("rx", 3)
-  .attr("ry", 3);
+  .attr("fill-opacity", 1);
+  // .attr("rx", 3)
+  // .attr("ry", 3);
 
 svg.selectAll("toto")
   .data([d3.min(data), d3.median(data), d3.max(data)])
@@ -5095,10 +5095,10 @@ if (newASData.length > 0){
     .attr("width", x(newASData[3]) - x(newASData[1]))
     .attr("height", height)
     .attr("stroke", "#555")
-    .attr("fill", "#f7b285")
+    .attr("fill", "#f7b285");
     //.attr("fill-opacity", 0)
-    .attr("rx", 3)
-    .attr("ry", 3);
+    // .attr("rx", 3)
+    // .attr("ry", 3);
 
     // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -5247,9 +5247,9 @@ svg.append("rect")
   .attr("height", height ) // Swap width and height
   .attr("stroke", "#555")
   .style("fill", "#ffe1cc")
-  .attr("fill-opacity", 1)
-  .attr("rx", 3)
-  .attr("ry", 3);
+  .attr("fill-opacity", 1);
+  // .attr("rx", 3)
+  // .attr("ry", 3);
 
 svg.selectAll("toto")
   .data([d3.min(data), d3.median(data), d3.max(data)])
@@ -5309,10 +5309,10 @@ if (newHIData.length > 0){
     .attr("width", x(newHIData[3]) - x(newHIData[1]))
     .attr("height", height)
     .attr("stroke", "#555")
-    .attr("fill", "#f7b285")
+    .attr("fill", "#f7b285");
     //.attr("fill-opacity", 0)
-    .attr("rx", 3)
-    .attr("ry", 3);
+    // .attr("rx", 3)
+    // .attr("ry", 3);
 
     // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -5462,9 +5462,9 @@ svg.append("rect")
   .attr("height", height ) // Swap width and height
   .attr("stroke", "#555")
   .style("fill", "#ffe1cc")
-  .attr("fill-opacity", 1)
-  .attr("rx", 3)
-  .attr("ry", 3);
+  .attr("fill-opacity", 1);
+  // .attr("rx", 3)
+  // .attr("ry", 3);
 
 svg.selectAll("toto")
   .data([d3.min(data), d3.median(data), d3.max(data)])
@@ -5524,10 +5524,10 @@ if (newOTData.length > 0){
     .attr("width", x(newOTData[3]) - x(newOTData[1]))
     .attr("height", height)
     .attr("stroke", "#555")
-    .attr("fill", "#f7b285")
+    .attr("fill", "#f7b285");
     //.attr("fill-opacity", 0)
-    .attr("rx", 3)
-    .attr("ry", 3);
+    // .attr("rx", 3)
+    // .attr("ry", 3);
 
     // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -5675,9 +5675,9 @@ svg.append("rect")
   .attr("height", height ) // Swap width and height
   .attr("stroke", "#555")
   .style("fill", "#ffe1cc")
-  .attr("fill-opacity", 1)
-  .attr("rx", 3)
-  .attr("ry", 3);
+  .attr("fill-opacity", 1);
+  // .attr("rx", 3)
+  // .attr("ry", 3);
 
 svg.selectAll("toto")
   .data([d3.min(data), d3.median(data), d3.max(data)])
@@ -5737,10 +5737,10 @@ if (newHEData.length > 0){
     .attr("width", x(newHEData[3]) - x(newHEData[1]))
     .attr("height", height)
     .attr("stroke", "#555")
-    .attr("fill", "#f7b285")
+    .attr("fill", "#f7b285");
     //.attr("fill-opacity", 0)
-    .attr("rx", 3)
-    .attr("ry", 3);
+    // .attr("rx", 3)
+    // .attr("ry", 3);
 
     // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -5895,9 +5895,9 @@ svg.append("rect")
   .attr("height", height ) // Swap width and height
   .attr("stroke", "#555")
   .style("fill", "#ffe1cc")
-  .attr("fill-opacity", 1)
-  .attr("rx", 3)
-  .attr("ry", 3);
+  .attr("fill-opacity", 1);
+  // .attr("rx", 3)
+  // .attr("ry", 3);
 
 svg.selectAll("toto")
   .data([d3.min(data), d3.median(data), d3.max(data)])
@@ -5957,10 +5957,10 @@ if (newMIData.length > 0){
     .attr("width", x(newMIData[3]) - x(newMIData[1]))
     .attr("height", height)
     .attr("stroke", "#555")
-    .attr("fill", "#f7b285")
+    .attr("fill", "#f7b285");
     //.attr("fill-opacity", 0)
-    .attr("rx", 3)
-    .attr("ry", 3);
+    // .attr("rx", 3)
+    // .attr("ry", 3);
 
     // Show median, min, and max vertical lines (swap x and y)
 svg.selectAll("toto")
@@ -6845,28 +6845,28 @@ NationalHis
         if (zoomThreshold > currentZoom) {
             if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
                 console.log('end')
-                return "#F97C2A"; // Highlight color
+                return "#2974f9"; // Highlight color
                 
             } else {
-                return "#ffe1cc"; // Default color
+                return "#96bfff"; // Default color
             }
 
         } else {
             if (zoomThreshold <= currentZoom) {
                 if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
                     console.log('end')
-                    return "#F97C2A"; // Highlight color
+                    return "#2974f9"; // Highlight color
                     
                 } else {
-                    return "#f7b285"; // Default color
+                    return "#96bfff"; // Default color
                 }
             }
         }
 
     })
     .attr("fill-opacity", "1")
-    .attr("rx", 5)
-    .attr("ry", 5)
+    .attr("rx", 1)
+    .attr("ry", 1)
     .attr("stroke", function(d) {
         if (zoomThreshold > currentZoom) {
             if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
