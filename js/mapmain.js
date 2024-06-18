@@ -3881,7 +3881,7 @@ function createPopUp(popUp,layer,layerA,map,hoveredStateId,svg){
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
-    ///// Change the opacity of the highlighted HOLC zone 
+    ///// Change the opacity of the highlighted zone 
     map.on('click',layer, e => {
 
 
@@ -3958,8 +3958,8 @@ function createPopUp(popUp,layer,layerA,map,hoveredStateId,svg){
         $('#ASPopValue').text(' ' + d3.format(",.1%")(ASPopValue));
         $('#HIPopValue').text(' ' + d3.format(",.1%")(HIPopValue));
         $('#OTPopValue').text(' ' + d3.format(",.1%")(OTPopValue));
-        $('#medianIncValue').text(' ' + d3.format(".0f")(medianIncValue));
-        $('#totolPopValue').text(' ' + d3.format(".1f")(totolPopValue));
+        $('#medianIncValue').text(' ' + d3.format("$,.0f")(medianIncValue));
+        $('#totolPopValue').text(' ' + d3.format(",.0f")(totolPopValue));
 
     // var featuress = map.querySourceFeatures('seg_2_11', {
     //     sourceLayer: 'segregation_all_countiesfgb'
@@ -6841,27 +6841,34 @@ NationalHis
     .attr("width", 27)
     .attr("height", function(d) { return histogramHeight - y(d.value); })
     .attr("fill", function(d) {
-        console.log('start')
-        if (zoomThreshold > currentZoom) {
-            if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
-                console.log('end')
-                return "#2974f9"; // Highlight color
-                
-            } else {
-                return "#96bfff"; // Default color
-            }
-
+        // console.log(d.bin)
+        if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
+          // console.log('end')
+          return "#2974f9"; // Highlight color
+          
         } else {
-            if (zoomThreshold <= currentZoom) {
-                if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
-                    console.log('end')
-                    return "#2974f9"; // Highlight color
-                    
-                } else {
-                    return "#96bfff"; // Default color
-                }
-            }
+            return "#96bfff"; // Default color
         }
+        // if (zoomThreshold > currentZoom) {
+        //     if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
+        //         console.log('end')
+        //         return "#2974f9"; // Highlight color
+                
+        //     } else {
+        //         return "#96bfff"; // Default color
+        //     }
+
+        // } else {
+        //     if (zoomThreshold <= currentZoom) {
+        //         if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
+        //             console.log('end')
+        //             return "#2974f9"; // Highlight color
+                    
+        //         } else {
+        //             return "#96bfff"; // Default color
+        //         }
+        //     }
+        // }
 
     })
     .attr("fill-opacity", "1")
@@ -6887,9 +6894,12 @@ NationalHis
 
 };
             ///// Change the opacity back
+
+
 map.on('click', layerA, (e) => 
 {
-        if (e.features.length > 0) {               
+        if (e.features.length > 0) {      
+                   
             if (hoveredStateId) {
                     map.setFeatureState(
                          {source: layerPopUpInfo[layerA]['source'], 
@@ -6899,7 +6909,7 @@ map.on('click', layerA, (e) =>
                     );
                 }
                 hoveredStateId = e.features[0].id;
-                console.log(hoveredStateId)
+                console.log("hover state id"+hoveredStateId)
                 map.setFeatureState(
                      {source: layerPopUpInfo[layerA]['source'], 
                                 sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
