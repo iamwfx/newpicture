@@ -102,14 +102,14 @@ const censusCatDict_v2 = {
                                 [0.21875, '#4d0f2c']],
 
              "total_diversity_exp":  [[0, '#440154'],
-                                [0.08125, '#440154'],
-                                [0.1625, '#46327f'],
-                                [0.24375, '#365c8d'],
-                                [0.325, '#277f8e'],
-                                [0.40625, '#1fa288'],
-                                [0.4875, '#4ac26d'],
-                                [0.56875, '#9ed93a'],
-                                [0.65, '#fde725']],
+                                [0.08125, '#46327f'],
+                                [0.1625, '#365c8d'],
+                                [0.24375, '#277f8e'],
+                                [0.325, '#1fa288'],
+                                [0.40625, '#4ac26d'],
+                                [0.4875, '#9ed93a'],
+                                [0.56875, '#fde725']],
+                                // [0.65, '#fde725']],
              // [[0, '#d53e4f'],
              //                    [0.08125, '#f46d43'],
              //                    [0.1625, '#fdae61'],
@@ -7157,8 +7157,17 @@ function loadLayers(map) {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7184,8 +7193,17 @@ function loadLayers(map) {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7194,6 +7212,7 @@ function loadLayers(map) {
                             0.4875, '#4ac26d',
                             0.56875, '#9ed93a',
                             0.65, '#fde725'
+                    
                         ],
                         'fill-opacity': 1 
                          }
@@ -7214,7 +7233,16 @@ function loadLayers(map) {
                             "step",
                             ["get", "total_diversity_exp"],
                             'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7241,7 +7269,16 @@ function loadLayers(map) {
                             "step",
                             ["get", "total_diversity_exp"],
                             'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7268,7 +7305,16 @@ function loadLayers(map) {
                             "step",
                             ["get", "total_diversity_exp"],
                             'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7295,7 +7341,16 @@ function loadLayers(map) {
                             "step",
                             ["get", "total_diversity_exp"],
                             'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7321,8 +7376,17 @@ function loadLayers(map) {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7348,8 +7412,17 @@ function loadLayers(map) {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7375,8 +7448,17 @@ function loadLayers(map) {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7402,8 +7484,17 @@ function loadLayers(map) {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7675,8 +7766,17 @@ slider.addEventListener('input', function() {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7703,8 +7803,17 @@ slider.addEventListener('input', function() {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7731,8 +7840,17 @@ slider.addEventListener('input', function() {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7759,8 +7877,17 @@ slider.addEventListener('input', function() {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7815,8 +7942,17 @@ slider.addEventListener('input', function() {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7843,8 +7979,17 @@ slider.addEventListener('input', function() {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7871,8 +8016,17 @@ slider.addEventListener('input', function() {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7899,8 +8053,17 @@ slider.addEventListener('input', function() {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -7927,8 +8090,17 @@ slider.addEventListener('input', function() {
                         "fill-color": [
                             "step",
                             ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
+                           'gray',  // default color if value is less than the first stop
+                            // 0, '#440154',
+                            // 0.08125, '#440154',
+                            // 0.1625, '#46327f',
+                            // 0.24375, '#365c8d',
+                            // 0.325, '#277f8e',
+                            // 0.40625, '#1fa288',
+                            // 0.4875, '#4ac26d',
+                            // 0.56875, '#9ed93a',
+                            // 0.65, '#fde725'
+                            0, 'gray',
                             0.08125, '#440154',
                             0.1625, '#46327f',
                             0.24375, '#365c8d',
@@ -8209,7 +8381,7 @@ p_tract_weekday_afternoon.getHeader().then(h => {
         attributionControl: false,
         zoom: baseZoom,
         minZoom: 4,
-        center: [-97.54593, 38.99387],
+        center: [-102.37803, 38.53908],
         style: 'https://api.maptiler.com/maps/45992c66-fe73-4986-89c0-06dec1da3923/style.json?key=HNi5BjBnVWZQP32PQRdv',
     });
 
