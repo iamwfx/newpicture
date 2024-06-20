@@ -3923,7 +3923,7 @@ function createPopUp(popUp,map,hoveredStateId,svg){
   function highlightOnClick(layer,layerA){
     let hoveredFeatureId = null;
     map.on('mouseenter',layer, e => {
-          hoveredFeatureId = e.features[0].id;
+          
           
           if (e.features.length > 0) {              
             if (hoveredFeatureId) {
@@ -3936,6 +3936,7 @@ function createPopUp(popUp,map,hoveredStateId,svg){
                   {hover: false}
               );
           }
+          hoveredFeatureId = e.features[0].id;
           map.setFeatureState(
                   {source:layerPopUpInfo[layerA]['source'], 
                   sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
@@ -6988,63 +6989,47 @@ NationalHis
             ///// Change the opacity back
 
 
-// map.on('click', layerA, (e) => { 
-//   console.log('test');
-//   console.log(layerA);
-//   console.log(e.features[0]);   
-//         if (e.features.length > 0) {              
-//             if (hoveredStateId) {
-//                     map.setFeatureState(
-//                          {source: layerPopUpInfo[layerA]['source'], 
-//                                 sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
-//                             id: hoveredStateId},
-//                         {hover: false}
-//                     );
-//                 }
-//             // hoveredStateId = e.features[0].id;
-//             hoveredStateId = true;
-//             console.log(hoveredStateId)
-//             map.setFeatureState(
+// map.on('mouseenter', layerA, (e) => { 
+ 
+          
+//           if (e.features.length > 0) {              
+//             if (hoveredFeatureId) {
+//               map.setFeatureState(
+//                   {
+//                     source: layerPopUpInfo[layerA]['source'], 
+//                     sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
+//                     id: hoveredFeatureId
+//                     },
+//                   {hover: false}
+//               );
+//           }
+//           hoveredFeatureId = e.features[0].id;
+//           map.setFeatureState(
 //                   {source:layerPopUpInfo[layerA]['source'], 
 //                   sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
-//                   id: hoveredStateId},
-//                 {hover: true}
-//             )};
-//                /* if (hoveredStateId) {
-//                     map.removeFeatureState(
-//                         {source: layerPopUpInfo[layer]['source'], 
-//                         sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
-//                         id: hoveredStateId}
-//                     );
-//                 }
-
-//                 hoveredStateId = e.features[0].id;
-//                 map.setFeatureState(
-//                     {source: layerPopUpInfo[layer]['source'], 
-//                     sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
-//                     id: hoveredStateId},
-//                     {hover: true}
-//                                    );
-//                  console.log(hoveredStateId)*/
-//             // }       
+//                   id: hoveredFeatureId
+//                 },
+//                 {hover: true})
+//               }
 // });
        
 
 
-//             map.on('mouseleave',layerA, event => {
-                
-//                 if (hoveredFeatureId) {
-//                         map.setFeatureState(
-//                             {source: layerPopUpInfo[layerA]['source'], 
-//                                 sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
-//                             id: hoveredFeatureId},
-//                             {hover: false}
-//                         );
-//                     };
-//                 hoveredFeatureId = null;
-//                 map.getCanvas().style.cursor = '';
-//                 popUp.remove();
-//             });
+//         map.on('mouseleave',layerA, event => {
+            
+//           if (hoveredFeatureId !==null ) {
+//             map.setFeatureState(
+//                 {
+//                   source: layerPopUpInfo[layerA]['source'], 
+//                   sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
+//                   id: hoveredFeatureId},
+//                 {hover: false}
+//             );
+//           };
+//           hoveredFeatureId = null;
+//           map.getCanvas().style.cursor = '';
+//           popUp.remove();
+//         });
  
 }
 
@@ -8080,55 +8065,6 @@ $(document).ready(function() {
                           'fill-opacity': 1 },
                         },firstLineId);
           map.addLayer({
-              "id":"tracts_outline",
-              "source": "tract_div_weekday_afternoon",
-              "source-layer":"segregation_all_intervals_weekday_afternoon",
-              "type": "line",
-              "paint": {
-                  'line-color': 'rgb(186, 50, 79)',
-              'line-width':[
-                      'case',
-                      ['boolean', ['feature-state', 'hover'], false],
-                      4,
-                      0
-                      ]
-              //  [
-              //     'interpolate',
-              //     ['linear'],
-              //     ['zoom'],
-              //     // When zoom is 10, set the line width to 0.5 units.
-              //     12, 0.5,
-              //     // When zoom is 20, set the line width to 3 units.
-              //     30, 20,
-              // ]
-                          },});
-
-          map.addLayer({
-                      "id":"county_outline",
-                      "source": "county_weekday_afternoon",
-                      "source-layer":"segregation_all_counties_intervals_weekday_afternoon_new",
-                      "type": "line",
-                      "paint": {
-                          'line-color': 'rgb(186, 50, 79)',
-                      'line-width':[
-                              'case',
-                              ['boolean', ['feature-state', 'hover'], false],
-                              4,
-                              0
-                              ]
-                      //  [
-                      //     'interpolate',
-                      //     ['linear'],
-                      //     ['zoom'],
-                      //     // When zoom is 10, set the line width to 0.5 units.
-                      //     12, 0.5,
-                      //     // When zoom is 20, set the line width to 3 units.
-                      //     30, 20,
-                      // ]
-                                  },
-
-          });
-          map.addLayer({
                       "id":"county_source",
                       "source": "county_weekday_afternoon",
                       "source-layer":"segregation_all_counties_intervals_weekday_afternoon_new",
@@ -8148,7 +8084,7 @@ $(document).ready(function() {
                         ]
                                   },
 
-          },firstLineId);
+          });
           map.addLayer({
                   "id":"tracts_source",
                   "source": "tract_div_weekday_afternoon",
@@ -8168,7 +8104,7 @@ $(document).ready(function() {
                         ]
 
                   }
-              },firstLineId);
+              });
 
           // Change paint on metric change
           
@@ -8180,15 +8116,16 @@ $(document).ready(function() {
 
               updateLegend(metric);
               
-              map.setPaintProperty(                
-              'counties', 'fill-color', choroplethColors[metric]
-              );
+              // map.setPaintProperty(                
+              // 'counties', 'fill-color', choroplethColors[metric]
+              // );
 
-              map.setPaintProperty(                
-              'tracts', 'fill-color', choroplethColors[metric]
-              );
+              // map.setPaintProperty(                
+              // 'tracts', 'fill-color', choroplethColors[metric]
+              // );
 
-
+              [layer,layerA] = getVisibleLayers();
+              console.log("line 8143"+layer);
               map.setPaintProperty(                
               'tract_div_wdle', 'fill-color', choroplethColors[metric]
               );
@@ -8303,31 +8240,11 @@ $(document).ready(function() {
   });
 
       // const delay = 70;
-      let clickedFeatureId = null;
+      let hoveredStateId = null;
       console.log("layers are"+map.getStyle.layers);
       
       createPopUp(popup,map,hoveredStateId);
-      // createPopUp(popup,'counties_div_weln','county_source',map,hoveredStateId);
-      // createPopUp(popup,'counties_div_wdln','county_source',map,hoveredStateId);
-      // createPopUp(popup,'counties_div_wdm','county_source',map,hoveredStateId);
-      // createPopUp(popup,'counties_div_wem','county_source',map,hoveredStateId);
-      // createPopUp(popup,'counties_div_wda','county_source',map,hoveredStateId);
-      // createPopUp(popup,'counties_div_wea','county_source',map,hoveredStateId);
-      // createPopUp(popup,'counties_div_wde','county_source',map,hoveredStateId);
-      // createPopUp(popup,'counties_div_wee','county_source',map,hoveredStateId);
-      // createPopUp(popup,'counties_div_wdle','county_source',map,hoveredStateId);
-      // createPopUp(popup,'counties_div_wele','county_source',map,hoveredStateId);
 
-      // createPopUp(popup,'tract_div_wdln','tracts_source',map,hoveredStateId);
-      // createPopUp(popup,'tract_div_weln','tracts_source',map,hoveredStateId);
-      // createPopUp(popup,'tract_div_wdm','tracts_source',map,hoveredStateId);
-      // createPopUp(popup,'tract_div_wem','tracts_source',map,hoveredStateId);
-      // createPopUp(popup,'tract_div_wda','tracts_source',map,hoveredStateId);
-      // createPopUp(popup,'tract_div_wea','tracts_source',map,hoveredStateId);
-      // createPopUp(popup,'tract_div_wde','tracts_source',map,hoveredStateId);
-      // createPopUp(popup,'tract_div_wee','tracts_source',map,hoveredStateId);
-      // createPopUp(popup,'tract_div_wdle','tracts_source',map,hoveredStateId);
-      // createPopUp(popup,'tract_div_wele','tracts_source',map,hoveredStateId);
 
   };
 
