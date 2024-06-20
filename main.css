@@ -320,9 +320,11 @@ body{
     flex-wrap: nowrap;
 
 }
-
 #icons a {
-  margin: 9rem 0rem -1rem 0 !important; /* Adjust the margin value as needed */
+  margin-top: 9rem; 
+  margin-bottom:-1rem; 
+  transform: rotate(270deg);
+  filter: brightness(0) invert(1);
 }
 .rightmenu{
   align-items: center;
@@ -564,12 +566,6 @@ body {
   shape-rendering: crispEdges;
 }
 
-
-    .rotate-90 {
-        transform: rotate(90deg);
-        filter: brightness(0) invert(1);
-
-    }
 
 #Boxplot_totalPop{
   transition: 1s;

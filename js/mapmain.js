@@ -3865,19 +3865,10 @@ function createPopUp(popUp,map,hoveredStateId,svg){
           'source':'county_weekday_afternoon'
       },
 
-      'tracts_source':{
+      'tract_source':{
           'sourceLayer':'segregation_all_intervals_weekday_afternoon',
           'source':'tract_div_weekday_afternoon'
-          },
-
-      // 'county_outline':{
-      //     'sourceLayer':'segregation_all_counties_intervals_weekday_afternoon_new',
-      //     'source':'county_weekday_afternoon'
-      //     },
-      // 'tract_outline':{
-      //       'sourceLayer':'segregation_all_intervals_weekday_afternoon_new',
-      //       'source':'tract_div_weekday_afternoon'
-      //       },
+          }
         
   }
 
@@ -3889,7 +3880,7 @@ function createPopUp(popUp,map,hoveredStateId,svg){
     var mapZoom = map.getZoom();
     
     var visibleLayers = null;
-    var visibileLayersA = null;
+    var visibleLayersA = null;
     // var visibileLayers = [];
     layers.forEach(function(layer) {
       if (mapZoom>10){
@@ -3918,19 +3909,43 @@ function createPopUp(popUp,map,hoveredStateId,svg){
         }
       }
     });
-    return [visibleLayers, visibileLayersA];
+    return [visibleLayers, visibleLayersA];
   }
   
   
-  // Example usage
-  [layer,layerA] = getVisibleLayers();
-  
-    ///// Change the opacity of the highlighted zone 
-  
-  function highlightOnClick(){
-    map.on('click',layer, e => {
+/////////////////////////////////
+////// GET VISIBLE LAYERS ///////
+/////////////////////////////////
 
-    
+[layer,layerA] = getVisibleLayers();
+///// Change the opacity of the highlighted zone 
+  
+  function highlightOnClick(layer,layerA){
+    let hoveredFeatureId = null;
+    map.on('mouseenter',layer, e => {
+          hoveredFeatureId = e.features[0].id;
+          
+          if (e.features.length > 0) {              
+            if (hoveredFeatureId) {
+              map.setFeatureState(
+                  {
+                    source: layerPopUpInfo[layerA]['source'], 
+                    sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
+                    id: hoveredFeatureId
+                    },
+                  {hover: false}
+              );
+          }
+          map.setFeatureState(
+                  {source:layerPopUpInfo[layerA]['source'], 
+                  sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
+                  id: hoveredFeatureId
+                },
+                {hover: true})
+          
+
+          }
+       
           // Function to get visible layers
 
           //mousemove
@@ -3940,17 +3955,17 @@ function createPopUp(popUp,map,hoveredStateId,svg){
           city = $("#cityDropdown1 input").val();
 
           if (metric === 'hispanic_diversity_exp') {
-              comparedMetric = 'Percentage of Hispanic Population';
+              comparedMetric = 'Percentage Hispanic Population';
               var hismetric = e.features[0]['properties']['hispanic_perc'];
           }
 
           if (metric === 'asian_diversity_exp') {
-              comparedMetric = 'Percentage of Asian Population';
+              comparedMetric = 'Percentage Asian Population';
               var hismetric = e.features[0]['properties']['asian_perc'];
           }
 
           if (metric === 'white_diversity_exp') {
-              comparedMetric = 'Percentage of White Population';
+              comparedMetric = 'Percentage White Population';
               var hismetric = e.features[0]['properties']['white_perc'];
           }
 
@@ -4311,12 +4326,29 @@ function createPopUp(popUp,map,hoveredStateId,svg){
           // }
 
       });
+      map.on('mouseleave',layer, () => {
+
+        // hoveredFeatureId = e.features[0].id;        
+        if (hoveredFeatureId !==null ) {
+                map.setFeatureState(
+                    {
+                      source: layerPopUpInfo[layerA]['source'], 
+                      sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
+                      id: hoveredFeatureId},
+                    {hover: false}
+                );
+            };
+        hoveredFeatureId = null;
+        map.getCanvas().style.cursor = '';
+        popUp.remove();
+    });
+      
   
   }
-  highlightOnClick();
+  highlightOnClick(layer,layerA);
   map.on('zoomend', function() {
     [layer,layerA] = getVisibleLayers();
-    highlightOnClick()
+    highlightOnClick(layer,layerA)
   })
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /////// Boxplot functions//////////////////////////////////////////////////////////////////////
@@ -6956,63 +6988,63 @@ NationalHis
             ///// Change the opacity back
 
 
-map.on('click', layerA, (e) => { 
-  console.log('test');
-  console.log(layerA);
-  console.log(e.features[0]);   
-        if (e.features.length > 0) {              
-            if (hoveredStateId) {
-                    map.setFeatureState(
-                         {source: layerPopUpInfo[layerA]['source'], 
-                                sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
-                            id: hoveredStateId},
-                        {hover: false}
-                    );
-                }
-            // hoveredStateId = e.features[0].id;
-            hoveredStateId = true;
-            console.log(hoveredStateId)
-            map.setFeatureState(
-                  {source:layerPopUpInfo[layerA]['source'], 
-                  sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
-                  id: hoveredStateId},
-                {hover: true}
-            );
-               /* if (hoveredStateId) {
-                    map.removeFeatureState(
-                        {source: layerPopUpInfo[layer]['source'], 
-                        sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
-                        id: hoveredStateId}
-                    );
-                }
+// map.on('click', layerA, (e) => { 
+//   console.log('test');
+//   console.log(layerA);
+//   console.log(e.features[0]);   
+//         if (e.features.length > 0) {              
+//             if (hoveredStateId) {
+//                     map.setFeatureState(
+//                          {source: layerPopUpInfo[layerA]['source'], 
+//                                 sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
+//                             id: hoveredStateId},
+//                         {hover: false}
+//                     );
+//                 }
+//             // hoveredStateId = e.features[0].id;
+//             hoveredStateId = true;
+//             console.log(hoveredStateId)
+//             map.setFeatureState(
+//                   {source:layerPopUpInfo[layerA]['source'], 
+//                   sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
+//                   id: hoveredStateId},
+//                 {hover: true}
+//             )};
+//                /* if (hoveredStateId) {
+//                     map.removeFeatureState(
+//                         {source: layerPopUpInfo[layer]['source'], 
+//                         sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
+//                         id: hoveredStateId}
+//                     );
+//                 }
 
-                hoveredStateId = e.features[0].id;
-                map.setFeatureState(
-                    {source: layerPopUpInfo[layer]['source'], 
-                    sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
-                    id: hoveredStateId},
-                    {hover: true}
-                                   );
-                 console.log(hoveredStateId)*/
-            }       
-});
+//                 hoveredStateId = e.features[0].id;
+//                 map.setFeatureState(
+//                     {source: layerPopUpInfo[layer]['source'], 
+//                     sourceLayer:layerPopUpInfo[layer]['sourceLayer'],
+//                     id: hoveredStateId},
+//                     {hover: true}
+//                                    );
+//                  console.log(hoveredStateId)*/
+//             // }       
+// });
        
 
 
-            map.on('mouseleave',layerA, event => {
+//             map.on('mouseleave',layerA, event => {
                 
-                if (hoveredStateId) {
-                        map.setFeatureState(
-                            {source: layerPopUpInfo[layerA]['source'], 
-                                sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
-                            id: hoveredStateId},
-                            {hover: false}
-                        );
-                    };
-                hoveredStateId = null;
-                map.getCanvas().style.cursor = '';
-                popUp.remove();
-            });
+//                 if (hoveredFeatureId) {
+//                         map.setFeatureState(
+//                             {source: layerPopUpInfo[layerA]['source'], 
+//                                 sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
+//                             id: hoveredFeatureId},
+//                             {hover: false}
+//                         );
+//                     };
+//                 hoveredFeatureId = null;
+//                 map.getCanvas().style.cursor = '';
+//                 popUp.remove();
+//             });
  
 }
 
@@ -7111,104 +7143,123 @@ $(document).ready(function() {
           map.addSource('tract_div_weekday_late_night',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_tract_div_weekday_late_night,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('tract_div_weekend_late_night',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_tract_div_weekend_late_night,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('tract_div_weekday_morning',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_tract_div_weekday_morning,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('tract_div_weekend_morning',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_tract_div_weekdend_morning,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('tract_div_weekday_afternoon',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_tract_div_weekday_afternoon,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('tract_div_weekend_afternoon',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_tract_div_weekend_afternoon,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('tract_div_weekday_evening',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_tract_div_weekday_evening,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('tract_div_weekend_evening',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_tract_div_weekend_evening,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('tract_div_weekday_late_evening',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_tract_div_weekday_late_evening,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('tract_div_weekend_late_evening',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_tract_div_weekend_late_evening,
+          'promoteId': 'GEOID10'
           });
 
 
           map.addSource('county_weekday_late_night',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_county_weekday_late_night,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('county_weekend_late_night',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_county_weekend_late_night,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('county_weekday_morning',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_county_weekday_morning,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('county_weekend_morning',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_county_weekdend_morning,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('county_weekday_afternoon',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_county_weekday_afternoon,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('county_weekend_afternoon',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_county_weekend_afternoon,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('county_weekday_evening',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_county_weekday_evening,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('county_weekend_evening',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_county_weekend_evening,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('county_weekday_late_evening',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_county_weekday_late_evening,
+          'promoteId': 'GEOID10'
           });
 
           map.addSource('county_weekend_late_evening',{
           type: "vector",
           url: "pmtiles://" + PMTILES_URL_county_weekend_late_evening,
+          'promoteId': 'GEOID10'
           });
-
 
 
           map.addLayer({
