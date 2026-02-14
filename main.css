@@ -1,12 +1,12 @@
 @font-face {
-  font-family: 'Lato';
+  font-family: Helvetica, Arial, sans-serif;
   }
 body {
         margin: 0;
         padding: 0;
         color: 'pink';
         font-size: 13px;
-        font-family: 'Lato', Arial, sans-serif;
+        font-family: Helvetica, Arial, sans-serif;
       }
 body * {
    -webkit-touch-callout: none;
@@ -37,7 +37,7 @@ h2 {
   font-size: 1.8em;
   text-align: left;
   margin: 0em !important;
-    font-family: 'Lato' !important;
+    font-family: Helvetica, Arial, sans-serif !important;
 }
 
 
@@ -49,7 +49,7 @@ a {
 }
 h5 {
   margin: 1em 0em 1em 0em !important;
-  font-family: 'Lato';
+  font-family: Helvetica, Arial, sans-serif;
 
 }
 
@@ -59,7 +59,7 @@ h6 {
     margin: 0em 0em 0em 0em !important;
     font-size: 1em; /* Adjust the font size as needed */
     color: #555; /* Optionally, adjust the color */
-    font-family: 'Lato';
+    font-family: Helvetica, Arial, sans-serif;
     line-height: 18px;
 }
 
@@ -67,7 +67,7 @@ h7 {
     margin: 0em 0em 0em 0em !important;
     font-size: 0.8em; /* Adjust the font size as needed */
     color: #555; /* Optionally, adjust the color */
-    font-family: 'Lato';
+    font-family: Helvetica, Arial, sans-serif;
 
 }
 
@@ -95,7 +95,7 @@ background: repeating-linear-gradient(-45deg,        #ff0000,   #ff0000 5px,   #
 .introHeader{
   color:white !important;
   font-size: 15px;
-  font-family: 'Lato', Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
 }
 .introButton{
   background:white !important;
@@ -103,7 +103,7 @@ background: repeating-linear-gradient(-45deg,        #ff0000,   #ff0000 5px,   #
 
 body{
   background: #f2f2f2;
-  font-family: 'Lato', Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 /* searchbar */
@@ -213,7 +213,7 @@ body{
 }*/
 
 .menu{
-    font-family: 'Lato', Arial, sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
 
 }
 
@@ -233,7 +233,7 @@ body{
   width: 340px;
   z-index: 1; /* Stay on top */
   overflow-x: hidden; /* Disable horizontal scroll */
-  font-family: Lato !important; 
+  font-family: Helvetica, Arial, sans-serif !important; 
   backdrop-filter: saturate(40%) blur(20px);
 
 
@@ -291,7 +291,7 @@ body{
   background-color: #2974f9 !important;
   border-right: 0.1px solid lightgray !important;
   position: fixed;
-  font-family: 'Lato', Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   display: flex !important;
   z-index: 8!important;
   margin-top: 0px !important;
@@ -308,7 +308,7 @@ body{
 /* CSS for the icon */
 #icons{
     position: fixed;
-    font-family: 'Lato', Arial, sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
     display: flex !important;
     z-index: 8!important;
     left: 0rem;
@@ -372,7 +372,7 @@ body{
   text-align: left;
   outline: none;
   font-size: 13px;
-  font-family: 'Lato', Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 /* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
@@ -395,7 +395,7 @@ body{
     left: 50%;
     top: 50%;
     border-radius: 8px;
-    font-family: "Lato",sans-serif;
+    font-family: Helvetica, Arial, sans-serif;
     display: none;
     text-align: center;
     z-index: 2;
@@ -468,7 +468,7 @@ img.logo {
   z-index: 1; /* Stay on top */
   overflow-x: hidden; /* Disable horizontal scroll */
   justify-content: space-around;
-  font-family: 'Lato', Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
   border-right: 1px solid gray;
 
 
@@ -525,7 +525,12 @@ tr:nth-child(even) {
 
 
 body {
-  font-family: 'Lato', Helvetica, Arial, sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.census-grid.ui.grid > .row {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 
 
