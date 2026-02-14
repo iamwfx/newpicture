@@ -27,6 +27,24 @@ const catDict1 ={'White Experienced Diversity':'white_diversity_exp',
             'Total Residential Diversity':'total_diversity_resi',
             "Difference":'diff'}
 
+const compDict ={'white_diversity_exp':'Percentage White Population',
+            'black_diversity_exp':'Black Experienced Diversity',
+            'hispanic_diversity_exp':"Percentage Hispanic Population",
+            'asian_diversity_exp':"Percentage Asian Population",
+            'other_diversity_exp':'Other Experienced Diversity',
+            'total_diversity_exp':"Total Residential Diversity",
+            'total_diversity_resi':'Total Residential Diversity',
+            'diff':"Total Residential Diversity"}
+
+const catDict2 ={'white_diversity_exp':'white_perc',
+            'black_diversity_exp':'Black Experienced Diversity',
+            'hispanic_diversity_exp':"hispanic_perc",
+            'asian_diversity_exp':"asian_perc",
+            'other_diversity_exp':'other_perc',
+            'total_diversity_exp':"total_diversity_resi",
+            'total_diversity_resi':'total_diversity_resi',
+            'diff':"Difference"}
+            
 // Color dict for the legend
 // const censusCatDict = {
 //             "white_diversity_exp":[
@@ -3753,6 +3771,111 @@ protocol.add(p_county_weekend_evening);
 protocol.add(p_county_weekday_late_evening);
 protocol.add(p_county_weekend_late_evening);
 
+
+///////////////////////////////////////////////////////
+/////////// GET HISTOGRAM AND BOXPLOT DATA ////////////
+///////////////////////////////////////////////////////
+// Define the URL of your hosted CSV file
+const cbsaLatLngURL = 'https://gist.githubusercontent.com/acopod/35967e9183f6de7c9db49389aed36681/raw/5885128198a67c7d3000296230962f390c776a69/CBSA_latlong.csv';
+const CBSA_boxplot = 'https://gist.githubusercontent.com/acopod/e8a65ad8156e9caf05625107996bd501/raw/1cb5474175a851ef84a766e9e33ae6eaadaaf443/boxplot_summary_cbsa_national.csv';
+const CBSA_histogram = 'https://gist.githubusercontent.com/acopod/170b05c1723996a0c312c180a9c46943/raw/401841ba0c6327270aec94bb2e502aec23f16978/histogram_summary_cbsa_interval';
+const national_histogram = 'https://gist.githubusercontent.com/acopod/b0512ff7fcf45872ba806e040416d963/raw/2844f8c46995c933a12a4d87cdb605760d0033e1/histogram_summary_national_interval';
+
+let histogramData;
+let cbsaData;
+let boxplotData;
+let nationalhistorgramData;
+
+// Histogram chart variables (assigned in getHeader callback, used by drawHistogram)
+var histogramSvg, histogramXScale, histogramYScale, histogramXAxis, histogramYAxis, histogramHeight;
+
+// Cache for dynamic histogram computation
+var _cachedHistogramData = null;
+var _cachedHistogramMetric = null;
+var _cachedHistogramLayer = null;
+var _lastHoveredFeatureId = null;
+var _mapInstance = null; // Global reference to the map for cross-scope access
+var _updateDynamicHistogramFn = null; // Global reference to updateDynamicHistogram
+
+let cityName; // Declare cityName variable in a broader scope
+let min_b;
+let newTPData = [];
+let newWHData = [];
+let newBLData = [];
+let newASData = [];
+let newHIData = [];
+let newOTData = [];
+let newHEData = [];
+let newMIData = [];
+let wHhistoRanges = [];
+
+function loadCSV(filePath, useHeader) {
+  return new Promise((resolve, reject) => {
+      Papa.parse(filePath, {
+          download: true,
+          header: useHeader !== false,
+          complete: function(results) {
+              resolve(results.data);
+          },
+          error: function(error) {
+              reject(error);
+          }
+      });
+  });
+}
+
+//////////////////////////////////////////////
+////////////////////// LOAD DATA /////////////
+//////////////////////////////////////////////  
+
+async function initializeHistogramData() {
+  try {
+    histogramData = await loadCSV(CBSA_histogram, false);
+  } catch (error) {
+      console.error('Error loading CSV:', error);
+  }
+}
+
+async function initializeCBSAData() {
+  try {
+    cbsaData = await loadCSV(cbsaLatLngURL);
+  } catch (error) {
+      console.error('Error loading CSV:', error);
+  }
+}
+
+async function initializeBoxplotData() {
+  try {
+    boxplotData = await loadCSV(CBSA_boxplot);
+  } catch (error) {
+      console.error('Error loading CSV:', error);
+  }
+}
+
+async function initializeNatlData() {
+  try {
+    nationalhistorgramData = await loadCSV(national_histogram, false);
+  } catch (error) {
+      console.error('Error loading CSV:', error);
+  }
+}
+// Pre-load all CSV data once at startup
+document.addEventListener('DOMContentLoaded', () => {
+  Promise.all([
+    initializeHistogramData(),
+    initializeCBSAData(),
+    initializeBoxplotData(),
+    initializeNatlData()
+  ]);
+});
+
+// console.log("CSV data is now loaded:",csvData);
+
+
+///////////////////////
+////// ZOOM ///////////
+///////////////////////
+
 const baseWidth = .5
 const baseZoom = 4.1
 
@@ -3856,8 +3979,7 @@ let medianIncValue = null;
 
 
 // function createPopUp(popUp,layer,layerA,map,hoveredStateId,svg){
-function createPopUp(popUp,map,hoveredStateId,svg){
-   
+function createPopUp(popUp,map,hoveredFeatureId,svg){
   
   var layerPopUpInfo = {
         'county_source':{
@@ -3917,373 +4039,244 @@ function createPopUp(popUp,map,hoveredStateId,svg){
 ////// GET VISIBLE LAYERS ///////
 /////////////////////////////////
 
-[layer,layerA] = getVisibleLayers();
-///// Change the opacity of the highlighted zone 
-  
-  function highlightOnClick(layer,layerA){
+  [layer,layerA] = getVisibleLayers();
+
+///// Change the opacity of the highlighted zone
+
+  // Track current handlers so we can remove them on zoom change
+  var _currentMoveHandler = null;
+  var _currentLeaveHandler = null;
+  var _currentGlobalMoveHandler = null;
+  var _currentLayer = null;
+
+  function highlightOnHover(layer,layerA){
+    // Remove previous handlers to prevent accumulation
+    if (_currentMoveHandler && _currentLayer) {
+      map.off('mousemove', _currentLayer, _currentMoveHandler);
+    }
+    if (_currentLeaveHandler && _currentLayer) {
+      map.off('mouseleave', _currentLayer, _currentLeaveHandler);
+    }
+    if (_currentGlobalMoveHandler) {
+      map.off('mousemove', _currentGlobalMoveHandler);
+    }
+    _currentLayer = layer;
+
     let hoveredFeatureId = null;
-    map.on('mouseenter',layer, e => {
-          
-          
-          if (e.features.length > 0) {              
-            if (hoveredFeatureId) {
-              map.setFeatureState(
-                  {
-                    source: layerPopUpInfo[layerA]['source'], 
-                    sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
-                    id: hoveredFeatureId
-                    },
-                  {hover: false}
-              );
-          }
-          hoveredFeatureId = e.features[0].id;
+    _currentMoveHandler = function(e) {
+        
+      if (e.features.length > 0) {              
+        if (hoveredFeatureId) {
           map.setFeatureState(
-                  {source:layerPopUpInfo[layerA]['source'], 
-                  sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
-                  id: hoveredFeatureId
+              {
+                source: layerPopUpInfo[layerA]['source'], 
+                sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
+                id: hoveredFeatureId
                 },
-                {hover: true})
-          
-
-          }
-       
-          // Function to get visible layers
-
-          //mousemove
-          map.getCanvas().style.cursor = 'pointer';
-          // e.stopPropagation();
-          metric = $("#censusDropdown1 input").val();
-          city = $("#cityDropdown1 input").val();
-
-          if (metric === 'hispanic_diversity_exp') {
-              comparedMetric = 'Percentage Hispanic Population';
-              var hismetric = e.features[0]['properties']['hispanic_perc'];
-          }
-
-          if (metric === 'asian_diversity_exp') {
-              comparedMetric = 'Percentage Asian Population';
-              var hismetric = e.features[0]['properties']['asian_perc'];
-          }
-
-          if (metric === 'white_diversity_exp') {
-              comparedMetric = 'Percentage White Population';
-              var hismetric = e.features[0]['properties']['white_perc'];
-          }
-
-          if (metric === 'total_diversity_exp') {
-              comparedMetric = 'Total Residential Diversity';
-              var hismetric = e.features[0]['properties']['total_diversity_resi'];
-          }
-
-          if (metric === 'diff') {
-              comparedMetric = 'Total Residential Diversity';
-              var hismetric = e.features[0]['properties']['total_diversity_resi'];
-          }
-
-          var div_score_exp  = e.features[0]['properties'][metric];
-
-          
-          
-          if (e.features[0]['layer']['id'].includes('counties')){
-              var geom_name = e.features[0]['properties']['NAME']+" "+"County";    
-              var geom_id = e.features[0]['properties']['COUNTYFP10'];
-              var geom_statename = fips_to_state[e.features[0]['properties']['STATEFP']];
-          } else{
-              var geom_codeS = e.features[0]['properties']['STATEFP10'];
-              var geom_codeC = e.features[0]['properties']['COUNTYFP10'];
-              var fips_codeSC = geom_codeS + geom_codeC;
-              var geom_name = fips_to_county[fips_codeSC];
-              var geom_id = e.features[0]['properties']['TRACTCE10'];
-              var geom_statename = fips_to_state[e.features[0]['properties']['STATEFP10']];
-          };
-
-          baPercValue = e.features[0]['properties']['ba_perc'];
-          totolPopValue = e.features[0]['properties']['total_pop'];
-          if (e.features[0]['layer']['id'].includes('counties')){
-              WHPopValue = e.features[0]['properties']['white_perc_x']; 
-          }
-          else{
-              WHPopValue = e.features[0]['properties']['white_perc'];
-          };
-          
-          BLPopValue = e.features[0]['properties']['black_perc']; 
-          ASPopValue = e.features[0]['properties']['asian_perc'];
-          HIPopValue = e.features[0]['properties']['hispanic_perc'];
-          OTPopValue = e.features[0]['properties']['other_perc'];  
-          medianIncValue = e.features[0]['properties']['median_inc'];
-          metro  = e.features[0]['properties']['NAME'];          
-          //console.log(metro)
-          //console.log(div_score_exp)
-
-          $('#baPercValueDisplay').text(' ' + d3.format(",.1%")(baPercValue));     
-          $('#WHPopValue').text(' ' + d3.format(",.1%")(WHPopValue));
-          $('#BLPopValue').text(' ' + d3.format(",.1%")(BLPopValue));       
-          $('#ASPopValue').text(' ' + d3.format(",.1%")(ASPopValue));
-          $('#HIPopValue').text(' ' + d3.format(",.1%")(HIPopValue));
-          $('#OTPopValue').text(' ' + d3.format(",.1%")(OTPopValue));
-          $('#medianIncValue').text(' ' + d3.format("$,.0f")(medianIncValue));
-          $('#totolPopValue').text(' ' + d3.format(",.0f")(totolPopValue));
-
-      // var featuress = map.querySourceFeatures('seg_2_11', {
-      //     sourceLayer: 'segregation_all_countiesfgb'
-      // });
-
-      // //console.log(featuress);
+              {hover: false}
+          );
+      }
+      hoveredFeatureId = e.features[0].id;
+      map.setFeatureState(
+              {source:layerPopUpInfo[layerA]['source'], 
+              sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
+              id: hoveredFeatureId
+            },
+            {hover: true})
       
-      // featuress.forEach(feature => {
-      //     // Extract properties from each feature
-      //     const div_score_exp = feature.properties[metric];
-      //     // Extract other properties as needed
-      //     // ...
-      //     // Perform operations with the properties
-      //     // ...
-      //     //console.log(div_score_exp)
-      // });
 
-      //console.log(newLayerID)
+      }
+    
+      // Function to get visible layers
 
-      ///////////////////////////////////
-      /////// UPDATE THE BOXPLOTS ///////
-      ///////////////////////////////////
+      //mousemove
+      map.getCanvas().style.cursor = 'pointer';
+      // e.stopPropagation();
+
+
+      ////////////////////////////////////////////////////////////
+      //////////// CHANGE DISPLAY OF CENSUS CHARACTERISTICS //////
+      ////////////////////////////////////////////////////////////
+
+      metric = $("#censusDropdown1 input").val();
+      city = $("#cityDropdown1 input").val();
+      comparedMetric = compDict[metric];
+      var hismetric = e.features[0]['properties'][catDict2[metric]];
+      
+      // if (metric === 'hispanic_diversity_exp') {
+      //     comparedMetric = 'Percentage Hispanic Population';
+      //     var hismetric = e.features[0]['properties']['hispanic_perc'];
+      // }
+
+      // if (metric === 'asian_diversity_exp') {
+      //     comparedMetric = 'Percentage Asian Population';
+      //     var hismetric = e.features[0]['properties']['asian_perc'];
+      // }
+
+      // if (metric === 'white_diversity_exp') {
+      //     comparedMetric = 'Percentage White Population';
+      //     var hismetric = e.features[0]['properties']['white_perc'];
+      // }
+
+      // if (metric === 'total_diversity_exp') {
+      //     comparedMetric = 'Total Residential Diversity';
+      //     var hismetric = e.features[0]['properties']['total_diversity_resi'];
+      // }
+
+      // if (metric === 'diff') {
+      //     comparedMetric = 'Total Residential Diversity';
+      //     var hismetric = e.features[0]['properties']['total_diversity_resi'];
+      // }
+
+      //////////////////////////////////////////////////////////////////////////////
+      ////////////// ON CLICK: UPDATE CENSUS CHARACTERISTICS ///////////////////////
+      //////////////////////////////////////////////////////////////////////////////
+
+      var div_score_exp  = e.features[0]['properties'][metric];
+
+          
+      
+      if (e.features[0]['layer']['id'].includes('counties')){
+          var geom_name = e.features[0]['properties']['NAME']+" "+"County";    
+          var geom_id = e.features[0]['properties']['COUNTYFP10'];
+          var geom_statename = fips_to_state[e.features[0]['properties']['STATEFP']];
+      } else{
+          var geom_codeS = e.features[0]['properties']['STATEFP10'];
+          var geom_codeC = e.features[0]['properties']['COUNTYFP10'];
+          var fips_codeSC = geom_codeS + geom_codeC;
+          var geom_name = fips_to_county[fips_codeSC];
+          var geom_id = e.features[0]['properties']['TRACTCE10'];
+          var geom_statename = fips_to_state[e.features[0]['properties']['STATEFP10']];
+      };
+
+      baPercValue = e.features[0]['properties']['ba_perc'];
+      totolPopValue = e.features[0]['properties']['total_pop'];
+      
+      if (e.features[0]['layer']['id'].includes('counties')){
+          WHPopValue = e.features[0]['properties']['white_perc_x']; 
+      }
+      else{
+          WHPopValue = e.features[0]['properties']['white_perc'];
+      };
+      
+      BLPopValue = e.features[0]['properties']['black_perc']; 
+      ASPopValue = e.features[0]['properties']['asian_perc'];
+      HIPopValue = e.features[0]['properties']['hispanic_perc'];
+      OTPopValue = e.features[0]['properties']['other_perc'];  
+      medianIncValue = e.features[0]['properties']['median_inc'];
+      metro  = e.features[0]['properties']['NAME'];          
+      // console.log(metro)
+      // console.log(div_score_exp)
+
+      $('#baPercValueDisplay').text(' ' + d3.format(",.1%")(baPercValue));     
+      $('#WHPopValue').text(' ' + d3.format(",.1%")(WHPopValue));
+      $('#BLPopValue').text(' ' + d3.format(",.1%")(BLPopValue));       
+      $('#ASPopValue').text(' ' + d3.format(",.1%")(ASPopValue));
+      $('#HIPopValue').text(' ' + d3.format(",.1%")(HIPopValue));
+      $('#OTPopValue').text(' ' + d3.format(",.1%")(OTPopValue));
+      $('#medianIncValue').text(' ' + d3.format("$,.0f")(medianIncValue));
+      $('#totolPopValue').text(' ' + d3.format(",.0f")(totolPopValue));
+
+
+      /////////////////////////////////////////////
+      /////// ON CLICK: UPDATE THE BOXPLOTS ///////
+      /////////////////////////////////////////////
 
       ///// FIX THIS /////
+      /// IDEA: SET AN EMPTY VAR AND THEN UPDATE THIS WITH IN THE GLOBAL
       // THIS IS DOWNLOADING THE CSV EACH TIME A POPUP IS CLICKED /////////
 
-      Papa.parse(CBSA_boxplot, {
-        download: true,
-        complete: function (boxplotResults) {
-          const boxplotData = boxplotResults.data;
-              newTPData = [];
-              newWHData = [];
-              newBLData = [];
-              newASData = [];
-              newHIData = [];
-              newOTData = [];
-              newHEData = [];
-              newMIData = [];
-              const result_TPboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'total_pop');
+      // Papa.parse(CBSA_boxplot, {
+      //   download: true,
+      //   complete: function (boxplotResults) {
+      //     const boxplotData = boxplotResults.data;
+      //         newTPData = [];
+      //         newWHData = [];
+      //         newBLData = [];
+      //         newASData = [];
+      //         newHIData = [];
+      //         newOTData = [];
+      //         newHEData = [];
+      //         newMIData = [];
 
-                if (result_TPboxplot) {
-                var min_b = parseFloat(result_TPboxplot[1]);
-                var q1_b = parseFloat(result_TPboxplot[2]);
-                var median_b = parseFloat(result_TPboxplot[3]);
-                var q3_b = parseFloat(result_TPboxplot[4]);
-                var max_b = parseFloat(result_TPboxplot[5]);
-                var newTPData = [min_b, q1_b, median_b, q3_b, max_b]
-
-                //console.log(newTPData)
-              }
-
-                            const result_WHboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'white_perc');
-
-                if (result_WHboxplot) {
-                var min_b = parseFloat(result_WHboxplot[1]);
-                var q1_b = parseFloat(result_WHboxplot[2]);
-                var median_b = parseFloat(result_WHboxplot[3]);
-                var q3_b = parseFloat(result_WHboxplot[4]);
-                var max_b = parseFloat(result_WHboxplot[5]);
-                var newWHData = [min_b, q1_b, median_b, q3_b, max_b]
-
-              }
-
-                const result_BLboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'black_perc');
-
-                if (result_BLboxplot) {
-                var min_b = parseFloat(result_BLboxplot[1]);
-                var q1_b = parseFloat(result_BLboxplot[2]);
-                var median_b = parseFloat(result_BLboxplot[3]);
-                var q3_b = parseFloat(result_BLboxplot[4]);
-                var max_b = parseFloat(result_BLboxplot[5]);
-                var newBLData = [min_b, q1_b, median_b, q3_b, max_b]
-
-              }
+      const result_TPboxplot = boxplotData.at(-13)
+      const result_WHboxplot = boxplotData.at(-12)
+      const result_BLboxplot = boxplotData.at(-11)
+      const result_IDboxplot = boxplotData.at(-10)
+      const result_ASboxplot = boxplotData.at(-9)
+      const result_OTboxplot = boxplotData.at(-7)
+      const result_HIboxplot = boxplotData.at(-5)
+      const result_HEboxplot = boxplotData.at(-4)
+      const result_MIboxplot = boxplotData.at(-2)
+      
 
 
-                const result_ASboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'asian_perc');
+      function retrieveBoxplotData(result) {
+        if (result_TPboxplot) {
+        var min_b = parseFloat(result.min);
+        var q1_b = parseFloat(result.q1);
+        var median_b = parseFloat(result.median);
+        var q3_b = parseFloat(result.minqq3);
+        var max_b = parseFloat(result.max);
+        return  [min_b, q1_b, median_b, q3_b, max_b]}
+      }
+      var newTPData = retrieveBoxplotData(result_TPboxplot);
+      var newWHData = retrieveBoxplotData(result_WHboxplot);
+      var newBLData = retrieveBoxplotData(result_BLboxplot);
+      var newASData = retrieveBoxplotData(result_ASboxplot);
+      var newHIData = retrieveBoxplotData(result_HIboxplot);
+      var newOTData = retrieveBoxplotData(result_OTboxplot);
+      var newHEData = retrieveBoxplotData(result_HEboxplot);
+      var newMIData = retrieveBoxplotData(result_MIboxplot);
 
-                if (result_ASboxplot) {
-                var min_b = parseFloat(result_ASboxplot[1]);
-                var q1_b = parseFloat(result_ASboxplot[2]);
-                var median_b = parseFloat(result_ASboxplot[3]);
-                var q3_b = parseFloat(result_ASboxplot[4]);
-                var max_b = parseFloat(result_ASboxplot[5]);
-                var newASData = [min_b, q1_b, median_b, q3_b, max_b]
+      console.log(newMIData)
+    
 
-              }
-
-                const result_HIboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'hispanic_perc');
-
-                if (result_HIboxplot) {
-                var min_b = parseFloat(result_HIboxplot[1]);
-                var q1_b = parseFloat(result_HIboxplot[2]);
-                var median_b = parseFloat(result_HIboxplot[3]);
-                var q3_b = parseFloat(result_HIboxplot[4]);
-                var max_b = parseFloat(result_HIboxplot[5]);
-                var newHIData = [min_b, q1_b, median_b, q3_b, max_b]
-
-              }
-
-                const result_OTboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'other_perc');
-
-                if (result_OTboxplot) {
-                var min_b = parseFloat(result_OTboxplot[1]);
-                var q1_b = parseFloat(result_OTboxplot[2]);
-                var median_b = parseFloat(result_OTboxplot[3]);
-                var q3_b = parseFloat(result_OTboxplot[4]);
-                var max_b = parseFloat(result_OTboxplot[5]);
-                var newOTData = [min_b, q1_b, median_b, q3_b, max_b]
-
-              }
-
-                const result_HEboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'ba_higher_perc');
-
-                if (result_HEboxplot) {
-                var min_b = parseFloat(result_HEboxplot[1]);
-                var q1_b = parseFloat(result_HEboxplot[2]);
-                var median_b = parseFloat(result_HEboxplot[3]);
-                var q3_b = parseFloat(result_HEboxplot[4]);
-                var max_b = parseFloat(result_HEboxplot[5]);
-                var newHEData = [min_b, q1_b, median_b, q3_b, max_b]
-
-              }
-
-                const result_MIboxplot = boxplotData.find((row) => row[7] === metro && row[0] === 'median_inc');
-
-                if (result_MIboxplot) {
-                var min_b = parseFloat(result_MIboxplot[1]);
-                var q1_b = parseFloat(result_MIboxplot[2]);
-                var median_b = parseFloat(result_MIboxplot[3]);
-                var q3_b = parseFloat(result_MIboxplot[4]);
-                var max_b = parseFloat(result_MIboxplot[5]);
-                var newMIData = [min_b, q1_b, median_b, q3_b, max_b]
-
-              
-              }
-
-        drawTPBoxPlot(svg, newTPData, totolPopValue);
-        drawWHBoxPlot(svg, newWHData, WHPopValue);
-        drawBLBoxPlot(svg, newBLData, BLPopValue);
-        drawASBoxPlot(svg, newASData, ASPopValue);
-        drawHIBoxPlot(svg, newHIData, HIPopValue);
-        drawOTBoxPlot(svg, newOTData, OTPopValue);
-        drawHEBoxPlot(svg, newHEData, baPercValue);
-        drawMIBoxPlot(svg, newMIData, medianIncValue);
+      drawTPBoxPlot(svg, newTPData, totolPopValue);
+      drawWHBoxPlot(svg, newWHData, WHPopValue);
+      drawBLBoxPlot(svg, newBLData, BLPopValue);
+      drawASBoxPlot(svg, newASData, ASPopValue);
+      drawHIBoxPlot(svg, newHIData, HIPopValue);
+      drawOTBoxPlot(svg, newOTData, OTPopValue);
+      drawHEBoxPlot(svg, newHEData, baPercValue);
+      drawMIBoxPlot(svg, newMIData, medianIncValue);
 
 
-        }
-        });
+        // }
+        // });
 
         ///////////////////////////////////
         /////// UPDATE THE HISTOGRAMS /////
         ///////////////////////////////////
-        Papa.parse(CBSA_histogram, {
-          download: true,
-          complete: function (histogramResults) {
-            const histogramData = histogramResults.data;
+        // Dynamic histogram: compute from visible map features
+        try {
+          var currentFeatureId = e.features[0].id;
+          var currentLayerInfo = getVisibleLayers();
+          var currentLayerId = currentLayerInfo[0];
 
-            Papa.parse(national_histogram, {
-              download: true,
-              complete: function (nationalhistogramResults) {
-                const nationalhistorgramData = nationalhistogramResults.data;
+          // Only recompute if hovered feature, layer, or metric changed
+          if (currentFeatureId !== _lastHoveredFeatureId ||
+              currentLayerId !== _cachedHistogramLayer ||
+              metric !== _cachedHistogramMetric) {
+            _lastHoveredFeatureId = currentFeatureId;
+            updateDynamicHistogram(map, metric, div_score_exp);
+          } else if (_cachedHistogramData) {
+            // Same histogram data, just update highlight for current feature
+            drawHistogram(_cachedHistogramData, div_score_exp);
+          }
+        } catch(e2) {
+          console.warn('Histogram update error:', e2);
+        }
 
-                const result_histogram = nationalhistorgramData.find(row => 
-                                            row[0] === metric &&
-                                            row[18] === newWeekdayID &&
-                                            row[19] === newIntervalID
-                                                        );
-
-                const result_WHhistogram = histogramData.find((row) => 
-                                            row[1] === metro &&
-                                            row[3] === metric &&
-                                            row[21] === newWeekdayID &&
-                                            row[22] === newIntervalID);
-
-                        var currentZoom = map.getZoom();
-                        var zoomThreshold = 10;
-
-                if (currentZoom >= zoomThreshold) {
-                      var CBSAbin_0 = parseFloat(result_WHhistogram[4]);
-                      var CBSAbin_1 = parseFloat(result_WHhistogram[5]);
-                      var CBSAbin_2 = parseFloat(result_WHhistogram[6]);
-                      var CBSAbin_3 = parseFloat(result_WHhistogram[7]);
-                      var CBSAbin_4 = parseFloat(result_WHhistogram[8]);
-                      var CBSAbin_5 = parseFloat(result_WHhistogram[9]);
-                      var CBSAbin_6 = parseFloat(result_WHhistogram[10]);
-                      var CBSAbin_7 = parseFloat(result_WHhistogram[11]);
-                      var CBSAbin_8 = parseFloat(result_WHhistogram[12]);
-                      var CBSAbin_0_perc = parseFloat(result_WHhistogram[13] * 100);
-                      var CBSAbin_1_perc = parseFloat(result_WHhistogram[14] * 100);
-                      var CBSAbin_2_perc = parseFloat(result_WHhistogram[15] * 100);
-                      var CBSAbin_3_perc = parseFloat(result_WHhistogram[16] * 100);
-                      var CBSAbin_4_perc = parseFloat(result_WHhistogram[17] * 100);
-                      var CBSAbin_5_perc = parseFloat(result_WHhistogram[18] * 100);
-                      var CBSAbin_6_perc = parseFloat(result_WHhistogram[19] * 100);
-                      var CBSAbin_7_perc = parseFloat(result_WHhistogram[20] * 100);
-
-                      var CBSAbinRanges = [
-                            {bin: CBSAbin_0, value: CBSAbin_0_perc},
-                            {bin: CBSAbin_1, value: CBSAbin_1_perc},
-                            {bin: CBSAbin_2, value: CBSAbin_2_perc},
-                            {bin: CBSAbin_3, value: CBSAbin_3_perc},
-                            {bin: CBSAbin_4, value: CBSAbin_4_perc},
-                            {bin: CBSAbin_5, value: CBSAbin_5_perc},
-                            {bin: CBSAbin_6, value: CBSAbin_6_perc},
-                            {bin: CBSAbin_7, value: CBSAbin_7_perc},
-                            {bin: CBSAbin_8, value: 0},]
-
-                      drawHistogram(CBSAbinRanges, div_score_exp);
-                };
-
-        if (currentZoom < zoomThreshold) {
-              var bin_0 = parseFloat(result_histogram[1]);
-              var bin_1 = parseFloat(result_histogram[2]);
-              var bin_2 = parseFloat(result_histogram[3]);
-              var bin_3 = parseFloat(result_histogram[4]);
-              var bin_4 = parseFloat(result_histogram[5]);
-              var bin_5 = parseFloat(result_histogram[6]);
-              var bin_6 = parseFloat(result_histogram[7]);
-              var bin_7 = parseFloat(result_histogram[8]);
-              var bin_8 = parseFloat(result_histogram[9]);
-              var bin_0_perc = parseFloat(result_histogram[10] * 100);
-              var bin_1_perc = parseFloat(result_histogram[11] * 100);
-              var bin_2_perc = parseFloat(result_histogram[12] * 100);
-              var bin_3_perc = parseFloat(result_histogram[13] * 100);
-              var bin_4_perc = parseFloat(result_histogram[14] * 100);
-              var bin_5_perc = parseFloat(result_histogram[15] * 100);
-              var bin_6_perc = parseFloat(result_histogram[16] * 100);
-              var bin_7_perc = parseFloat(result_histogram[17] * 100);
-
-                var binRanges = [
-                  {bin: bin_0, value: bin_0_perc},
-                  {bin: bin_1, value: bin_1_perc},
-                  {bin: bin_2, value: bin_2_perc},
-                  {bin: bin_3, value: bin_3_perc},
-                  {bin: bin_4, value: bin_4_perc},
-                  {bin: bin_5, value: bin_5_perc},
-                  {bin: bin_6, value: bin_6_perc},
-                  {bin: bin_7, value: bin_7_perc},
-                  {bin: bin_8, value: 0},
-                ];
-
-              // console.log(binRanges);
-              //console.log(div_score_exp);
-              drawHistogram(binRanges, div_score_exp);
-
-        };
-        },
-        });
-        },
-        });
-
-        const currentZoom = map.getZoom();
+        var popupCurrentZoom = map.getZoom();
         let popupDistanceMultiplier = 0.1;
 
         // Adjust the distance multiplier based on zoom level
-        if (currentZoom >= 10 && currentZoom < 15) {
+        if (popupCurrentZoom >= 10 && popupCurrentZoom < 15) {
             popupDistanceMultiplier = 0.005;
-        } else if (currentZoom >= 15 && currentZoom < 18) {
+        } else if (popupCurrentZoom >= 15 && popupCurrentZoom < 18) {
             popupDistanceMultiplier = 0.002;
-        } else if (currentZoom >= 18) {
+        } else if (popupCurrentZoom >= 18) {
             popupDistanceMultiplier = 0.001;
         }
       
@@ -4326,14 +4319,14 @@ function createPopUp(popUp,map,hoveredStateId,svg){
           // popUp.remove();
           // }
 
-      });
-      map.on('mouseleave',layer, () => {
+      };
+      map.on('mousemove', layer, _currentMoveHandler);
 
-        // hoveredFeatureId = e.features[0].id;        
+      _currentLeaveHandler = function() {
         if (hoveredFeatureId !==null ) {
                 map.setFeatureState(
                     {
-                      source: layerPopUpInfo[layerA]['source'], 
+                      source: layerPopUpInfo[layerA]['source'],
                       sourceLayer:layerPopUpInfo[layerA]['sourceLayer'],
                       id: hoveredFeatureId},
                     {hover: false}
@@ -4342,15 +4335,50 @@ function createPopUp(popUp,map,hoveredStateId,svg){
         hoveredFeatureId = null;
         map.getCanvas().style.cursor = '';
         popUp.remove();
-    });
-      
-  
+    };
+    map.on('mouseleave', layer, _currentLeaveHandler);
+
+    // Global mousemove fallback: clears stuck hover state when mouse
+    // leaves a feature too quickly for the layer-specific mouseleave to fire
+    _currentGlobalMoveHandler = function(e) {
+      if (hoveredFeatureId !== null) {
+        var features = map.queryRenderedFeatures(e.point, { layers: [layer] });
+        if (!features || features.length === 0) {
+          map.setFeatureState(
+            {
+              source: layerPopUpInfo[layerA]['source'],
+              sourceLayer: layerPopUpInfo[layerA]['sourceLayer'],
+              id: hoveredFeatureId
+            },
+            { hover: false }
+          );
+          hoveredFeatureId = null;
+          map.getCanvas().style.cursor = '';
+          popUp.remove();
+        }
+      }
+    };
+    map.on('mousemove', _currentGlobalMoveHandler);
+
   }
-  highlightOnClick(layer,layerA);
+  highlightOnHover(layer,layerA);
   map.on('zoomend', function() {
     [layer,layerA] = getVisibleLayers();
-    highlightOnClick(layer,layerA)
+    if (layer) {
+      highlightOnHover(layer,layerA);
+    }
   })
+
+  // Update histogram when map viewport changes (pan/zoom)
+  map.on('moveend', function() {
+    var currentMetric = $("#censusDropdown1 input").val() || 'total_diversity_exp';
+    // Invalidate cache so next hover or this call recomputes
+    _cachedHistogramLayer = null;
+    _cachedHistogramMetric = null;
+    _lastHoveredFeatureId = null;
+    updateDynamicHistogram(map, currentMetric);
+  });
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 /////// Boxplot functions//////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -6119,30 +6147,13 @@ svg.selectAll(".whisker-label_below")
 //////////fly to///////////
 ///////////////////////////
 
-// Define the URL of your hosted CSV file
-const csvFileURL = 'https://gist.githubusercontent.com/acopod/35967e9183f6de7c9db49389aed36681/raw/5885128198a67c7d3000296230962f390c776a69/CBSA_latlong.csv';
-const CBSA_boxplot = 'https://gist.githubusercontent.com/acopod/e8a65ad8156e9caf05625107996bd501/raw/1cb5474175a851ef84a766e9e33ae6eaadaaf443/boxplot_summary_cbsa_national.csv';
-// const CBSA_histogram_old = 'https://gist.githubusercontent.com/acopod/ad35eca551b3d3d86efe6ceb7553f94e/raw/a9f070cc22b285ad810230552e8179e3c56412ca/histogram_summary_cbsa_national.csv';
-
-const CBSA_histogram = 'https://gist.githubusercontent.com/acopod/170b05c1723996a0c312c180a9c46943/raw/401841ba0c6327270aec94bb2e502aec23f16978/histogram_summary_cbsa_interval';
-    
-
-let cityName; // Declare cityName variable in a broader scope
-let min_b;
-newTPData = [];
-newWHData = [];
-newBLData = [];
-newASData = [];
-newHIData = [];
-newOTData = [];
-newHEData = [];
-newMIData = [];
-wHhistoRanges = [];
-
-Papa.parse(csvFileURL, {
+/////////////// FIX //////////////////////////////
+//////////change to ref the pre-loaded data  /////
+//////////////////////////////////////////////////
+Papa.parse(cbsaLatLngURL, {
   download: true,
   complete: function (csvResults) {
-    const csvData = csvResults.data;
+    const cbsaData = csvResults.data;
 
     Papa.parse(CBSA_boxplot, {
       download: true,
@@ -6164,7 +6175,7 @@ Papa.parse(csvFileURL, {
           onChange: function (value, text, $selectedItem) {
             cityName = text; // Assign the value to the broader-scoped variable cityName
                         // Process CSV data
-            const result = csvData.find((row) => row[3] === cityName);
+            const result = cbsaData.find((row) => row[3] === cityName);
             $('#cityDropdown1').dropdown('hide');
             if (result) {
               const intptlat = parseFloat(result[10]);
@@ -6307,84 +6318,6 @@ Papa.parse(csvFileURL, {
         var selectedcensus = text;
         var selectedtext_translated = catDict1[selectedcensus];
 
-        var currentZoom = map.getZoom();
-        var zoomThreshold = 10;
-
-                const result_WHhistogram = histogramData.find((row) => row[1] === cityName && row[3] === selectedtext_translated&&
-                                            row[21] === newWeekdayID &&
-                                            row[22] === newIntervalID);
-                const result_histogram = nationalhistorgramData.find((row) => row[0] === selectedtext_translated&&
-                row[18] === newWeekdayID &&
-                row[19] === newIntervalID);
-
-                if (currentZoom >= zoomThreshold) {
-                      var CBSAbin_0 = parseFloat(result_WHhistogram[4]);
-                      var CBSAbin_1 = parseFloat(result_WHhistogram[5]);
-                      var CBSAbin_2 = parseFloat(result_WHhistogram[6]);
-                      var CBSAbin_3 = parseFloat(result_WHhistogram[7]);
-                      var CBSAbin_4 = parseFloat(result_WHhistogram[8]);
-                      var CBSAbin_5 = parseFloat(result_WHhistogram[9]);
-                      var CBSAbin_6 = parseFloat(result_WHhistogram[10]);
-                      var CBSAbin_7 = parseFloat(result_WHhistogram[11]);
-                      var CBSAbin_8 = parseFloat(result_WHhistogram[12]);
-                      var CBSAbin_0_perc = parseFloat(result_WHhistogram[13] * 100);
-                      var CBSAbin_1_perc = parseFloat(result_WHhistogram[14] * 100);
-                      var CBSAbin_2_perc = parseFloat(result_WHhistogram[15] * 100);
-                      var CBSAbin_3_perc = parseFloat(result_WHhistogram[16] * 100);
-                      var CBSAbin_4_perc = parseFloat(result_WHhistogram[17] * 100);
-                      var CBSAbin_5_perc = parseFloat(result_WHhistogram[18] * 100);
-                      var CBSAbin_6_perc = parseFloat(result_WHhistogram[19] * 100);
-                      var CBSAbin_7_perc = parseFloat(result_WHhistogram[20] * 100);
-                    
-                      var newMIData = [min_b, q1_b, median_b, q3_b, max_b]
-
-                      var CBSAbinRanges = [
-                           {bin: CBSAbin_0, value: CBSAbin_0_perc},
-                           {bin: CBSAbin_1, value: CBSAbin_1_perc},
-                           {bin: CBSAbin_2, value: CBSAbin_2_perc},
-                           {bin: CBSAbin_3, value: CBSAbin_3_perc},
-                           {bin: CBSAbin_4, value: CBSAbin_4_perc},
-                           {bin: CBSAbin_5, value: CBSAbin_5_perc},
-                           {bin: CBSAbin_6, value: CBSAbin_6_perc},
-                           {bin: CBSAbin_7, value: CBSAbin_7_perc},
-                           {bin: CBSAbin_8, value: 0},]
-
-                };
-
-            if (currentZoom < zoomThreshold) {
-      var bin_0 = parseFloat(result_histogram[1]);
-      var bin_1 = parseFloat(result_histogram[2]);
-      var bin_2 = parseFloat(result_histogram[3]);
-      var bin_3 = parseFloat(result_histogram[4]);
-      var bin_4 = parseFloat(result_histogram[5]);
-      var bin_5 = parseFloat(result_histogram[6]);
-      var bin_6 = parseFloat(result_histogram[7]);
-      var bin_7 = parseFloat(result_histogram[8]);
-      var bin_8 = parseFloat(result_histogram[9]);
-      var bin_0_perc = parseFloat(result_histogram[10] * 100);
-      var bin_1_perc = parseFloat(result_histogram[11] * 100);
-      var bin_2_perc = parseFloat(result_histogram[12] * 100);
-      var bin_3_perc = parseFloat(result_histogram[13] * 100);
-      var bin_4_perc = parseFloat(result_histogram[14] * 100);
-      var bin_5_perc = parseFloat(result_histogram[15] * 100);
-      var bin_6_perc = parseFloat(result_histogram[16] * 100);
-      var bin_7_perc = parseFloat(result_histogram[17] * 100);
-
-
-var binRanges = [
-   {bin: bin_0, value: bin_0_perc},
-   {bin: bin_1, value: bin_1_perc},
-   {bin: bin_2, value: bin_2_perc},
-   {bin: bin_3, value: bin_3_perc},
-   {bin: bin_4, value: bin_4_perc},
-   {bin: bin_5, value: bin_5_perc},
-   {bin: bin_6, value: bin_6_perc},
-   {bin: bin_7, value: bin_7_perc},
-   {bin: bin_8, value: 0},
-
-];
-      drawHistogram(binRanges);}
-
                updatewHhistoRanges(wHhistoRanges);
                console.log(wHhistoRanges);
           
@@ -6392,7 +6325,7 @@ var binRanges = [
           onChange: function (value, text, $selectedItem) {
             cityName = text; // Assign the value to the broader-scoped variable cityName
                         // Process CSV data
-            const result = csvData.find((row) => row[3] === cityName);
+            const result = cbsaData.find((row) => row[3] === cityName);
             $('#cityDropdown1').dropdown('hide');
                             if (result) {
                               const intptlat = parseFloat(result[10]);
@@ -6524,41 +6457,13 @@ var binRanges = [
               updateNewHEData(newHEData);              
               updateNewMIData(newMIData);
 
-                        const result_WHhistogram = histogramData.find((row) => row[1] === cityName && row[3] === selectedtext_translated);
-
-                if (result_WHhistogram) {
-                      var CBSAbin_0 = parseFloat(result_WHhistogram[4]);
-                      var CBSAbin_1 = parseFloat(result_WHhistogram[5]);
-                      var CBSAbin_2 = parseFloat(result_WHhistogram[6]);
-                      var CBSAbin_3 = parseFloat(result_WHhistogram[7]);
-                      var CBSAbin_4 = parseFloat(result_WHhistogram[8]);
-                      var CBSAbin_5 = parseFloat(result_WHhistogram[9]);
-                      var CBSAbin_6 = parseFloat(result_WHhistogram[10]);
-                      var CBSAbin_7 = parseFloat(result_WHhistogram[11]);
-                      var CBSAbin_8 = parseFloat(result_WHhistogram[12]);
-                      var CBSAbin_0_perc = parseFloat(result_WHhistogram[13] * 100);
-                      var CBSAbin_1_perc = parseFloat(result_WHhistogram[14] * 100);
-                      var CBSAbin_2_perc = parseFloat(result_WHhistogram[15] * 100);
-                      var CBSAbin_3_perc = parseFloat(result_WHhistogram[16] * 100);
-                      var CBSAbin_4_perc = parseFloat(result_WHhistogram[17] * 100);
-                      var CBSAbin_5_perc = parseFloat(result_WHhistogram[18] * 100);
-                      var CBSAbin_6_perc = parseFloat(result_WHhistogram[19] * 100);
-                      var CBSAbin_7_perc = parseFloat(result_WHhistogram[20] * 100);
-
-                      var CBSAbinRanges = [
-                           {bin: CBSAbin_0, value: CBSAbin_0_perc},
-                           {bin: CBSAbin_1, value: CBSAbin_1_perc},
-                           {bin: CBSAbin_2, value: CBSAbin_2_perc},
-                           {bin: CBSAbin_3, value: CBSAbin_3_perc},
-                           {bin: CBSAbin_4, value: CBSAbin_4_perc},
-                           {bin: CBSAbin_5, value: CBSAbin_5_perc},
-                           {bin: CBSAbin_6, value: CBSAbin_6_perc},
-                           {bin: CBSAbin_7, value: CBSAbin_7_perc},
-                           {bin: CBSAbin_8, value: 0},]
-
-                            console.log(CBSAbinRanges);
-
-                      drawHistogram(CBSAbinRanges);};
+                // Dynamic histogram from visible map features
+                try {
+                  var currentMetric = $("#censusDropdown1 input").val() || 'total_diversity_exp';
+                  updateDynamicHistogram(map, currentMetric);
+                } catch(e) {
+                  console.warn('Histogram update error:', e);
+                }
                         }
 });
 
@@ -6566,8 +6471,6 @@ var binRanges = [
         });
 
 
-               console.log(`'${CBSAbin_3}'`);
-               console.log(`'${bin_7_perc}'`);
 
 
 
@@ -6624,167 +6527,14 @@ function updatewHhistoRanges(updatedData) {
 
 
 
-const national_histogram_old = 'https://gist.githubusercontent.com/acopod/32a8afe3dddb034f477ecce19961f4c7/raw/54fca9757905899fd4882384a72ab503f555f7c5/histogram_summary_national.csv';
 
-
-const national_histogram = 'https://gist.githubusercontent.com/acopod/b0512ff7fcf45872ba806e040416d963/raw/2844f8c46995c933a12a4d87cdb605760d0033e1/histogram_summary_national_interval';
-
-Papa.parse(national_histogram, {
-  download: true,
-  complete: function (histogramResults) {
-    const historgramData = histogramResults.data;
-
-    //var selectedcensus = $('#censusDropdown1').find('.text').text();
-    //var selectedtext_translated = catDict1[selectedcensus];
-
-    // Add an event listener to the dropdown selection change
-    $('#censusDropdown1').dropdown({
-        onChange: function (value, text, $selectedItem) {
-            var selectedcensus = text;
-            var selectedtext_translated = catDict1[selectedcensus];
-            console.log(newWeekdayID);
-            console.log(newIntervalID);
-            console.log(selectedtext_translated);
-
-            const result_histogram = historgramData.find(row =>
-                row[0] === selectedtext_translated &&
-                row[18] === newWeekdayID &&
-                row[19] === newIntervalID
-            );
-
-
-            if (result_histogram) {
-              var bin_0 = parseFloat(result_histogram[1]);
-              var bin_1 = parseFloat(result_histogram[2]);
-              var bin_2 = parseFloat(result_histogram[3]);
-              var bin_3 = parseFloat(result_histogram[4]);
-              var bin_4 = parseFloat(result_histogram[5]);
-              var bin_5 = parseFloat(result_histogram[6]);
-              var bin_6 = parseFloat(result_histogram[7]);
-              var bin_7 = parseFloat(result_histogram[8]);
-              var bin_8 = parseFloat(result_histogram[9]);
-              var bin_0_perc = parseFloat(result_histogram[10] * 100);
-              var bin_1_perc = parseFloat(result_histogram[11] * 100);
-              var bin_2_perc = parseFloat(result_histogram[12] * 100);
-              var bin_3_perc = parseFloat(result_histogram[13] * 100);
-              var bin_4_perc = parseFloat(result_histogram[14] * 100);
-              var bin_5_perc = parseFloat(result_histogram[15] * 100);
-              var bin_6_perc = parseFloat(result_histogram[16] * 100);
-              var bin_7_perc = parseFloat(result_histogram[17] * 100);
-
-              var binRanges = [
-                {bin: bin_0, value: bin_0_perc},
-                {bin: bin_1, value: bin_1_perc},
-                {bin: bin_2, value: bin_2_perc},
-                {bin: bin_3, value: bin_3_perc},
-                {bin: bin_4, value: bin_4_perc},
-                {bin: bin_5, value: bin_5_perc},
-                {bin: bin_6, value: bin_6_perc},
-                {bin: bin_7, value: bin_7_perc},
-                {bin: bin_8, value: 0},
-              ];
-                    drawHistogram(binRanges);
-
-    }
-
-    updatebin_0(bin_0);
-    updatebin_1(bin_1);
-    updatebin_2(bin_2);
-    updatebin_3(bin_3);
-    updatebin_4(bin_4);
-    updatebin_5(bin_5);
-    updatebin_6(bin_6);
-    updatebin_7(bin_7);
-    updatebin_8(bin_8);
-    updatebin_0_perc(bin_0_perc);
-    updatebin_1_perc(bin_1_perc);
-    updatebin_2_perc(bin_2_perc);
-    updatebin_3_perc(bin_3_perc);
-    updatebin_4_perc(bin_4_perc);
-    updatebin_5_perc(bin_5_perc);
-    updatebin_6_perc(bin_6_perc);
-    updatebin_7_perc(bin_7_perc);
-
- console.log(`'${bin_0_perc}'`);
-          },
-        });
-      },
-    });
 
 
 
 function parseHistogramData() {
-    Papa.parse(national_histogram, {
-        download: true,
-        complete: function(histogramResults) {
-            const histogramData = histogramResults.data;
-
-            var selectedTextTranslated = 'total_diversity_exp';
-            console.log(newWeekdayID);
-            console.log(newIntervalID);
-            console.log(selectedTextTranslated);
-
-            const resultHistogram = histogramData.find(row =>
-                row[0] === selectedTextTranslated &&
-                row[18] === newWeekdayID &&
-                row[19] === newIntervalID
-            );
-
-
-            if (resultHistogram) {
-                var bin_0 = parseFloat(resultHistogram[1]);
-                var bin_1 = parseFloat(resultHistogram[2]);
-                var bin_2 = parseFloat(resultHistogram[3]);
-                var bin_3 = parseFloat(resultHistogram[4]);
-                var bin_4 = parseFloat(resultHistogram[5]);
-                var bin_5 = parseFloat(resultHistogram[6]);
-                var bin_6 = parseFloat(resultHistogram[7]);
-                var bin_7 = parseFloat(resultHistogram[8]);
-                var bin_8 = parseFloat(resultHistogram[9]);
-                var bin_0_perc = parseFloat(resultHistogram[10] * 100);
-                var bin_1_perc = parseFloat(resultHistogram[11] * 100);
-                var bin_2_perc = parseFloat(resultHistogram[12] * 100);
-                var bin_3_perc = parseFloat(resultHistogram[13] * 100);
-                var bin_4_perc = parseFloat(resultHistogram[14] * 100);
-                var bin_5_perc = parseFloat(resultHistogram[15] * 100);
-                var bin_6_perc = parseFloat(resultHistogram[16] * 100);
-                var bin_7_perc = parseFloat(resultHistogram[17] * 100);
-
-                var binRanges = [
-                    { bin: bin_0, value: bin_0_perc },
-                    { bin: bin_1, value: bin_1_perc },
-                    { bin: bin_2, value: bin_2_perc },
-                    { bin: bin_3, value: bin_3_perc },
-                    { bin: bin_4, value: bin_4_perc },
-                    { bin: bin_5, value: bin_5_perc },
-                    { bin: bin_6, value: bin_6_perc },
-                    { bin: bin_7, value: bin_7_perc },
-                    { bin: bin_8, value: 0 },
-                ];
-                drawHistogram(binRanges);
-            }
-
-            updatebin_0(bin_0);
-            updatebin_1(bin_1);
-            updatebin_2(bin_2);
-            updatebin_3(bin_3);
-            updatebin_4(bin_4);
-            updatebin_5(bin_5);
-            updatebin_6(bin_6);
-            updatebin_7(bin_7);
-            updatebin_8(bin_8);
-            updatebin_0_perc(bin_0_perc);
-            updatebin_1_perc(bin_1_perc);
-            updatebin_2_perc(bin_2_perc);
-            updatebin_3_perc(bin_3_perc);
-            updatebin_4_perc(bin_4_perc);
-            updatebin_5_perc(bin_5_perc);
-            updatebin_6_perc(bin_6_perc);
-            updatebin_7_perc(bin_7_perc);
-
-            console.log(`${bin_0_perc}`);
-        }
-    });
+    // Dynamic histogram: compute from visible map features
+    var selectedTextTranslated = 'total_diversity_exp';
+    updateDynamicHistogram(map, selectedTextTranslated);
 }
 
 
@@ -6846,52 +6596,80 @@ function updatebin_7_perc(updatedData) {
   bin_7_perc = updatedData;
 }
 
-var ABC = [
-   {bin: 1, value: 2},
-   {bin: 2, value: 3},
-   {bin: 3, value: 4},
-   {bin: 4, value: 1},
-   {bin: 5, value: 5},
-   {bin: 6, value: 3},
-   {bin: 8, value: 3},
-   {bin: 9, value: 4},
-   {bin: 10, value: 0},
-]
+function computeHistogramFromMap(map, metric) {
+  var layerInfo = getVisibleLayers();
+  var layerId = layerInfo[0];
+  if (!layerId) return null;
 
-var initialRanges = [
-    {bin: 0
-  , value: 2.9633301662053677
-  },
-    {bin: 0.08125
-  , value: 15.485878740309278
-  },
-    {bin: 0.1625
-  , value: 19.839991187122184
-  },
-    {bin: 0.24375000000000002
-  , value: 25.287451288194873
-  },
-    {bin: 0.325
-  , value: 23.159967502513044
-  },
-    {bin: 0.40625
-  , value: 11.412676773935914
-  },
-    {bin: 0.48750000000000004
-  , value: 1.8135250134258687
-  },
-    {bin: 0.56875
-  , value: 0.03717932829346883
-  },
-    {bin: 0.65
-  , value: 0},
+  var features = map.queryRenderedFeatures({ layers: [layerId] });
+  var values = features.map(function(f) { return f.properties[metric]; })
+                       .filter(function(v) { return v != null && !isNaN(v); });
+  if (values.length === 0) return null;
 
-];
+  // Deduplicate by feature id to avoid counting tiled duplicates
+  var seen = {};
+  var uniqueValues = [];
+  features.forEach(function(f) {
+    var fid = f.id != null ? f.id : JSON.stringify(f.properties);
+    if (!seen[fid]) {
+      seen[fid] = true;
+      var v = f.properties[metric];
+      if (v != null && !isNaN(v)) uniqueValues.push(v);
+    }
+  });
+  if (uniqueValues.length === 0) return null;
 
-drawHistogram(initialRanges);
+  var min = d3.min(uniqueValues);
+  var max = d3.max(uniqueValues);
+  if (min === max) {
+    return [{ bin: min, value: 100 }, { bin: max, value: 0 }];
+  }
+
+  var binCount = 20;
+  var binWidth = (max - min) / binCount;
+
+  var bins = [];
+  for (var i = 0; i < binCount; i++) {
+    bins.push({ bin: min + i * binWidth, count: 0 });
+  }
+
+  uniqueValues.forEach(function(v) {
+    var idx = Math.min(Math.floor((v - min) / binWidth), binCount - 1);
+    bins[idx].count++;
+  });
+
+  var total = uniqueValues.length;
+  var result = bins.map(function(b) {
+    return { bin: b.bin, value: (b.count / total) * 100 };
+  });
+  // Add end boundary bin
+  result.push({ bin: max, value: 0 });
+  return result;
+}
+
+function updateDynamicHistogram(map, metric, div_score_exp) {
+  var data = computeHistogramFromMap(map, metric);
+  if (data) {
+    _cachedHistogramData = data;
+    _cachedHistogramMetric = metric;
+    var layerInfo = getVisibleLayers();
+    _cachedHistogramLayer = layerInfo[0];
+    drawHistogram(data, div_score_exp);
+  }
+}
+_updateDynamicHistogramFn = updateDynamicHistogram;
+
+// Load initial histogram from visible counties once map is ready
+map.once('idle', function() {
+  var initMetric = $("#censusDropdown1 input").val() || 'total_diversity_exp';
+  updateDynamicHistogram(map, initMetric);
+});
 
 
 function drawHistogram(data, div_score_exp) {
+
+    // Guard: histogram SVG not initialized yet
+    if (!histogramSvg || !histogramXScale || !histogramYScale) return;
 
     // Set the dimensions and margins of the graph for the histogram
     var maxPercentage = d3.max(data, function(d) { return d.value });
@@ -6899,89 +6677,73 @@ function drawHistogram(data, div_score_exp) {
 
     var tickvalue = d3.ticks(minPercentage, maxPercentage, 8);
 
+    var xMin = d3.min(data, function(d) { return d.bin });
+    var xMax = d3.max(data, function(d) { return d.bin });
+
     // Update the X axis
-    x.domain([d3.min(data, function(d) { return d.bin }), d3.max(data, function(d) { return d.bin })])
-    xAxis.transition().duration(1000)
-        .call(d3.axisBottom(x).tickFormat(d3.format(".2f")).tickValues(data.map(range => range.bin)))
+    histogramXScale.domain([xMin, xMax]);
+    // Show only ~5 evenly spaced tick labels to avoid crowding
+    var tickCount = Math.min(data.length, 5);
+    histogramXAxis.transition().duration(1000)
+        .call(d3.axisBottom(histogramXScale).ticks(tickCount).tickFormat(d3.format(".2f")));
 
     var binWidths = [];
     for (var i = 0; i < data.length - 1; i++) {
         binWidths.push(data[i + 1].bin - data[i].bin);
     }
+    var defaultBinWidth = binWidths.length > 0 ? binWidths[0] : 1;
 
     // Update the Y axis
-    y.domain([0, d3.max(data, function(d) { return d.value })]);
-    yAxis.transition().duration(1000).call(d3.axisLeft(y).tickFormat(d => d + "%").tickValues(tickvalue));
+    histogramYScale.domain([0, d3.max(data, function(d) { return d.value })]);
+    histogramYAxis.transition().duration(1000).call(d3.axisLeft(histogramYScale).tickFormat(d => d + "%").tickValues(tickvalue));
 
+    // Compute dynamic bar pixel width based on number of data bins (excluding end boundary)
+    var numBars = data.length - 1;
+    var histogramWidth = histogramXScale.range()[1] - histogramXScale.range()[0];
+    var barPixelWidth = numBars > 0 ? Math.max(histogramWidth / numBars - 1, 2) : 27;
 
     // Create the u variable
     var NationalHis = histogramSvg.selectAll("rect")
         .data(data)
 
-    var currentZoom = map.getZoom();
-    var zoomThreshold = 10;
+    // Remove old rects that are no longer needed
+    NationalHis.exit().remove();
 
-    //console.log(currentZoom);
-
-NationalHis
+    var entered = NationalHis
     .enter()
     .append("rect")
-    .merge(NationalHis)
+    .attr("x", function(d) { return histogramXScale(d.bin); })
+    .attr("y", function(d) { return histogramYScale(d.value); })
+    .attr("width", barPixelWidth)
+    .attr("height", function(d) { return histogramHeight - histogramYScale(d.value); })
+    .attr("fill-opacity", "1")
+    .attr("rx", 1)
+    .attr("ry", 1);
+
+    entered.merge(NationalHis)
     .transition()
     .duration(1000)
-    .attr("x", function(d) { return x(d.bin); })
-    .attr("y", function(d) { return y(d.value); })
-    .attr("width", 27)
-    .attr("height", function(d) { return histogramHeight - y(d.value); })
+    .attr("x", function(d) { return histogramXScale(d.bin); })
+    .attr("y", function(d) { return histogramYScale(d.value); })
+    .attr("width", barPixelWidth)
+    .attr("height", function(d) { return histogramHeight - histogramYScale(d.value); })
     .attr("fill", function(d) {
-        // console.log(d.bin)
-        if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
-          // console.log('end')
+        if (typeof div_score_exp !== 'undefined' && div_score_exp !== null &&
+            d.bin <= div_score_exp && d.bin + defaultBinWidth >= div_score_exp) {
           return "#2974f9"; // Highlight color
-          
         } else {
             return "#96bfff"; // Default color
         }
-        // if (zoomThreshold > currentZoom) {
-        //     if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
-        //         console.log('end')
-        //         return "#2974f9"; // Highlight color
-                
-        //     } else {
-        //         return "#96bfff"; // Default color
-        //     }
-
-        // } else {
-        //     if (zoomThreshold <= currentZoom) {
-        //         if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
-        //             console.log('end')
-        //             return "#2974f9"; // Highlight color
-                    
-        //         } else {
-        //             return "#96bfff"; // Default color
-        //         }
-        //     }
-        // }
-
     })
     .attr("fill-opacity", "1")
     .attr("rx", 1)
     .attr("ry", 1)
     .attr("stroke", function(d) {
-        if (zoomThreshold > currentZoom) {
-            if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
-                return "black"; // Highlight stroke color
-            } else {
-                return "#555"; // Default stroke color
-            }
+        if (typeof div_score_exp !== 'undefined' && div_score_exp !== null &&
+            d.bin <= div_score_exp && d.bin + defaultBinWidth >= div_score_exp) {
+            return "black"; // Highlight stroke color
         } else {
-            if (zoomThreshold <= currentZoom) {
-                if (d.bin <= div_score_exp && d.bin + binWidths[0] >= div_score_exp) {
-                    return "black"; // Highlight stroke color
-                } else {
-                    return "#555"; // Default stroke color
-                }
-            }
+            return "#555"; // Default stroke color
         }
     })
 
@@ -7036,7 +6798,7 @@ NationalHis
 
       // });
 //////////////////////////////////////////////
-//////////////////////////////////////////////
+////////////////START HERE////////////////////
 //////////////////////////////////////////////
 //////////////////////////////////////////////
 
@@ -7044,874 +6806,944 @@ NationalHis
 
 
 $(document).ready(function() {
-/////////////////////////////
-///////// Page functions ////
-/////////////////////////////
 
 
-// $('.homeIcon').on('click',function(){
-//     $('.dimmer').addClass('active');
-// })
+  console.log('Document ready');
+  initializeHistogramData().then(() => {
+    initializeCBSAData().then(() => {
+      initializeBoxplotData().then(() => {
+        initializeNatlData().then(() => {
+      
 
-// $('.infoIcon').on('click',function(){
-//     $('#infoMessage').transition('fade in');
-// })
-
-// $('.dataIcon').on('click',function(){
-//     $('#dataMessage').transition('fade in');
-// })
-// $('.message .close')
-//   .on('click', function() {
-//     $(this)
-//       .closest('.message')
-//       .transition('fade')
-//     ;
-//   });
-
-
-  /////////////////////////////////
-  /// Initialize Census dropdown///
-  ////////////////////////////////
-  var $censusDropdown = $("#censusDropdown");
-  $('#censusDropdown1').dropdown();
-
-  $censusDropdown.empty();
-  $.each(censusList1, function(k,v) {
-      $censusDropdown.append($('<div class="item" data-value="'+v+'">'+catDict[v]+'</div>'))
-  })
-
-  updateLegend('total_diversity_exp');
-
-
-  /////////////////////////////////
-  // initialize city dropdown /////
-  /////////////////////////////////
-
-
-  var $cityDropdown = $("#cityDropdown");
-  $('#cityDropdown1').dropdown();
-
-  $cityDropdown.empty();
-  $.each(cities, function () {
-  $cityDropdown.append($('<div class="item" data-value="' + this + '">' + this + '</div>'));});
-
-
-  //////////////////////////////////////
-  ///////////// ADD MAP HERE ///////////
-  //////////////////////////////////////
-
-  let hoveredStateId = null;
-  // let hoveredStateId = false;
-
-
-  function loadLayers(map) {
-
-          const layers = map.getStyle().layers;
-
-  // Find the index of the first symbol layer in the map style.
-          let firstLineId;
-
-
-          for (const layer of layers) {
-              if (layer.type === 'line') {
-              firstLineId = layer.id;
-              break;
-              }
-          }
-
-          var layer = $("#censusDropdown1 input").val();
-
-
-          $("#undim").removeClass("loading disabled");
-
-
-          map.addSource('tract_div_weekday_late_night',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_tract_div_weekday_late_night,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('tract_div_weekend_late_night',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_tract_div_weekend_late_night,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('tract_div_weekday_morning',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_tract_div_weekday_morning,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('tract_div_weekend_morning',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_tract_div_weekdend_morning,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('tract_div_weekday_afternoon',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_tract_div_weekday_afternoon,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('tract_div_weekend_afternoon',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_tract_div_weekend_afternoon,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('tract_div_weekday_evening',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_tract_div_weekday_evening,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('tract_div_weekend_evening',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_tract_div_weekend_evening,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('tract_div_weekday_late_evening',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_tract_div_weekday_late_evening,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('tract_div_weekend_late_evening',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_tract_div_weekend_late_evening,
-          'promoteId': 'GEOID10'
-          });
-
-
-          map.addSource('county_weekday_late_night',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_county_weekday_late_night,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('county_weekend_late_night',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_county_weekend_late_night,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('county_weekday_morning',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_county_weekday_morning,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('county_weekend_morning',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_county_weekdend_morning,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('county_weekday_afternoon',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_county_weekday_afternoon,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('county_weekend_afternoon',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_county_weekend_afternoon,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('county_weekday_evening',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_county_weekday_evening,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('county_weekend_evening',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_county_weekend_evening,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('county_weekday_late_evening',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_county_weekday_late_evening,
-          'promoteId': 'GEOID10'
-          });
-
-          map.addSource('county_weekend_late_evening',{
-          type: "vector",
-          url: "pmtiles://" + PMTILES_URL_county_weekend_late_evening,
-          'promoteId': 'GEOID10'
-          });
-
-
-          map.addLayer({
-          "id":"tract_div_wdln",
-          "source": "tract_div_weekday_late_night",
-          "source-layer":"segregation_all_intervals_weekday_late_night",
-          "type": "fill",
-            'layout': {
-          'visibility': 'none'
-            },
-          "paint": {
-                  "fill-color": [
-                      "step",
-                      ["get", "total_diversity_exp"],
-                      'gray',  // default color if value is less than the first stop
-
-                      
-                      0, '#440154',
-                      0.08125, '#46327f',
-                      0.1625, '#365c8d',
-                      0.24375, '#277f8e',
-                      0.325, '#1fa288',
-                      0.40625, '#4ac26d',
-                      0.4875, '#9ed93a',
-                      0.56875, '#fde725'
-                      // 0, 'gray',
-                      // 0.08125, '#440154',
-                      // 0.1625, '#46327f',
-                      // 0.24375, '#365c8d',
-                      // 0.325, '#277f8e',
-                      // 0.40625, '#1fa288',
-                      // 0.4875, '#4ac26d',
-                      // 0.56875, '#9ed93a',
-                      // 0.65, '#fde725'
-                  ],
-                  'fill-opacity': 1 
-                    }
-            },firstLineId);
-
-          map.addLayer({
-          "id":"tract_div_weln",
-          "source": "tract_div_weekend_late_night",
-          "source-layer":"segregation_all_intervals_weekend_late_night",
-          "type": "fill",
-            'layout': {
-          'visibility': 'none'
-            },
-          "paint": {
-                  "fill-color": [
-                      "step",
-                      ["get", "total_diversity_exp"],
-                      'gray',  // default color if value is less than the first stop
-                      0, '#440154',
-                      0.08125, '#46327f',
-                      0.1625, '#365c8d',
-                      0.24375, '#277f8e',
-                      0.325, '#1fa288',
-                      0.40625, '#4ac26d',
-                      0.4875, '#9ed93a',
-                      0.56875, '#fde725'
-                      // 0, 'gray',
-                      // 0.08125, '#440154',
-                      // 0.1625, '#46327f',
-                      // 0.24375, '#365c8d',
-                      // 0.325, '#277f8e',
-                      // 0.40625, '#1fa288',
-                      // 0.4875, '#4ac26d',
-                      // 0.56875, '#9ed93a',
-                      // 0.65, '#fde725'
+          console.log(boxplotData)
               
-                  ],
-                  'fill-opacity': 1 
-                    }
-            },firstLineId);
+
+          /////////////////////////////
+          ///////// Page functions ////
+          /////////////////////////////
 
 
+          // $('.homeIcon').on('click',function(){
+          //     $('.dimmer').addClass('active');
+          // })
 
-          map.addLayer({
-              "id": "tract_div_wdm",
-              "source": "tract_div_weekday_morning",
-              "source-layer": "segregation_all_intervals_weekday_morning",
-              "type": "fill",
-              'layout': {
-                  'visibility': 'none'
-              },
-              "paint": {
-                  "fill-color": [
-                      "step",
-                      ["get", "total_diversity_exp"],
-                      'gray',  // default color if value is less than the first stop
-                      0, '#440154',
-                      0.08125, '#46327f',
-                      0.1625, '#365c8d',
-                      0.24375, '#277f8e',
-                      0.325, '#1fa288',
-                      0.40625, '#4ac26d',
-                      0.4875, '#9ed93a',
-                      0.56875, '#fde725'
-                      // 0, 'gray',
-                      // 0.08125, '#440154',
-                      // 0.1625, '#46327f',
-                      // 0.24375, '#365c8d',
-                      // 0.325, '#277f8e',
-                      // 0.40625, '#1fa288',
-                      // 0.4875, '#4ac26d',
-                      // 0.56875, '#9ed93a',
-                      // 0.65, '#fde725'
-                  ],
-                  'fill-opacity': 1
+          // $('.infoIcon').on('click',function(){
+          //     $('#infoMessage').transition('fade in');
+          // })
+
+          // $('.dataIcon').on('click',function(){
+          //     $('#dataMessage').transition('fade in');
+          // })
+          // $('.message .close')
+          //   .on('click', function() {
+          //     $(this)
+          //       .closest('.message')
+          //       .transition('fade')
+          //     ;
+          //   });
+
+
+          ////////////////////////////////////
+          /// 1. Initialize Census dropdown///
+          ////////////////////////////////////
+          var $censusDropdown = $("#censusDropdown");
+          $('#censusDropdown1').dropdown({
+            onChange: function(value, text, $selectedItem) {
+              var metric = catDict1[text];
+              if (!metric) return;
+
+              updateLegend(metric);
+
+              if (_mapInstance) {
+                var allLayers = [
+                  'counties', 'tracts',
+                  'tract_div_wdle', 'tract_div_wele', 'tract_div_wdm', 'tract_div_wem',
+                  'tract_div_wda', 'tract_div_wea', 'tract_div_wde', 'tract_div_wee',
+                  'tract_div_wdln', 'tract_div_weln',
+                  'counties_div_wdle', 'counties_div_wele', 'counties_div_wdm', 'counties_div_wem',
+                  'counties_div_wda', 'counties_div_wea', 'counties_div_wde', 'counties_div_wee',
+                  'counties_div_wdln', 'counties_div_weln'
+                ];
+                allLayers.forEach(function(lyr) {
+                  try { _mapInstance.setPaintProperty(lyr, 'fill-color', choroplethColors[metric]); } catch(e) {}
+                });
+
+                // Update histogram for new metric
+                try {
+                  if (_updateDynamicHistogramFn) {
+                    _updateDynamicHistogramFn(_mapInstance, metric);
+                  }
+                } catch(e) {
+                  console.warn('Histogram update error:', e);
+                }
               }
-          }, firstLineId);
+            }
+          });
 
-          map.addLayer({
-          "id":"tract_div_wem",
-          "source": "tract_div_weekend_morning",
-          "source-layer":"segregation_all_intervals_weekend_morning",
-          "type": "fill",
-            'layout': {
-          'visibility': 'none'
-            },
-          "paint": {
-                  "fill-color": [
-                      "step",
-                      ["get", "total_diversity_exp"],
-                      'gray',  // default color if value is less than the first stop
-                      0, '#440154',
-                      0.08125, '#46327f',
-                      0.1625, '#365c8d',
-                      0.24375, '#277f8e',
-                      0.325, '#1fa288',
-                      0.40625, '#4ac26d',
-                      0.4875, '#9ed93a',
-                      0.56875, '#fde725'
+          $censusDropdown.empty();
+          $.each(censusList1, function(k,v) {
+              $censusDropdown.append($('<div class="item" data-value="'+v+'">'+catDict[v]+'</div>'))
+          })
 
-                  ],
-                  'fill-opacity': 1 
-                    }
-            },firstLineId);
-
-          map.addLayer({
-          "id":"tract_div_wda",
-          "source": "tract_div_weekday_afternoon",
-          "source-layer":"segregation_all_intervals_weekday_afternoon",
-          "type": "fill",
-            'layout': {
-          'visibility': 'visible'
-            },
-          "paint": {
-                  "fill-color": [
-                      "step",
-                      ["get", "total_diversity_exp"],
-                      'gray',  // default color if value is less than the first stop
-                      0, '#440154',
-                      0.08125, '#46327f',
-                      0.1625, '#365c8d',
-                      0.24375, '#277f8e',
-                      0.325, '#1fa288',
-                      0.40625, '#4ac26d',
-                      0.4875, '#9ed93a',
-                      0.56875, '#fde725'
-                  ],
-                  'fill-opacity': 1 
-                    }
-            },firstLineId);
-
-          map.addLayer({
-          "id":"tract_div_wea",
-          "source": "tract_div_weekend_afternoon",
-          "source-layer":"segregation_all_intervals_weekend_afternoon",
-          "type": "fill",
-            'layout': {
-          'visibility': 'none'
-            },
-          "paint": {
-                  "fill-color": [
-                      "step",
-                      ["get", "total_diversity_exp"],
-                      'gray',  // default color if value is less than the first stop
-                      0, '#440154',
-                      0.08125, '#46327f',
-                      0.1625, '#365c8d',
-                      0.24375, '#277f8e',
-                      0.325, '#1fa288',
-                      0.40625, '#4ac26d',
-                      0.4875, '#9ed93a',
-                      0.56875, '#fde725'
-                  ],
-                  'fill-opacity': 1 
-                    }
-            },firstLineId);
-
-          map.addLayer({
-          "id":"tract_div_wde",
-          "source": "tract_div_weekday_evening",
-          "source-layer":"segregation_all_intervals_weekday_evening",
-          "type": "fill",
-            'layout': {
-          'visibility': 'none'
-            },
-          "paint": {
-                  "fill-color": [
-                      "step",
-                      ["get", "total_diversity_exp"],
-                      'gray',  // default color if value is less than the first stop
-                      0, '#440154',
-                      0.08125, '#46327f',
-                      0.1625, '#365c8d',
-                      0.24375, '#277f8e',
-                      0.325, '#1fa288',
-                      0.40625, '#4ac26d',
-                      0.4875, '#9ed93a',
-                      0.56875, '#fde725'
-                  ],
-                  'fill-opacity': 1 
-                    }
-            },firstLineId);
-
-          map.addLayer({
-          "id":"tract_div_wee",
-          "source": "tract_div_weekend_evening",
-          "source-layer":"segregation_all_intervals_weekend_evening",
-          "type": "fill",
-            'layout': {
-          'visibility': 'none'
-            },
-          "paint": {
-                  "fill-color": [
-                      "step",
-                      ["get", "total_diversity_exp"],
-                      'gray',  // default color if value is less than the first stop
-                      0, '#440154',
-                      0.08125, '#46327f',
-                      0.1625, '#365c8d',
-                      0.24375, '#277f8e',
-                      0.325, '#1fa288',
-                      0.40625, '#4ac26d',
-                      0.4875, '#9ed93a',
-                      0.56875, '#fde725'
-                  ],
-                  'fill-opacity': 1 
-                    }
-            },firstLineId);
-
-          map.addLayer({
-          "id":"tract_div_wdle",
-          "source": "tract_div_weekday_late_evening",
-          "source-layer":"segregation_all_intervals_weekday_late_evening",
-          "type": "fill",
-            'layout': {
-          'visibility': 'none'
-            },
-          "paint": {
-                  "fill-color": [
-                      "step",
-                      ["get", "total_diversity_exp"],
-                      'gray',  // default color if value is less than the first stop
-                      0, '#440154',
-                      0.08125, '#46327f',
-                      0.1625, '#365c8d',
-                      0.24375, '#277f8e',
-                      0.325, '#1fa288',
-                      0.40625, '#4ac26d',
-                      0.4875, '#9ed93a',
-                      0.56875, '#fde725'
-                  ],
-                  'fill-opacity': 1 
-                    }
-            },firstLineId);
-
-          map.addLayer({
-          "id":"tract_div_wele",
-          "source": "tract_div_weekend_late_evening",
-          "source-layer":"segregation_all_intervals_weekend_late_evening",
-          "type": "fill",
-            'layout': {
-          'visibility': 'none'
-            },
-          "paint": {
-                  "fill-color": [
-                      "step",
-                      ["get", "total_diversity_exp"],
-                      'gray',  // default color if value is less than the first stop
-                      0, '#440154',
-                      0.08125, '#46327f',
-                      0.1625, '#365c8d',
-                      0.24375, '#277f8e',
-                      0.325, '#1fa288',
-                      0.40625, '#4ac26d',
-                      0.4875, '#9ed93a',
-                      0.56875, '#fde725'
-                  ],
-                  'fill-opacity': 1 
-                    }
-            },firstLineId);
+          updateLegend('total_diversity_exp');
 
 
+          ////////////////////////////////////
+          // 2. Initialize city dropdown /////
+          ////////////////////////////////////
 
-      let recordedLayerIds = [];
 
-      let isWeekday = true;
+          var $cityDropdown = $("#cityDropdown");
+          $('#cityDropdown1').dropdown();
 
-    // Function to toggle between weekday and weekend
+          $cityDropdown.empty();
+          $.each(cities, function () {
+          $cityDropdown.append($('<div class="item" data-value="' + this + '">' + this + '</div>'));
+          });
 
-      function toggleWeekend(isWeekdayToggle) {
-          const weekdayButton = document.getElementById('weekdayButton');
-          const weekendButton = document.getElementById('weekendButton');
-          if (isWeekdayToggle) {
-            weekdayButton.classList.add('active'); // Add CSS class for active state
-            weekendButton.classList.remove('active');
-          } else {
-            weekendButton.classList.add('active'); // Add CSS class for active state
-            weekdayButton.classList.remove('active');
+
+          ////////////////////////////////////////////////////
+          ///////////// FUNCTION TO ADD MAP LAYERS ///////////
+          ////////////////////////////////////////////////////
+
+          // let hoveredFeatureId = null;
+          // let hoveredStateId = false;
+
+
+          function loadLayers(map) {
+
+            const layers = map.getStyle().layers;
+
+            // Find the index of the first symbol layer in the map style.
+            let firstLineId;
+
+
+            for (const layer of layers) {
+                if (layer.type === 'line') {
+                firstLineId = layer.id;
+                break;
+                }
+            }
+
+            var layer = $("#censusDropdown1 input").val();
+
+
+            $("#undim").removeClass("loading disabled");
+
+
+            map.addSource('tract_div_weekday_late_night',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_tract_div_weekday_late_night,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('tract_div_weekend_late_night',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_tract_div_weekend_late_night,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('tract_div_weekday_morning',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_tract_div_weekday_morning,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('tract_div_weekend_morning',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_tract_div_weekdend_morning,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('tract_div_weekday_afternoon',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_tract_div_weekday_afternoon,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('tract_div_weekend_afternoon',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_tract_div_weekend_afternoon,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('tract_div_weekday_evening',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_tract_div_weekday_evening,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('tract_div_weekend_evening',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_tract_div_weekend_evening,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('tract_div_weekday_late_evening',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_tract_div_weekday_late_evening,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('tract_div_weekend_late_evening',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_tract_div_weekend_late_evening,
+            'promoteId': 'GEOID10'
+            });
+
+
+            map.addSource('county_weekday_late_night',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_county_weekday_late_night,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('county_weekend_late_night',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_county_weekend_late_night,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('county_weekday_morning',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_county_weekday_morning,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('county_weekend_morning',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_county_weekdend_morning,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('county_weekday_afternoon',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_county_weekday_afternoon,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('county_weekend_afternoon',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_county_weekend_afternoon,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('county_weekday_evening',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_county_weekday_evening,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('county_weekend_evening',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_county_weekend_evening,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('county_weekday_late_evening',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_county_weekday_late_evening,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addSource('county_weekend_late_evening',{
+            type: "vector",
+            url: "pmtiles://" + PMTILES_URL_county_weekend_late_evening,
+            'promoteId': 'GEOID10'
+            });
+
+            map.addLayer({
+            "id":"tract_div_wdln",
+            "source": "tract_div_weekday_late_night",
+            "source-layer":"segregation_all_intervals_weekday_late_night",
+            "type": "fill",
+              'layout': {
+            'visibility': 'none'
+              },
+            "paint": {
+                    "fill-color": [
+                        "step",
+                        ["get", "total_diversity_exp"],
+                        'gray',  // default color if value is less than the first stop
+
+                        
+                        0, '#440154',
+                        0.08125, '#46327f',
+                        0.1625, '#365c8d',
+                        0.24375, '#277f8e',
+                        0.325, '#1fa288',
+                        0.40625, '#4ac26d',
+                        0.4875, '#9ed93a',
+                        0.56875, '#fde725'
+                        // 0, 'gray',
+                        // 0.08125, '#440154',
+                        // 0.1625, '#46327f',
+                        // 0.24375, '#365c8d',
+                        // 0.325, '#277f8e',
+                        // 0.40625, '#1fa288',
+                        // 0.4875, '#4ac26d',
+                        // 0.56875, '#9ed93a',
+                        // 0.65, '#fde725'
+                    ],
+                    'fill-opacity': 1 
+                      }
+              },firstLineId);
+
+            map.addLayer({
+            "id":"tract_div_weln",
+            "source": "tract_div_weekend_late_night",
+            "source-layer":"segregation_all_intervals_weekend_late_night",
+            "type": "fill",
+              'layout': {
+            'visibility': 'none'
+              },
+            "paint": {
+                    "fill-color": [
+                        "step",
+                        ["get", "total_diversity_exp"],
+                        'gray',  // default color if value is less than the first stop
+                        0, '#440154',
+                        0.08125, '#46327f',
+                        0.1625, '#365c8d',
+                        0.24375, '#277f8e',
+                        0.325, '#1fa288',
+                        0.40625, '#4ac26d',
+                        0.4875, '#9ed93a',
+                        0.56875, '#fde725'
+                        // 0, 'gray',
+                        // 0.08125, '#440154',
+                        // 0.1625, '#46327f',
+                        // 0.24375, '#365c8d',
+                        // 0.325, '#277f8e',
+                        // 0.40625, '#1fa288',
+                        // 0.4875, '#4ac26d',
+                        // 0.56875, '#9ed93a',
+                        // 0.65, '#fde725'
+                
+                    ],
+                    'fill-opacity': 1 
+                      }
+              },firstLineId);
+
+            map.addLayer({
+                "id": "tract_div_wdm",
+                "source": "tract_div_weekday_morning",
+                "source-layer": "segregation_all_intervals_weekday_morning",
+                "type": "fill",
+                'layout': {
+                    'visibility': 'none'
+                },
+                "paint": {
+                    "fill-color": [
+                        "step",
+                        ["get", "total_diversity_exp"],
+                        'gray',  // default color if value is less than the first stop
+                        0, '#440154',
+                        0.08125, '#46327f',
+                        0.1625, '#365c8d',
+                        0.24375, '#277f8e',
+                        0.325, '#1fa288',
+                        0.40625, '#4ac26d',
+                        0.4875, '#9ed93a',
+                        0.56875, '#fde725'
+                        // 0, 'gray',
+                        // 0.08125, '#440154',
+                        // 0.1625, '#46327f',
+                        // 0.24375, '#365c8d',
+                        // 0.325, '#277f8e',
+                        // 0.40625, '#1fa288',
+                        // 0.4875, '#4ac26d',
+                        // 0.56875, '#9ed93a',
+                        // 0.65, '#fde725'
+                    ],
+                    'fill-opacity': 1
+                }
+            }, firstLineId);
+
+            map.addLayer({
+            "id":"tract_div_wem",
+            "source": "tract_div_weekend_morning",
+            "source-layer":"segregation_all_intervals_weekend_morning",
+            "type": "fill",
+              'layout': {
+            'visibility': 'none'
+              },
+            "paint": {
+                    "fill-color": [
+                        "step",
+                        ["get", "total_diversity_exp"],
+                        'gray',  // default color if value is less than the first stop
+                        0, '#440154',
+                        0.08125, '#46327f',
+                        0.1625, '#365c8d',
+                        0.24375, '#277f8e',
+                        0.325, '#1fa288',
+                        0.40625, '#4ac26d',
+                        0.4875, '#9ed93a',
+                        0.56875, '#fde725'
+
+                    ],
+                    'fill-opacity': 1 
+                      }
+              },firstLineId);
+
+            map.addLayer({
+            "id":"tract_div_wda",
+            "source": "tract_div_weekday_afternoon",
+            "source-layer":"segregation_all_intervals_weekday_afternoon",
+            "type": "fill",
+              'layout': {
+            'visibility': 'visible'
+              },
+            "paint": {
+                    "fill-color": [
+                        "step",
+                        ["get", "total_diversity_exp"],
+                        'gray',  // default color if value is less than the first stop
+                        0, '#440154',
+                        0.08125, '#46327f',
+                        0.1625, '#365c8d',
+                        0.24375, '#277f8e',
+                        0.325, '#1fa288',
+                        0.40625, '#4ac26d',
+                        0.4875, '#9ed93a',
+                        0.56875, '#fde725'
+                    ],
+                    'fill-opacity': 1 
+                      }
+              },firstLineId);
+
+            map.addLayer({
+            "id":"tract_div_wea",
+            "source": "tract_div_weekend_afternoon",
+            "source-layer":"segregation_all_intervals_weekend_afternoon",
+            "type": "fill",
+              'layout': {
+            'visibility': 'none'
+              },
+            "paint": {
+                    "fill-color": [
+                        "step",
+                        ["get", "total_diversity_exp"],
+                        'gray',  // default color if value is less than the first stop
+                        0, '#440154',
+                        0.08125, '#46327f',
+                        0.1625, '#365c8d',
+                        0.24375, '#277f8e',
+                        0.325, '#1fa288',
+                        0.40625, '#4ac26d',
+                        0.4875, '#9ed93a',
+                        0.56875, '#fde725'
+                    ],
+                    'fill-opacity': 1 
+                      }
+              },firstLineId);
+
+            map.addLayer({
+            "id":"tract_div_wde",
+            "source": "tract_div_weekday_evening",
+            "source-layer":"segregation_all_intervals_weekday_evening",
+            "type": "fill",
+              'layout': {
+            'visibility': 'none'
+              },
+            "paint": {
+                    "fill-color": [
+                        "step",
+                        ["get", "total_diversity_exp"],
+                        'gray',  // default color if value is less than the first stop
+                        0, '#440154',
+                        0.08125, '#46327f',
+                        0.1625, '#365c8d',
+                        0.24375, '#277f8e',
+                        0.325, '#1fa288',
+                        0.40625, '#4ac26d',
+                        0.4875, '#9ed93a',
+                        0.56875, '#fde725'
+                    ],
+                    'fill-opacity': 1 
+                      }
+              },firstLineId);
+
+            map.addLayer({
+            "id":"tract_div_wee",
+            "source": "tract_div_weekend_evening",
+            "source-layer":"segregation_all_intervals_weekend_evening",
+            "type": "fill",
+              'layout': {
+            'visibility': 'none'
+              },
+            "paint": {
+                    "fill-color": [
+                        "step",
+                        ["get", "total_diversity_exp"],
+                        'gray',  // default color if value is less than the first stop
+                        0, '#440154',
+                        0.08125, '#46327f',
+                        0.1625, '#365c8d',
+                        0.24375, '#277f8e',
+                        0.325, '#1fa288',
+                        0.40625, '#4ac26d',
+                        0.4875, '#9ed93a',
+                        0.56875, '#fde725'
+                    ],
+                    'fill-opacity': 1 
+                      }
+              },firstLineId);
+
+            map.addLayer({
+            "id":"tract_div_wdle",
+            "source": "tract_div_weekday_late_evening",
+            "source-layer":"segregation_all_intervals_weekday_late_evening",
+            "type": "fill",
+              'layout': {
+            'visibility': 'none'
+              },
+            "paint": {
+                    "fill-color": [
+                        "step",
+                        ["get", "total_diversity_exp"],
+                        'gray',  // default color if value is less than the first stop
+                        0, '#440154',
+                        0.08125, '#46327f',
+                        0.1625, '#365c8d',
+                        0.24375, '#277f8e',
+                        0.325, '#1fa288',
+                        0.40625, '#4ac26d',
+                        0.4875, '#9ed93a',
+                        0.56875, '#fde725'
+                    ],
+                    'fill-opacity': 1 
+                      }
+              },firstLineId);
+
+            map.addLayer({
+            "id":"tract_div_wele",
+            "source": "tract_div_weekend_late_evening",
+            "source-layer":"segregation_all_intervals_weekend_late_evening",
+            "type": "fill",
+              'layout': {
+            'visibility': 'none'
+              },
+            "paint": {
+                    "fill-color": [
+                        "step",
+                        ["get", "total_diversity_exp"],
+                        'gray',  // default color if value is less than the first stop
+                        0, '#440154',
+                        0.08125, '#46327f',
+                        0.1625, '#365c8d',
+                        0.24375, '#277f8e',
+                        0.325, '#1fa288',
+                        0.40625, '#4ac26d',
+                        0.4875, '#9ed93a',
+                        0.56875, '#fde725'
+                    ],
+                    'fill-opacity': 1 
+                      }
+              },firstLineId);
+
+
+
+              let recordedLayerIds = [];
+
+              let isWeekday = true;
+
+            // Function to toggle between weekday and weekend
+
+              function toggleWeekend(isWeekdayToggle) {
+                  const weekdayButton = document.getElementById('weekdayButton');
+                  const weekendButton = document.getElementById('weekendButton');
+                  if (isWeekdayToggle) {
+                    weekdayButton.classList.add('active'); // Add CSS class for active state
+                    weekendButton.classList.remove('active');
+                  } else {
+                    weekendButton.classList.add('active'); // Add CSS class for active state
+                    weekdayButton.classList.remove('active');
+                  }
+
+                  isWeekday = isWeekdayToggle;
+              }
+
+          /*
+          function updateWeekdayWeekend(updatedData) {
+              let togglelayerIds;
+              if (updatedData === 'tract_div_wdm' || updatedData === 'counties_div_wdm') {
+                togglelayerIds = ['tract_div_wem', 'counties_div_wem'];
+              }
+              console.log(togglelayerIds)
+              toggleLayers(togglelayerIds);
           }
+          */
 
-          isWeekday = isWeekdayToggle;
-      }
+          // console.log(newLayerID)
+            // Add event listeners to the new buttons
+            document.getElementById('weekdayButton').addEventListener('click', function() {
+              toggleWeekend(true); // Set it to weekday
+              //console.log(newLayerID)
+              translateLayerID(newLayerID)
+            });
 
-  /*
-  function updateWeekdayWeekend(updatedData) {
-      let togglelayerIds;
-      if (updatedData === 'tract_div_wdm' || updatedData === 'counties_div_wdm') {
-        togglelayerIds = ['tract_div_wem', 'counties_div_wem'];
-      }
-      console.log(togglelayerIds)
-      toggleLayers(togglelayerIds);
-  }
-  */
+            document.getElementById('weekendButton').addEventListener('click', function() {
+              toggleWeekend(false); // Set it to weekend
+              //console.log(newLayerID)
+              translateLayerID(newLayerID)
+            });
 
-  // console.log(newLayerID)
-    // Add event listeners to the new buttons
-    document.getElementById('weekdayButton').addEventListener('click', function() {
-      toggleWeekend(true); // Set it to weekday
-      //console.log(newLayerID)
-      translateLayerID(newLayerID)
-    });
+            // Initial call to set the button text based on the initial state
+            toggleWeekend(isWeekday);
 
-    document.getElementById('weekendButton').addEventListener('click', function() {
-      toggleWeekend(false); // Set it to weekend
-      //console.log(newLayerID)
-      translateLayerID(newLayerID)
-    });
+            function translateLayerID(newLayerID) {
+                var translatedID;
 
-    // Initial call to set the button text based on the initial state
-    toggleWeekend(isWeekday);
-
-    function translateLayerID(newLayerID) {
-        var translatedID;
-
-        if (newLayerID.includes('tract_div_wdle')) {
-            translatedID = ['tract_div_wele', 'counties_div_wele'];
-        }
-
-        if (newLayerID.includes('tract_div_wdm')) {
-            translatedID = ['tract_div_wem', 'counties_div_wem'];
-        }
-
-        if (newLayerID.includes('tract_div_wda')) {
-            translatedID = ['tract_div_wea', 'counties_div_wea'];
-        }
-
-        if (newLayerID.includes('tract_div_wde')) {
-            translatedID = ['tract_div_wee', 'counties_div_wee'];
-        }
-
-        if (newLayerID.includes('tract_div_wdln')) {
-            translatedID = ['tract_div_weln', 'counties_div_weln'];
-        }
-
-        if (newLayerID.includes('tract_div_wele')) {
-            translatedID = ['tract_div_wdle', 'counties_div_wdle'];
-        }
-
-        if (newLayerID.includes('tract_div_wem')) {
-            translatedID = ['tract_div_wdm', 'counties_div_wdm'];
-        }
-
-        if (newLayerID.includes('tract_div_wea')) {
-            translatedID = ['tract_div_wda', 'counties_div_wda'];
-        }
-
-        if (newLayerID.includes('tract_div_wee')) {
-            translatedID = ['tract_div_wde', 'counties_div_wde'];
-        }
-
-        if (newLayerID.includes('tract_div_weln')) {
-            translatedID = ['tract_div_wdln', 'counties_div_wdln'];
-        }
-
-        console.log(translatedID);
-        toggleLayers(translatedID);
-        updateLayerID(translatedID);
-
-    }
-
-  // Function to toggle layer visibility
-    function toggleLayers(layerIds) {
-        const weekdayLayers = ['tract_div_wdle', 'tract_div_wdm', 'tract_div_wda', 'tract_div_wde', 'tract_div_wdln', 'counties_div_wdle', 'counties_div_wdm', 'counties_div_wda', 'counties_div_wde', 'counties_div_wdln'];
-        const weekendLayers = ['tract_div_wele', 'tract_div_wem', 'tract_div_wea', 'tract_div_wee', 'tract_div_weln', 'counties_div_wele', 'counties_div_wem', 'counties_div_wea', 'counties_div_wee', 'counties_div_weln'];
-        const generalLayer = ['counties', 'tracts'];
-
-        weekdayLayers.forEach(layer => {
-            if (layerIds.includes(layer)) {
-                map.setLayoutProperty(layer, 'visibility', 'visible');
-            } else {
-                map.setLayoutProperty(layer, 'visibility', 'none');
-            }
-        });
-
-        weekendLayers.forEach(layer => {
-            if (layerIds.includes(layer)) {
-                map.setLayoutProperty(layer, 'visibility', 'visible');
-            } else {
-                map.setLayoutProperty(layer, 'visibility', 'none');
-            }
-        });
-
-        generalLayer.forEach(layer => {
-            if (layerIds.includes(layer)) {
-                map.setLayoutProperty(layer, 'visibility', 'visible');
-            } else {
-                map.setLayoutProperty(layer, 'visibility', 'none');
-            }
-        });
-    }
-
-    const intervalButtons = document.querySelectorAll('#intervalButton .ui.button');
-    intervalButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            //parseHistogramData();
-            const buttonId = button.id;
-            let layerIds = [];
-            let intervalIndex;
-            let weekdayIndex;
-            // Check if the toggle is on weekday or weekend
-            if (isWeekday) {
-                if (buttonId === 'morningButton') {
-                    layerIds.push('tract_div_wdm', 'counties_div_wdm');
-                    intervalIndex = 'morning';
-                    weekdayIndex = 'weekday';
-
-                } else if (buttonId === 'afternoonButton') {
-                    layerIds.push('tract_div_wda', 'counties_div_wda');
-                    intervalIndex = 'afternoon';
-                    weekdayIndex = 'weekday';
-                } else if (buttonId === 'eveningButton') {
-                    layerIds.push('tract_div_wde', 'counties_div_wde');
-                    intervalIndex = 'evening';
-                    weekdayIndex = 'weekday';
-                } else if (buttonId === 'lateEveningButton') {
-                    layerIds.push('tract_div_wdle','counties_div_wdle');
-                    intervalIndex = 'late evening';
-                    weekdayIndex = 'weekday';
-                } else if (buttonId === 'lateNightButton') {
-                    layerIds.push('tract_div_wdln', 'counties_div_wdln');
-                    intervalIndex = 'late night';
-                    weekdayIndex = 'weekday';
+                if (newLayerID.includes('tract_div_wdle')) {
+                    translatedID = ['tract_div_wele', 'counties_div_wele'];
                 }
 
-            } else { // Weekend
-                if (buttonId === 'morningButton') {
-                    layerIds.push('tract_div_wem', 'counties_div_wem');
-                    intervalIndex = 'morning';
-                    weekdayIndex = 'weekend';
-                } else if (buttonId === 'afternoonButton') {
-                    layerIds.push('tract_div_wea', 'counties_div_wea');
-                    intervalIndex = 'afternoon';
-                    weekdayIndex = 'weekend';
-                } else if (buttonId === 'eveningButton') {
-                    layerIds.push('tract_div_wee', 'counties_div_wee');
-                    intervalIndex = 'evening';
-                    weekdayIndex = 'weekend';
-                } else if (buttonId === 'lateEveningButton') {
-                    layerIds.push('tract_div_wele', 'counties_div_wele');
-                    intervalIndex = 'late evening';
-                    weekdayIndex = 'weekend';
-                } else if (buttonId === 'lateNightButton') {
-                    layerIds.push('tract_div_weln', 'counties_div_weln');
-                    intervalIndex = 'late night';
-                    weekdayIndex = 'weekend';
+                if (newLayerID.includes('tract_div_wdm')) {
+                    translatedID = ['tract_div_wem', 'counties_div_wem'];
                 }
+
+                if (newLayerID.includes('tract_div_wda')) {
+                    translatedID = ['tract_div_wea', 'counties_div_wea'];
+                }
+
+                if (newLayerID.includes('tract_div_wde')) {
+                    translatedID = ['tract_div_wee', 'counties_div_wee'];
+                }
+
+                if (newLayerID.includes('tract_div_wdln')) {
+                    translatedID = ['tract_div_weln', 'counties_div_weln'];
+                }
+
+                if (newLayerID.includes('tract_div_wele')) {
+                    translatedID = ['tract_div_wdle', 'counties_div_wdle'];
+                }
+
+                if (newLayerID.includes('tract_div_wem')) {
+                    translatedID = ['tract_div_wdm', 'counties_div_wdm'];
+                }
+
+                if (newLayerID.includes('tract_div_wea')) {
+                    translatedID = ['tract_div_wda', 'counties_div_wda'];
+                }
+
+                if (newLayerID.includes('tract_div_wee')) {
+                    translatedID = ['tract_div_wde', 'counties_div_wde'];
+                }
+
+                if (newLayerID.includes('tract_div_weln')) {
+                    translatedID = ['tract_div_wdln', 'counties_div_wdln'];
+                }
+
+                console.log(translatedID);
+                toggleLayers(translatedID);
+                updateLayerID(translatedID);
+
             }
-            // Reset button logic
-            if (buttonId === 'reset') {
-                layerIds.push('tracts', 'counties'); // Add general layers
+
+          // Function to toggle layer visibility
+            function toggleLayers(layerIds) {
+                const weekdayLayers = ['tract_div_wdle', 'tract_div_wdm', 'tract_div_wda', 'tract_div_wde', 'tract_div_wdln', 'counties_div_wdle', 'counties_div_wdm', 'counties_div_wda', 'counties_div_wde', 'counties_div_wdln'];
+                const weekendLayers = ['tract_div_wele', 'tract_div_wem', 'tract_div_wea', 'tract_div_wee', 'tract_div_weln', 'counties_div_wele', 'counties_div_wem', 'counties_div_wea', 'counties_div_wee', 'counties_div_weln'];
+                const generalLayer = ['counties', 'tracts'];
+
+                weekdayLayers.forEach(layer => {
+                    if (layerIds.includes(layer)) {
+                        map.setLayoutProperty(layer, 'visibility', 'visible');
+                    } else {
+                        map.setLayoutProperty(layer, 'visibility', 'none');
+                    }
+                });
+
+                weekendLayers.forEach(layer => {
+                    if (layerIds.includes(layer)) {
+                        map.setLayoutProperty(layer, 'visibility', 'visible');
+                    } else {
+                        map.setLayoutProperty(layer, 'visibility', 'none');
+                    }
+                });
+
+                // generalLayer.forEach(layer => {
+                //     if (layerIds.includes(layer)) {
+                //         map.setLayoutProperty(layer, 'visibility', 'visible');
+                //     } else {
+                //         map.setLayoutProperty(layer, 'visibility', 'none');
+                //     }
+                // });
             }
-            console.log(layerIds);
-            updateLayerID(layerIds);
-            updateIntervalID(intervalIndex);
-            updateWeekdayID(weekdayIndex)
-            // Call toggleLayers function with the appropriate layer IDs
-            toggleLayers(layerIds);
 
-            // Add 'active' class to the clicked button
-            intervalButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-        });
-    });
+            const intervalButtons = document.querySelectorAll('#intervalButton .ui.button');
+            intervalButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    //parseHistogramData();
+                    const buttonId = button.id;
+                    let layerIds = [];
+                    let intervalIndex;
+                    let weekdayIndex;
+                    // Check if the toggle is on weekday or weekend
+                    if (isWeekday) {
+                        if (buttonId === 'morningButton') {
+                            layerIds.push('tract_div_wdm', 'counties_div_wdm');
+                            intervalIndex = 'morning';
+                            weekdayIndex = 'weekday';
 
-    function updateLayerID(updatedData) {
-      newLayerID = updatedData;
-      //console.log(newLayerID)
-      return newLayerID
-    }
+                        } else if (buttonId === 'afternoonButton') {
+                            layerIds.push('tract_div_wda', 'counties_div_wda');
+                            intervalIndex = 'afternoon';
+                            weekdayIndex = 'weekday';
+                        } else if (buttonId === 'eveningButton') {
+                            layerIds.push('tract_div_wde', 'counties_div_wde');
+                            intervalIndex = 'evening';
+                            weekdayIndex = 'weekday';
+                        } else if (buttonId === 'lateEveningButton') {
+                            layerIds.push('tract_div_wdle','counties_div_wdle');
+                            intervalIndex = 'late evening';
+                            weekdayIndex = 'weekday';
+                        } else if (buttonId === 'lateNightButton') {
+                            layerIds.push('tract_div_wdln', 'counties_div_wdln');
+                            intervalIndex = 'late night';
+                            weekdayIndex = 'weekday';
+                        }
 
-    function updateIntervalID(updatedData) {
-      newIntervalID = updatedData;
-      //console.log(newLayerID)
-      return newIntervalID
-    }
+                    } else { // Weekend
+                        if (buttonId === 'morningButton') {
+                            layerIds.push('tract_div_wem', 'counties_div_wem');
+                            intervalIndex = 'morning';
+                            weekdayIndex = 'weekend';
+                        } else if (buttonId === 'afternoonButton') {
+                            layerIds.push('tract_div_wea', 'counties_div_wea');
+                            intervalIndex = 'afternoon';
+                            weekdayIndex = 'weekend';
+                        } else if (buttonId === 'eveningButton') {
+                            layerIds.push('tract_div_wee', 'counties_div_wee');
+                            intervalIndex = 'evening';
+                            weekdayIndex = 'weekend';
+                        } else if (buttonId === 'lateEveningButton') {
+                            layerIds.push('tract_div_wele', 'counties_div_wele');
+                            intervalIndex = 'late evening';
+                            weekdayIndex = 'weekend';
+                        } else if (buttonId === 'lateNightButton') {
+                            layerIds.push('tract_div_weln', 'counties_div_weln');
+                            intervalIndex = 'late night';
+                            weekdayIndex = 'weekend';
+                        }
+                    }
+                    // Reset button logic
+                    if (buttonId === 'reset') {
+                        layerIds.push('tracts', 'counties'); // Add general layers
+                    }
+                    console.log(layerIds);
+                    updateLayerID(layerIds);
+                    updateIntervalID(intervalIndex);
+                    updateWeekdayID(weekdayIndex)
+                    // Call toggleLayers function with the appropriate layer IDs
+                    toggleLayers(layerIds);
 
-    function updateWeekdayID(updatedData) {
-      newWeekdayID = updatedData;
-      //console.log(newLayerID)
-      return newWeekdayID
-    }
+                    // Add 'active' class to the clicked button
+                    intervalButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                });
+            });
 
+            function updateLayerID(updatedData) {
+              newLayerID = updatedData;
+              //console.log(newLayerID)
+              return newLayerID
+            }
 
-  ////////////////////////////////////////
-  //////// SLIDER ////////////////////////
-  //////////////////////////////////////// 
+            function updateIntervalID(updatedData) {
+              newIntervalID = updatedData;
+              //console.log(newLayerID)
+              return newIntervalID
+            }
 
-  // Get a reference to the slider element
-    const slider = document.getElementById('slider-1');
-
-  // Add an input event listener to the slider
-    slider.addEventListener('input', function() {
-      // Get the slider value
-      const opacityValue = parseFloat(this.value);
-
-      // Update the fill-opacity of the layers
-      map.setPaintProperty('tracts', 'fill-opacity', opacityValue);
-      map.setPaintProperty('tract_div_wdle', 'fill-opacity', opacityValue);
-      map.setPaintProperty('tract_div_wele', 'fill-opacity', opacityValue);
-      map.setPaintProperty('tract_div_wdm', 'fill-opacity', opacityValue);
-      map.setPaintProperty('tract_div_wem', 'fill-opacity', opacityValue);
-      map.setPaintProperty('tract_div_wda', 'fill-opacity', opacityValue);
-      map.setPaintProperty('tract_div_wea', 'fill-opacity', opacityValue);
-      map.setPaintProperty('tract_div_wde', 'fill-opacity', opacityValue);
-      map.setPaintProperty('tract_div_wee', 'fill-opacity', opacityValue);
-      map.setPaintProperty('tract_div_wdln', 'fill-opacity', opacityValue);
-      map.setPaintProperty('tract_div_weln', 'fill-opacity', opacityValue);
-    });
-
-  //// MAP ADD LAYERS
-          map.addLayer({
-                      "id":"counties_div_wdln",
-                      "source": "county_weekday_late_night",
-                      "source-layer":"segregation_all_counties_intervals_weekday_late_night_new",
-                      "type": "fill",
-                      'layout': {
-                      'visibility': 'none'
-                        },
-                      "maxzoom": 10, // Set zoom level to whatever suits your needs
-                      "paint": {
-                          "fill-color": [
-                              "step",
-                              ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
-                            0.08125, '#46327f',
-                            0.1625, '#365c8d',
-                            0.24375, '#277f8e',
-                            0.325, '#1fa288',
-                            0.40625, '#4ac26d',
-                            0.4875, '#9ed93a',
-                            0.56875, '#fde725'
-                          ],
-                          'fill-opacity': 1 },
-                        },firstLineId);
-
-
-          map.addLayer({
-                      "id":"counties_div_weln",
-                      "source": "county_weekend_late_night",
-                      "source-layer":"segregation_all_counties_intervals_weekend_late_night_new",
-                      "type": "fill",
-                      'layout': {
-                      'visibility': 'none'
-                        },
-                      "maxzoom": 10, // Set zoom level to whatever suits your needs
-                      "paint": {
-                          "fill-color": [
-                              "step",
-                              ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
-                            0.08125, '#46327f',
-                            0.1625, '#365c8d',
-                            0.24375, '#277f8e',
-                            0.325, '#1fa288',
-                            0.40625, '#4ac26d',
-                            0.4875, '#9ed93a',
-                            0.56875, '#fde725'
-                              
-                          ],
-                          'fill-opacity': 1 },
-                        },firstLineId);
+            function updateWeekdayID(updatedData) {
+              newWeekdayID = updatedData;
+              //console.log(newLayerID)
+              return newWeekdayID
+            }
 
 
-          map.addLayer({
-                      "id":"counties_div_wdm",
-                      "source": "county_weekday_morning",
-                      "source-layer":"segregation_all_counties_intervals_weekday_morning_new",
-                      "type": "fill",
-                      'layout': {
-                      'visibility': 'none'
-                        },
-                      "maxzoom": 10, // Set zoom level to whatever suits your needs
-                      "paint": {
-                          "fill-color": [
-                              "step",
-                              ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
-                            0.08125, '#46327f',
-                            0.1625, '#365c8d',
-                            0.24375, '#277f8e',
-                            0.325, '#1fa288',
-                            0.40625, '#4ac26d',
-                            0.4875, '#9ed93a',
-                            0.56875, '#fde725'
-                          ],
-                          'fill-opacity': 1 },
-                        },firstLineId);
+          ////////////////////////////////////////
+          //////// SLIDER ////////////////////////
+          //////////////////////////////////////// 
+
+          // Get a reference to the slider element
+            const slider = document.getElementById('slider-1');
+
+          // Add an input event listener to the slider
+            slider.addEventListener('input', function() {
+              // Get the slider value
+              const opacityValue = parseFloat(this.value);
+
+              // Update the fill-opacity of the layers
+              map.setPaintProperty('tracts', 'fill-opacity', opacityValue);
+              map.setPaintProperty('tract_div_wdle', 'fill-opacity', opacityValue);
+              map.setPaintProperty('tract_div_wele', 'fill-opacity', opacityValue);
+              map.setPaintProperty('tract_div_wdm', 'fill-opacity', opacityValue);
+              map.setPaintProperty('tract_div_wem', 'fill-opacity', opacityValue);
+              map.setPaintProperty('tract_div_wda', 'fill-opacity', opacityValue);
+              map.setPaintProperty('tract_div_wea', 'fill-opacity', opacityValue);
+              map.setPaintProperty('tract_div_wde', 'fill-opacity', opacityValue);
+              map.setPaintProperty('tract_div_wee', 'fill-opacity', opacityValue);
+              map.setPaintProperty('tract_div_wdln', 'fill-opacity', opacityValue);
+              map.setPaintProperty('tract_div_weln', 'fill-opacity', opacityValue);
+            });
+          ////////////////////////////////////////////////////////////////////
+          ///////////////////// MAP ADD LAYERS ///////////////////////////////
+          ////////////////////////////////////////////////////////////////////
+
+            map.addLayer({
+                        "id":"counties_div_wdln",
+                        "source": "county_weekday_late_night",
+                        "source-layer":"segregation_all_counties_intervals_weekday_late_night_new",
+                        "type": "fill",
+                        'layout': {
+                        'visibility': 'none'
+                          },
+                        "maxzoom": 10, // Set zoom level to whatever suits your needs
+                        "paint": {
+                            "fill-color": [
+                                "step",
+                                ["get", "total_diversity_exp"],
+                              'gray',  // default color if value is less than the first stop
+                              0, '#440154',
+                              0.08125, '#46327f',
+                              0.1625, '#365c8d',
+                              0.24375, '#277f8e',
+                              0.325, '#1fa288',
+                              0.40625, '#4ac26d',
+                              0.4875, '#9ed93a',
+                              0.56875, '#fde725'
+                            ],
+                            'fill-opacity': 1 },
+                          },firstLineId);
 
 
-          map.addLayer({
-                      "id":"counties_div_wem",
-                      "source": "county_weekend_morning",
-                      "source-layer":"segregation_all_counties_intervals_weekend_morning_new",
-                      "type": "fill",
-                      'layout': {
-                      'visibility': 'none'
-                        },
-                      "maxzoom": 10, // Set zoom level to whatever suits your needs
-                      "paint": {
-                          "fill-color": [
-                              "step",
-                              ["get", "total_diversity_exp"],
-                            'gray',  // default color if value is less than the first stop
-                            0, '#440154',
-                            0.08125, '#46327f',
-                            0.1625, '#365c8d',
-                            0.24375, '#277f8e',
-                            0.325, '#1fa288',
-                            0.40625, '#4ac26d',
-                            0.4875, '#9ed93a',
-                            0.56875, '#fde725'
-                              
-                          ],
-                          'fill-opacity': 1 },
-                        },firstLineId);
+            map.addLayer({
+                        "id":"counties_div_weln",
+                        "source": "county_weekend_late_night",
+                        "source-layer":"segregation_all_counties_intervals_weekend_late_night_new",
+                        "type": "fill",
+                        'layout': {
+                        'visibility': 'none'
+                          },
+                        "maxzoom": 10, // Set zoom level to whatever suits your needs
+                        "paint": {
+                            "fill-color": [
+                                "step",
+                                ["get", "total_diversity_exp"],
+                              'gray',  // default color if value is less than the first stop
+                              0, '#440154',
+                              0.08125, '#46327f',
+                              0.1625, '#365c8d',
+                              0.24375, '#277f8e',
+                              0.325, '#1fa288',
+                              0.40625, '#4ac26d',
+                              0.4875, '#9ed93a',
+                              0.56875, '#fde725'
+                                
+                            ],
+                            'fill-opacity': 1 },
+                          },firstLineId);
 
 
-          map.addLayer({
-                      "id":"counties_div_wda",
-                      "source": "county_weekday_afternoon",
-                      "source-layer":"segregation_all_counties_intervals_weekday_afternoon_new",
-                      "type": "fill",
-                      'layout': {
-                      'visibility': 'visible'
-                        },
-                      "maxzoom": 10, // Set zoom level to whatever suits your needs
-                      "paint": {
-                          "fill-color": [
-                              "step",
-                              ["get", "total_diversity_exp"],
+            map.addLayer({
+                        "id":"counties_div_wdm",
+                        "source": "county_weekday_morning",
+                        "source-layer":"segregation_all_counties_intervals_weekday_morning_new",
+                        "type": "fill",
+                        'layout': {
+                        'visibility': 'none'
+                          },
+                        "maxzoom": 10, // Set zoom level to whatever suits your needs
+                        "paint": {
+                            "fill-color": [
+                                "step",
+                                ["get", "total_diversity_exp"],
+                              'gray',  // default color if value is less than the first stop
+                              0, '#440154',
+                              0.08125, '#46327f',
+                              0.1625, '#365c8d',
+                              0.24375, '#277f8e',
+                              0.325, '#1fa288',
+                              0.40625, '#4ac26d',
+                              0.4875, '#9ed93a',
+                              0.56875, '#fde725'
+                            ],
+                            'fill-opacity': 1 },
+                          },firstLineId);
+
+
+            map.addLayer({
+                        "id":"counties_div_wem",
+                        "source": "county_weekend_morning",
+                        "source-layer":"segregation_all_counties_intervals_weekend_morning_new",
+                        "type": "fill",
+                        'layout': {
+                        'visibility': 'none'
+                          },
+                        "maxzoom": 10, // Set zoom level to whatever suits your needs
+                        "paint": {
+                            "fill-color": [
+                                "step",
+                                ["get", "total_diversity_exp"],
+                              'gray',  // default color if value is less than the first stop
+                              0, '#440154',
+                              0.08125, '#46327f',
+                              0.1625, '#365c8d',
+                              0.24375, '#277f8e',
+                              0.325, '#1fa288',
+                              0.40625, '#4ac26d',
+                              0.4875, '#9ed93a',
+                              0.56875, '#fde725'
+                                
+                            ],
+                            'fill-opacity': 1 },
+                          },firstLineId);
+
+
+            map.addLayer({
+                        "id":"counties_div_wda",
+                        "source": "county_weekday_afternoon",
+                        "source-layer":"segregation_all_counties_intervals_weekday_afternoon_new",
+                        "type": "fill",
+                        'layout': {
+                        'visibility': 'visible'
+                          },
+                        "maxzoom": 10, // Set zoom level to whatever suits your needs
+                        "paint": {
+                            "fill-color": [
+                                "step",
+                                ["get", "total_diversity_exp"],
+                                '#440154',  // default color if value is less than the first stop
+                                0, '#440154',
+                                0.08125, '#46327f',
+                                0.1625, '#365c8d',
+                                0.24375, '#277f8e',
+                                0.325, '#1fa288',
+                                0.40625, '#4ac26d',
+                                0.4875, '#9ed93a',
+                                0.56875, '#fde725'
+                            ],
+                            'fill-opacity': 1 },
+                          },firstLineId);
+
+
+            map.addLayer({
+                        "id":"counties_div_wea",
+                        "source": "county_weekend_afternoon",
+                        "source-layer":"segregation_all_counties_intervals_weekend_afternoon_new",
+                        "type": "fill",
+                        'layout': {
+                        'visibility': 'none'
+                          },
+                        "maxzoom": 10, // Set zoom level to whatever suits your needs
+                        "paint": {
+                            "fill-color": [
+                                "step",
+                                ["get", "total_diversity_exp"],
                               '#440154',  // default color if value is less than the first stop
                               0, '#440154',
                               0.08125, '#46327f',
@@ -7921,54 +7753,55 @@ $(document).ready(function() {
                               0.40625, '#4ac26d',
                               0.4875, '#9ed93a',
                               0.56875, '#fde725'
-                          ],
-                          'fill-opacity': 1 },
-                        },firstLineId);
+                              
+                            ],
+                            'fill-opacity': 1 },
+                          },firstLineId);
 
 
-          map.addLayer({
-                      "id":"counties_div_wea",
-                      "source": "county_weekend_afternoon",
-                      "source-layer":"segregation_all_counties_intervals_weekend_afternoon_new",
-                      "type": "fill",
-                      'layout': {
-                      'visibility': 'none'
-                        },
-                      "maxzoom": 10, // Set zoom level to whatever suits your needs
-                      "paint": {
-                          "fill-color": [
-                              "step",
-                              ["get", "total_diversity_exp"],
-                            '#440154',  // default color if value is less than the first stop
-                            0, '#440154',
-                            0.08125, '#46327f',
-                            0.1625, '#365c8d',
-                            0.24375, '#277f8e',
-                            0.325, '#1fa288',
-                            0.40625, '#4ac26d',
-                            0.4875, '#9ed93a',
-                            0.56875, '#fde725'
-                            
-                          ],
-                          'fill-opacity': 1 },
-                        },firstLineId);
+            map.addLayer({
+                        "id":"counties_div_wde",
+                        "source": "county_weekday_evening",
+                        "source-layer":"segregation_all_counties_intervals_weekday_evening_new",
+                        "type": "fill",
+                        'layout': {
+                        'visibility': 'none'
+                          },
+                        "maxzoom": 10, // Set zoom level to whatever suits your needs
+                        "paint": {
+                            "fill-color": [
+                                "step",
+                                ["get", "total_diversity_exp"],
+                              '#440154',  // default color if value is less than the first stop
+                              0, '#440154',
+                                0.08125, '#46327f',
+                                0.1625, '#365c8d',
+                                0.24375, '#277f8e',
+                                0.325, '#1fa288',
+                                0.40625, '#4ac26d',
+                                0.4875, '#9ed93a',
+                                0.56875, '#fde725'
+                                
+                            ],
+                            'fill-opacity': 1 },
+                          },firstLineId);
 
 
-          map.addLayer({
-                      "id":"counties_div_wde",
-                      "source": "county_weekday_evening",
-                      "source-layer":"segregation_all_counties_intervals_weekday_evening_new",
-                      "type": "fill",
-                      'layout': {
-                      'visibility': 'none'
-                        },
-                      "maxzoom": 10, // Set zoom level to whatever suits your needs
-                      "paint": {
-                          "fill-color": [
-                              "step",
-                              ["get", "total_diversity_exp"],
-                            '#440154',  // default color if value is less than the first stop
-                            0, '#440154',
+            map.addLayer({
+                        "id":"counties_div_wee",
+                        "source": "county_weekend_evening",
+                        "source-layer":"segregation_all_counties_intervals_weekend_evening_new",
+                        "type": "fill",
+                        'layout': {
+                        'visibility': 'none'
+                          },
+                        "maxzoom": 10, // Set zoom level to whatever suits your needs
+                        "paint": {
+                            "fill-color": [
+                                "step",
+                                ["get", "total_diversity_exp"],
+                              '#440154',  // default color if value is less than the first stop
+                              0, '#440154',
                               0.08125, '#46327f',
                               0.1625, '#365c8d',
                               0.24375, '#277f8e',
@@ -7976,454 +7809,472 @@ $(document).ready(function() {
                               0.40625, '#4ac26d',
                               0.4875, '#9ed93a',
                               0.56875, '#fde725'
-                              
-                          ],
-                          'fill-opacity': 1 },
-                        },firstLineId);
+                                
+                            ],
+                            'fill-opacity': 1 },
+                          },firstLineId);
 
 
-          map.addLayer({
-                      "id":"counties_div_wee",
-                      "source": "county_weekend_evening",
-                      "source-layer":"segregation_all_counties_intervals_weekend_evening_new",
-                      "type": "fill",
-                      'layout': {
-                      'visibility': 'none'
-                        },
-                      "maxzoom": 10, // Set zoom level to whatever suits your needs
-                      "paint": {
-                          "fill-color": [
-                              "step",
-                              ["get", "total_diversity_exp"],
-                            '#440154',  // default color if value is less than the first stop
-                            0, '#440154',
-                            0.08125, '#46327f',
-                            0.1625, '#365c8d',
-                            0.24375, '#277f8e',
-                            0.325, '#1fa288',
-                            0.40625, '#4ac26d',
-                            0.4875, '#9ed93a',
-                            0.56875, '#fde725'
-                              
-                          ],
-                          'fill-opacity': 1 },
-                        },firstLineId);
+            map.addLayer({
+                        "id":"counties_div_wdle",
+                        "source": "county_weekday_late_evening",
+                        "source-layer":"segregation_all_counties_intervals_weekday_late_evening_new",
+                        "type": "fill",
+                        'layout': {
+                        'visibility': 'none'
+                          },
+                        "maxzoom": 10, // Set zoom level to whatever suits your needs
+                        "paint": {
+                            "fill-color": [
+                                "step",
+                                ["get", "total_diversity_exp"],
+                              '#440154',  // default color if value is less than the first stop
+                              0, '#440154',
+                              0.08125, '#46327f',
+                              0.1625, '#365c8d',
+                              0.24375, '#277f8e',
+                              0.325, '#1fa288',
+                              0.40625, '#4ac26d',
+                              0.4875, '#9ed93a',
+                              0.56875, '#fde725'
+                                
+                            ],
+                            'fill-opacity': 1 },
+                          },firstLineId);
 
 
-          map.addLayer({
-                      "id":"counties_div_wdle",
-                      "source": "county_weekday_late_evening",
-                      "source-layer":"segregation_all_counties_intervals_weekday_late_evening_new",
-                      "type": "fill",
-                      'layout': {
-                      'visibility': 'none'
-                        },
-                      "maxzoom": 10, // Set zoom level to whatever suits your needs
-                      "paint": {
-                          "fill-color": [
-                              "step",
-                              ["get", "total_diversity_exp"],
-                            '#440154',  // default color if value is less than the first stop
-                            0, '#440154',
-                            0.08125, '#46327f',
-                            0.1625, '#365c8d',
-                            0.24375, '#277f8e',
-                            0.325, '#1fa288',
-                            0.40625, '#4ac26d',
-                            0.4875, '#9ed93a',
-                            0.56875, '#fde725'
-                              
-                          ],
-                          'fill-opacity': 1 },
-                        },firstLineId);
+            map.addLayer({
+                        "id":"counties_div_wele",
+                        "source": "county_weekend_late_evening",
+                        "source-layer":"segregation_all_counties_intervals_weekend_late_evening_new",
+                        "type": "fill",
+                        'layout': {
+                        'visibility': 'none'
+                          },
+                        "maxzoom": 10, // Set zoom level to whatever suits your needs
+                        "paint": {
+                            "fill-color": [
+                                "step",
+                                ["get", "total_diversity_exp"],
+                              '#440154',  // default color if value is less than the first stop
+                              0, '#440154',
+                              0.08125, '#46327f',
+                              0.1625, '#365c8d',
+                              0.24375, '#277f8e',
+                              0.325, '#1fa288',
+                              0.40625, '#4ac26d',
+                              0.4875, '#9ed93a',
+                              0.56875, '#fde725'
+                                
+                            ],
+                            'fill-opacity': 1 },
+                          },firstLineId);
+            map.addLayer({
+                        "id":"county_source",
+                        "source": "county_weekday_afternoon",
+                        "source-layer":"segregation_all_counties_intervals_weekday_afternoon_new",
+                        // "type": "fill",
+                        "type": "line",
+                        "maxzoom": 10,
+                        "paint": {
+                        //     'fill-color': 'red',
+                        // 'fill-opacity': 0,
+                        'line-color': 'red',
+                        'line-width':
+                        [
+                          'case',
+                          ['boolean', ['feature-state', 'hover'], false],
+                          4,
+                          0
+                          ]
+                                    },
 
+            });
+            map.addLayer({
+                    "id":"tracts_source",
+                    "source": "tract_div_weekday_afternoon",
+                    "source-layer":"segregation_all_intervals_weekday_afternoon",
+                    // "type": "fill",
+                    "type": "line",
+                    "paint": {
+                        // "fill-color": 'red',
+                        // 'fill-opacity': 0,        
+                        'line-color': 'red',
+                        'line-width':
+                        [
+                          'case',
+                          ['boolean', ['feature-state', 'hover'], false],
+                          4,
+                          0
+                          ]
 
-          map.addLayer({
-                      "id":"counties_div_wele",
-                      "source": "county_weekend_late_evening",
-                      "source-layer":"segregation_all_counties_intervals_weekend_late_evening_new",
-                      "type": "fill",
-                      'layout': {
-                      'visibility': 'none'
-                        },
-                      "maxzoom": 10, // Set zoom level to whatever suits your needs
-                      "paint": {
-                          "fill-color": [
-                              "step",
-                              ["get", "total_diversity_exp"],
-                            '#440154',  // default color if value is less than the first stop
-                            0, '#440154',
-                            0.08125, '#46327f',
-                            0.1625, '#365c8d',
-                            0.24375, '#277f8e',
-                            0.325, '#1fa288',
-                            0.40625, '#4ac26d',
-                            0.4875, '#9ed93a',
-                            0.56875, '#fde725'
-                              
-                          ],
-                          'fill-opacity': 1 },
-                        },firstLineId);
-          map.addLayer({
-                      "id":"county_source",
-                      "source": "county_weekday_afternoon",
-                      "source-layer":"segregation_all_counties_intervals_weekday_afternoon_new",
-                      // "type": "fill",
-                      "type": "line",
-                      "maxzoom": 10,
-                      "paint": {
-                      //     'fill-color': 'red',
-                      // 'fill-opacity': 0,
-                      'line-color': 'red',
-                      'line-width':
-                      [
-                        'case',
-                        ['boolean', ['feature-state', 'hover'], false],
-                        4,
-                        0
-                        ]
-                                  },
+                    }
+                });
 
-          });
-          map.addLayer({
-                  "id":"tracts_source",
-                  "source": "tract_div_weekday_afternoon",
-                  "source-layer":"segregation_all_intervals_weekday_afternoon",
-                  // "type": "fill",
-                  "type": "line",
-                  "paint": {
-                      // "fill-color": 'red',
-                      // 'fill-opacity': 0,        
-                      'line-color': 'red',
-                      'line-width':
-                      [
-                        'case',
-                        ['boolean', ['feature-state', 'hover'], false],
-                        4,
-                        0
-                        ]
+            // Change paint on metric change
+            
+            $(document).on('change', '#censusDropdown1',function(){
+                    // metric = getFeatures()
+                    // console.log(metric);
+                metric = $("#censusDropdown1 input").val();
+                console.log(choroplethColors[metric]);
 
-                  }
-              });
+                updateLegend(metric);
+                
+                map.setPaintProperty(                
+                'counties', 'fill-color', choroplethColors[metric]
+                );
 
-          // Change paint on metric change
-          
-          $('#censusDropdown1').on('change',function(){
-                  // metric = getFeatures()
-                  // console.log(metric);
-              metric = $("#censusDropdown1 input").val();
-              console.log(choroplethColors[metric]);
+                map.setPaintProperty(                
+                'tracts', 'fill-color', choroplethColors[metric]
+                );
 
-              updateLegend(metric);
-              
-              // map.setPaintProperty(                
-              // 'counties', 'fill-color', choroplethColors[metric]
-              // );
-
-              // map.setPaintProperty(                
-              // 'tracts', 'fill-color', choroplethColors[metric]
-              // );
-
-              [layer,layerA] = getVisibleLayers();
-              console.log("line 8143"+layer);
-              map.setPaintProperty(                
-              'tract_div_wdle', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'tract_div_wele', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'tract_div_wdm', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'tract_div_wem', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'tract_div_wda', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'tract_div_wea', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'tract_div_wde', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'tract_div_wee', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'tract_div_wdln', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'tract_div_weln', 'fill-color', choroplethColors[metric]
-              );
+                [layer,layerA] = getVisibleLayers();
+                console.log("line 8143"+layer);
+                map.setPaintProperty(                
+                'tract_div_wdle', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'tract_div_wele', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'tract_div_wdm', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'tract_div_wem', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'tract_div_wda', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'tract_div_wea', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'tract_div_wde', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'tract_div_wee', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'tract_div_wdln', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'tract_div_weln', 'fill-color', choroplethColors[metric]
+                );
 
 
 
-              map.setPaintProperty(                
-              'counties_div_wdle', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'counties_div_wele', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'counties_div_wdm', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'counties_div_wem', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'counties_div_wda', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'counties_div_wea', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'counties_div_wde', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'counties_div_wee', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'counties_div_wdln', 'fill-color', choroplethColors[metric]
-              );
-              map.setPaintProperty(                
-              'counties_div_weln', 'fill-color', choroplethColors[metric]
-              );
+                map.setPaintProperty(                
+                'counties_div_wdle', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'counties_div_wele', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'counties_div_wdm', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'counties_div_wem', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'counties_div_wda', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'counties_div_wea', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'counties_div_wde', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'counties_div_wee', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(                
+                'counties_div_wdln', 'fill-color', choroplethColors[metric]
+                );
+                map.setPaintProperty(
+                'counties_div_weln', 'fill-color', choroplethColors[metric]
+                );
+
+                // Update histogram for new metric
+                try {
+                  updateDynamicHistogram(map, metric);
+                } catch(e) {
+                  console.warn('Histogram update error:', e);
+                }
+
+                });
 
 
-              });
+            $('.ui.slider').slider({
+              min: 0,
+              max: 1,
+              start: 1,
+              step: 0,
+              onChange: function(value) {
+                  // Set the fill opacity of the layers based on the slider value
+                  map.setPaintProperty('counties', 'fill-opacity', value);
+                  map.setPaintProperty('tracts', 'fill-opacity', value);
 
+                  map.setPaintProperty('tract_div_wdle', 'fill-opacity', value);
+                  map.setPaintProperty('tract_div_wele', 'fill-opacity', value);
+                  map.setPaintProperty('tract_div_wdm', 'fill-opacity', value);
+                  map.setPaintProperty('tract_div_wem', 'fill-opacity', value);
+                  map.setPaintProperty('tract_div_wda', 'fill-opacity', value);
+                  map.setPaintProperty('tract_div_wea', 'fill-opacity', value);
+                  map.setPaintProperty('tract_div_wde', 'fill-opacity', value);
+                  map.setPaintProperty('tract_div_wee', 'fill-opacity', value);
+                  map.setPaintProperty('tract_div_wdln', 'fill-opacity', value);
+                  map.setPaintProperty('tract_div_weln', 'fill-opacity', value);
 
-          $('.ui.slider').slider({
-            min: 0,
-            max: 1,
-            start: 1,
-            step: 0,
-            onChange: function(value) {
-                // Set the fill opacity of the layers based on the slider value
-                map.setPaintProperty('counties', 'fill-opacity', value);
-                map.setPaintProperty('tracts', 'fill-opacity', value);
-
-                map.setPaintProperty('tract_div_wdle', 'fill-opacity', value);
-                map.setPaintProperty('tract_div_wele', 'fill-opacity', value);
-                map.setPaintProperty('tract_div_wdm', 'fill-opacity', value);
-                map.setPaintProperty('tract_div_wem', 'fill-opacity', value);
-                map.setPaintProperty('tract_div_wda', 'fill-opacity', value);
-                map.setPaintProperty('tract_div_wea', 'fill-opacity', value);
-                map.setPaintProperty('tract_div_wde', 'fill-opacity', value);
-                map.setPaintProperty('tract_div_wee', 'fill-opacity', value);
-                map.setPaintProperty('tract_div_wdln', 'fill-opacity', value);
-                map.setPaintProperty('tract_div_weln', 'fill-opacity', value);
-
-                map.setPaintProperty('counties_div_wele', 'fill-opacity', value);
-                map.setPaintProperty('counties_div_wdle', 'fill-opacity', value);
-                map.setPaintProperty('counties_div_wee', 'fill-opacity', value);
-                map.setPaintProperty('counties_div_wde', 'fill-opacity', value);
-                map.setPaintProperty('counties_div_wea', 'fill-opacity', value);
-                map.setPaintProperty('counties_div_wda', 'fill-opacity', value);
-                map.setPaintProperty('counties_div_wem', 'fill-opacity', value);
-                map.setPaintProperty('counties_div_wdm', 'fill-opacity', value);
+                  map.setPaintProperty('counties_div_wele', 'fill-opacity', value);
+                  map.setPaintProperty('counties_div_wdle', 'fill-opacity', value);
+                  map.setPaintProperty('counties_div_wee', 'fill-opacity', value);
+                  map.setPaintProperty('counties_div_wde', 'fill-opacity', value);
+                  map.setPaintProperty('counties_div_wea', 'fill-opacity', value);
+                  map.setPaintProperty('counties_div_wda', 'fill-opacity', value);
+                  map.setPaintProperty('counties_div_wem', 'fill-opacity', value);
+                  map.setPaintProperty('counties_div_wdm', 'fill-opacity', value);
                 map.setPaintProperty('counties_div_weln', 'fill-opacity', value);
                 map.setPaintProperty('counties_div_wdln', 'fill-opacity', value);
 
             }
-        });
+              });
 
 
-  /////////////////////////////////
-  ///////////// popup ///////////
-  /////////////////////////////////
+        // /////////////////////////////////
+        // ///////////// popup ///////////
+        // /////////////////////////////////
 
-  const popup = new maplibregl.Popup({
-    closeButton: false,
-    closeOnClick: false,
-  });
+        // const popup = new maplibregl.Popup({
+        //   closeButton: false,
+        //   closeOnClick: false,
+        // });
 
-      // const delay = 70;
-      let hoveredStateId = null;
-      console.log("layers are"+map.getStyle.layers);
-      
-      createPopUp(popup,map,hoveredStateId);
-
-
-  };
-
-
-p_tract_div_weekday_afternoon.getHeader().then(h => {
-    const map = new maplibregl.Map({
-        container: 'map',
-        attributionControl: false,
-        zoom: baseZoom,
-        minZoom: 4,
-        center: [-102.37803, 38.53908],
-        style: 'https://api.maptiler.com/maps/45992c66-fe73-4986-89c0-06dec1da3923/style.json?key=HNi5BjBnVWZQP32PQRdv',
-    });
-
+        // // const delay = 70;
+        // let hoveredFeatureId = null;
+        // console.log("layers are"+map.getStyle.layers);
         
-    map.on('style.load', function() {
-        loadLayers(map);
-    });
-
-    map.on('load', e => {
-
-        // var featuress = map.querySourceFeatures('seg_2_11', {
-        //     sourceLayer: 'segregation_all_countiesfgb'
-        // });
-
-        // //console.log(featuress);
-
-        // featuress.forEach(feature => {
-        //     // Extract properties from each feature
-        //     const div_score_exp = feature.properties['asian_diversity_exp'];
-        //     // Extract other properties as needed
-        //     // ...
-        //     // Perform operations with the properties
-        //     // ...
-        //     //console.log(div_score_exp)
-        // });
-    });
-//https://api.maptiler.com/maps/5f5a5e3a-bf8e-4515-b05b-423feccaabbd/style.json?key=is6mQIv8IXor3VbmKwq8
-    document.getElementById('mapStyle1').addEventListener('click', function() {
-        map.setStyle('https://api.maptiler.com/maps/bd3a8a99-b061-4a3a-a1c2-20d08f6ee042/style.json?key=HNi5BjBnVWZQP32PQRdv');
-        mapStyle1.classList.add('active'); // Add CSS class for active state
-        mapStyle2.classList.remove('active');
-    });
-
-document.getElementById('mapStyle2').addEventListener('click', function() {
-    map.setStyle('https://api.maptiler.com/maps/45992c66-fe73-4986-89c0-06dec1da3923/style.json?key=HNi5BjBnVWZQP32PQRdv');
-    mapStyle2.classList.add('active'); // Add CSS class for active state
-    mapStyle1.classList.remove('active');
-});
-
-    map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
-    map.addControl(new maplibregl.AttributionControl({
-        compact: true
-    }), 'bottom-right')
-
-    let jawgPlaces = new JawgPlaces.MapLibre({
-          container: '#my-container',
-          input: '#my-input',
-          resultContainer: '#my-result-container',
-          searchOnTyping: true,
-                   transition: {
-                type: 'fly',
-                flySpeed: 1.2,
-                flyCurve: 1.42
-              },
-            adminArea: {
-                fillColor: 'rgba(172,59,246, 0.0)',
-                outlineColor: 'rgb(172,59,246)',
-                outlineWidth: '2',
-                show: true,
-              },
-              sources: 'wof'
-                })
-
-    map.addControl(jawgPlaces,'top-right');
-    jawgPlaces.attachMap(map);
-    jawgPlaces.close();
-
-    });
-
-});
-
-        // JavaScript code to toggle the side panel
-        let isSidePanelOpen = false;
-
-        function toggleNav() {
-            const sidepanel = document.getElementById("mySidepanel");
-            
-            if (isSidePanelOpen) {
-                sidepanel.style.width = "0";
-            } else {
-                sidepanel.style.width = "340px";
-            }
-            
-            isSidePanelOpen = !isSidePanelOpen;
-        };
-
-/////////////////////////////////
-///////////// Intro /////////////
-/////////////////////////////////
+        // createPopUp(popup,map,hoveredFeatureId);
 
 
-window.addEventListener("load", function(){
-    setTimeout(
-        function open(event){
-            document.querySelector(".overlay").style.display = "block"; // Show the overlay
-            document.querySelector(".popupIntro").style.display = "block";
-        },
-        0
-    )
-});
+          };
 
-function openOverlay() {
-    document.querySelector(".overlay").style.display = "block"; // Show the overlay
-    document.querySelector(".popupIntro").style.display = "block";
-}
 
-// Event listener for the About button
-document.querySelector("#aboutText").addEventListener("click", function(event) {
-    openOverlay(); // Calls the function to open the overlay and popupIntro
-});
+          p_tract_div_weekday_afternoon.getHeader().then(h => {
 
-document.querySelector("#close").addEventListener("click", function(){
-    document.querySelector(".overlay").style.display = "none"; // Hide the overlay
-    document.querySelector(".popupIntro").style.display = "none";
-});
+              ////////////////////////////////////////////////
+              ///////////// 3. CREATE MAP OBJECT /////////////
+              ////////////////////////////////////////////////
 
-$(document).ready(function() {
-/////////////////////////////
-///////// Page functions ////
-/////////////////////////////
 
-$('.homeIcon').on('click',function(){
-    $('.dimmer').addClass('active');
+              const map = new maplibregl.Map({
+                  container: 'map',
+                  attributionControl: false,
+                  zoom: baseZoom,
+                  minZoom: 4,
+                  center: [-102.37803, 38.53908],
+                  style: 'https://api.maptiler.com/maps/45992c66-fe73-4986-89c0-06dec1da3923/style.json?key=HNi5BjBnVWZQP32PQRdv',
+              });
+              _mapInstance = map; // Store global reference for cross-scope access
+
+              ////////////////////////////////////////////////
+              ///////////// 4. LOAD MAP LAYERS   /////////////
+              ////////////////////////////////////////////////
+
+              map.on('style.load', function() {
+                  loadLayers(map);
+
+                  /////////////////////////////////
+                  ///////////// popup ///////////
+                  /////////////////////////////////
+
+                  const popup = new maplibregl.Popup({
+                    closeButton: false,
+                    closeOnClick: false,
+                  });
+
+                  // const delay = 70;
+                  let hoveredFeatureId = null;
+                  console.log("layers are"+map.getStyle.layers);
+                  
+                  createPopUp(popup,map,hoveredFeatureId);
+
+              });
+
+          // map.on('load', e => {
+
+          //       // var featuress = map.querySourceFeatures('seg_2_11', {
+          //       //     sourceLayer: 'segregation_all_countiesfgb'
+          //       // });
+
+          //       // //console.log(featuress);
+
+          //       // featuress.forEach(feature => {
+          //       //     // Extract properties from each feature
+          //       //     const div_score_exp = feature.properties['asian_diversity_exp'];
+          //       //     // Extract other properties as needed
+          //       //     // ...
+          //       //     // Perform operations with the properties
+          //       //     // ...
+          //       //     //console.log(div_score_exp)
+          //       // });
+          //   });
+              /////////////////////////////////////////
+              ///////////// 5. MAP STYLE  /////////////
+              /////////////////////////////////////////
+
+            // https://api.maptiler.com/maps/5f5a5e3a-bf8e-4515-b05b-423feccaabbd/style.json?key=is6mQIv8IXor3VbmKwq8
+              document.getElementById('mapStyle1').addEventListener('click', function() {
+                  map.setStyle('https://api.maptiler.com/maps/bd3a8a99-b061-4a3a-a1c2-20d08f6ee042/style.json?key=HNi5BjBnVWZQP32PQRdv');
+                  mapStyle1.classList.add('active'); // Add CSS class for active state
+                  mapStyle2.classList.remove('active');
+              });
+
+              document.getElementById('mapStyle2').addEventListener('click', function() {
+                  map.setStyle('https://api.maptiler.com/maps/45992c66-fe73-4986-89c0-06dec1da3923/style.json?key=HNi5BjBnVWZQP32PQRdv');
+                  mapStyle2.classList.add('active'); // Add CSS class for active state
+                  mapStyle1.classList.remove('active');
+              });
+
+              map.addControl(new maplibregl.NavigationControl(), 'bottom-right');
+              map.addControl(new maplibregl.AttributionControl({
+                  compact: true
+              }), 'bottom-right')
+
+              let jawgPlaces = new JawgPlaces.MapLibre({
+                    container: '#my-container',
+                    input: '#my-input',
+                    resultContainer: '#my-result-container',
+                    searchOnTyping: true,
+                            transition: {
+                          type: 'fly',
+                          flySpeed: 1.2,
+                          flyCurve: 1.42
+                        },
+                      adminArea: {
+                          fillColor: 'rgba(172,59,246, 0.0)',
+                          outlineColor: 'rgb(172,59,246)',
+                          outlineWidth: '2',
+                          show: true,
+                        },
+                        sources: 'wof'
+                          })
+
+              map.addControl(jawgPlaces,'top-right');
+              jawgPlaces.attachMap(map);
+              jawgPlaces.close();
+
+              });
+
+
+
+              // JavaScript code to toggle the side panel
+              let isSidePanelOpen = false;
+
+              function toggleNav() {
+                  const sidepanel = document.getElementById("mySidepanel");
+                  
+                  if (isSidePanelOpen) {
+                      sidepanel.style.width = "0";
+                  } else {
+                      sidepanel.style.width = "340px";
+                  }
+                  
+                  isSidePanelOpen = !isSidePanelOpen;
+              };
+
+          //////////////////////////////////////
+          ///////////// 6. NOT SURE ////////////
+          //////////////////////////////////////
+
+
+          window.addEventListener("load", function(){
+              setTimeout(
+                  function open(event){
+                      document.querySelector(".overlay").style.display = "block"; // Show the overlay
+                      document.querySelector(".popupIntro").style.display = "block";
+                  },
+                  0
+              )
+          });
+
+          function openOverlay() {
+              document.querySelector(".overlay").style.display = "block"; // Show the overlay
+              document.querySelector(".popupIntro").style.display = "block";
+          }
+
+          // Event listener for the About button
+          document.querySelector("#aboutText").addEventListener("click", function(event) {
+              openOverlay(); // Calls the function to open the overlay and popupIntro
+          });
+
+          document.querySelector("#close").addEventListener("click", function(){
+              document.querySelector(".overlay").style.display = "none"; // Hide the overlay
+              document.querySelector(".popupIntro").style.display = "none";
+          });
+
+          // $(document).ready(function() {
+          ////////////////////////////////
+          ///////// 7. PAGE FUNCTIONS ////
+          ////////////////////////////////
+
+          $('.homeIcon').on('click',function(){
+              $('.dimmer').addClass('active');
+          })
+
+          $('.infoIcon').on('click',function(){
+              $('#infoMessage').transition('fade in');
+          })
+
+          $('.dataIcon').on('click',function(){
+              $('#dataMessage').transition('fade in');
+          })
+
+          $('.message .close')
+            .on('click', function() {
+              $(this)
+                .closest('.message')
+                .transition('fade')
+              ;
+            });
+          // });
+
+
+          ////////////////////////////////////
+          ///////// 8. ADD HISTOGRAM /////////
+          ////////////////////////////////////
+          var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
+              histogramWidth = 300 - histogramMargin.left - histogramMargin.right;
+          histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
+
+          // Append the SVG object to the body of the page for the histogram
+          histogramSvg = d3.select("#my_histogram")
+            .append("svg")
+              .attr("width", histogramWidth + histogramMargin.left + histogramMargin.right)
+              .attr("height", histogramHeight + histogramMargin.top + histogramMargin.bottom)
+            .append("g")
+              .attr("transform",
+                    "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
+
+              histogramXScale = d3.scaleLinear()
+                    .range([ 0, histogramWidth ]);
+
+              histogramXAxis = histogramSvg.append("g")
+                .attr("transform", "translate(0," + histogramHeight + ")").attr("class", "axisWhite")
+
+              // Initialize the Y axis
+              histogramYScale = d3.scaleLinear()
+                .range([ histogramHeight, 0]);
+              histogramYAxis = histogramSvg.append("g")
+                .attr("class", "axisWhite")
+
+
+          var newLayerID = ['tract_div_wda', 'counties_div_wda']
+          var newIntervalID = 'afternoon'
+          var newWeekdayID = 'weekday'
+        })
+      })
+    })
+
+  })
 })
-
-$('.infoIcon').on('click',function(){
-    $('#infoMessage').transition('fade in');
-})
-
-$('.dataIcon').on('click',function(){
-    $('#dataMessage').transition('fade in');
-})
-
-$('.message .close')
-  .on('click', function() {
-    $(this)
-      .closest('.message')
-      .transition('fade')
-    ;
-  });
-});
-
-var histogramMargin = {top: 10, right: 40, bottom: 30, left: 40},
-    histogramWidth = 300 - histogramMargin.left - histogramMargin.right,
-    histogramHeight = 200 - histogramMargin.top - histogramMargin.bottom;
-
-// Append the SVG object to the body of the page for the histogram
-var histogramSvg = d3.select("#my_histogram")
-  .append("svg")
-    .attr("width", histogramWidth + histogramMargin.left + histogramMargin.right)
-    .attr("height", histogramHeight + histogramMargin.top + histogramMargin.bottom)
-  .append("g")
-    .attr("transform",
-          "translate(" + histogramMargin.left + "," + histogramMargin.top + ")");
-
-    var x = d3.scaleLinear()
-          .range([ 0, histogramWidth ]);
-
-    var xAxis = histogramSvg.append("g")
-      .attr("transform", "translate(0," + histogramHeight + ")").attr("class", "axisWhite")
-
-    // Initialize the Y axis
-    var y = d3.scaleLinear()
-      .range([ histogramHeight, 0]);
-    var yAxis = histogramSvg.append("g")
-      .attr("class", "axisWhite")
-
-
-var newLayerID = ['tract_div_wda', 'counties_div_wda']
-var newIntervalID = 'afternoon'
-var newWeekdayID = 'weekday'
