@@ -205,7 +205,7 @@ body{
 
 
 .popup{
-  cursor-events: none
+  pointer-events: none;
 }
 
 /*#menucontainer{
