@@ -1,0 +1,24 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jquery": true
+  },
+  "globals": {
+    "d3": "readonly",
+    "maplibregl": "readonly",
+    "Papa": "readonly",
+    "JawgPlaces": "readonly",
+    "pmtiles": "readonly",
+    "CONFIG": "readonly"
+  },
+  "parserOptions": {
+    "ecmaVersion": "latest"
+  },
+  "rules": {
+    "no-unused-vars": "warn",
+    "no-undef": "error",
+    "no-redeclare": "warn",
+    "eqeqeq": "warn"
+  }
+}

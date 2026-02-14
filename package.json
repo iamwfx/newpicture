@@ -1,0 +1,20 @@
+{
+  "name": "newpicture",
+  "version": "1.0.0",
+  "description": "",
+  "main": "config.example.js",
+  "scripts": {
+    "start": "live-server --port=8080",
+    "format": "prettier --write \"**/*.{html,css,js}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"**/*.{html,css,js}\" --ignore-path .gitignore",
+    "lint": "eslint js/*.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.57.1",
+    "live-server": "^1.2.2",
+    "prettier": "^3.8.1"
+  }
+}
