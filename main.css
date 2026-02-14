@@ -4,9 +4,9 @@
 body {
         margin: 0;
         padding: 0;
-        color: 'pink';
         font-size: 13px;
         font-family: Helvetica, Arial, sans-serif;
+        background: #f2f2f2;
       }
 body * {
    -webkit-touch-callout: none;
@@ -24,8 +24,17 @@ body * {
 }
 
 div::-webkit-scrollbar{
-  display: none;
-
+  width: 4px;
+}
+div::-webkit-scrollbar-track{
+  background: transparent;
+}
+div::-webkit-scrollbar-thumb{
+  background: rgba(0,0,0,0.15);
+  border-radius: 2px;
+}
+div::-webkit-scrollbar-thumb:hover{
+  background: rgba(0,0,0,0.3);
 }
 
 
@@ -35,6 +44,7 @@ div::-webkit-scrollbar{
 
 h2 {
   font-size: 1.8em;
+  font-weight: 400;
   text-align: left;
   margin: 0em !important;
     font-family: Helvetica, Arial, sans-serif !important;
@@ -63,12 +73,11 @@ h6 {
     line-height: 18px;
 }
 
-h7 {
-    margin: 0em 0em 0em 0em !important;
-    font-size: 0.8em; /* Adjust the font size as needed */
-    color: #555; /* Optionally, adjust the color */
+.subheading {
+    margin: 0em 0em 0em 0em;
+    font-size: 0.8em;
+    color: #555;
     font-family: Helvetica, Arial, sans-serif;
-
 }
 
 /*.map {
@@ -99,11 +108,6 @@ background: repeating-linear-gradient(-45deg,        #ff0000,   #ff0000 5px,   #
 }
 .introButton{
   background:white !important;
-}
-
-body{
-  background: #f2f2f2;
-  font-family: Helvetica, Arial, sans-serif;
 }
 
 /* searchbar */
@@ -137,9 +141,9 @@ body{
 
 #my-input {
   width: 270px;
-  border: 1px solid #lightgray;
+  border: 1px solid lightgray;
 /*  border-right: none;*/
-  
+
   height: 36px;
   border-radius: 5px 0 0 5px;
   outline: none;
@@ -167,7 +171,7 @@ body{
 .searchButton {
   width: 40px;
   height: 36px;
-  border: 1px solid #2974f9;
+  border: 1px solid #2563eb;
   background: white;
   text-align: center;
 /*  position: relative;*/
@@ -181,7 +185,7 @@ body{
 
 .ui.fluid.search.selection.dropdown {
   width: 100%;
-  border: 1px solid #lightgray;
+  border: 1px solid lightgray;
   padding: 10px;
   height: 36px;
   border-radius: 5px 5px 5px 5px;
@@ -233,11 +237,9 @@ body{
   width: 340px;
   z-index: 1; /* Stay on top */
   overflow-x: hidden; /* Disable horizontal scroll */
-  font-family: Helvetica, Arial, sans-serif !important; 
+  font-family: Helvetica, Arial, sans-serif !important;
   backdrop-filter: saturate(40%) blur(20px);
-
-
-
+  box-shadow: 2px 0 8px rgba(0,0,0,0.05);
 }
 
 .sidepanel  {
@@ -247,7 +249,7 @@ body{
   height: 7.5%;
   top: 0;
   left: 0;
-  background-color: #2974f9;
+  background-color: #2563eb;
   overflow-x: hidden;
   transition: 0.5s;
   padding-top: 5px;
@@ -279,16 +281,17 @@ body{
   height: 50px;
   z-index: 3;
   cursor: pointer;
-  background-color: #2974f9;
+  background-color: #2563eb;
   color: #1C2526;
   /*padding: 10px 15px;*/
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 .menutitle{
-  background-color: #2974f9 !important;
+  background-color: #2563eb !important;
   border-right: 0.1px solid lightgray !important;
   position: fixed;
   font-family: Helvetica, Arial, sans-serif;
@@ -321,10 +324,21 @@ body{
 
 }
 #icons a {
-  margin-top: 9rem; 
-  margin-bottom:-1rem; 
+  margin-top: 6rem;
+  margin-bottom: 0rem;
   transform: rotate(270deg);
   filter: brightness(0) invert(1);
+}
+#icons #ucsbLink {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  width: 5rem;
+  margin: 0;
+  transform: translateY(-50%) rotate(-90deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .rightmenu{
   align-items: center;
@@ -338,7 +352,7 @@ body{
   width: 100%;
   height: 60px;
   z-index: 8;
-  background-color: #2974f9 !important;
+  background-color: #2563eb !important;
   color: #1C2526;
   border: none;
   display: flex;
@@ -399,6 +413,7 @@ body{
     display: none;
     text-align: center;
     z-index: 2;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
 }
 
 
@@ -418,7 +433,7 @@ body{
     margin: 5px auto;
     border-radius: 8px;
     text-align: center;
-    background-color: #2974f9;
+    background-color: #2563eb;
     color: #ffffff;
     text-decoration: none;
     padding: 10px 0;
@@ -524,10 +539,6 @@ tr:nth-child(even) {
 }
 
 
-body {
-  font-family: Helvetica, Arial, sans-serif;
-}
-
 .census-grid.ui.grid > .row {
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
@@ -539,7 +550,7 @@ body {
 #functions {
     background-color: rgba(255, 255, 255, 0.8); !important;
     position: fixed;
-    left: 30rem;
+    left: calc(5rem + 340px + 2rem);
     bottom: 0.7rem;
     border-radius: 10px;
     display: flex;
@@ -584,7 +595,7 @@ width: 110px;
         color: rgba(0, 0, 0, .6); /* White text color */
     }
     .ui.tiny.toggle.button.weekend {
-        background-color: rgb(150, 191, 255); /* Green color for weekend */
+        background-color: rgb(191, 219, 254); /* Green color for weekend */
         color: rgba(0, 0, 0, .6); /* White text color */
     }
 
@@ -608,11 +619,12 @@ padding: 0px 3px 0px 0px;
 
 .ui.button{
   background: white;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .ui.button:hover {
-  background-color: rgb(150, 191, 255);
-  color: white;
+  background-color: rgb(191, 219, 254);
+  color: #1a1a2e;
 }
 
 .maplibregl-popup-content
@@ -635,7 +647,7 @@ padding: 0px 3px 0px 0px;
 }
 
 .ui.basic.active.button {
-    background-color: rgb(66, 135, 245);
+    background-color: rgb(29, 78, 216);
     background-image: none;
     box-shadow: 0 0 0 1px transparent inset;
     color: rgba(255, 255, 255, .95);
@@ -643,14 +655,14 @@ padding: 0px 3px 0px 0px;
 
 
   .ui.basic.active.button:hover {
-  background-color: rgb(150, 191, 255);
-  color: white;
+  background-color: rgb(191, 219, 254);
+  color: #1a1a2e;
 }
 
 .ui.slider .inner .track-fill {
     position: absolute;
     border-radius: 4px;
-    background-color: rgb(150, 191, 255);
+    background-color: rgb(191, 219, 254);
 }
 
 #weekendButton,

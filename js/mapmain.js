@@ -3945,9 +3945,10 @@ function hideShow() {
 }
 
 
-document.querySelector("#toggleButton").addEventListener("click", function(event) {
-    hideShow();
-});
+// toggleButton removed from UI
+// document.querySelector("#toggleButton").addEventListener("click", function(event) {
+//     hideShow();
+// });
 
 
 
@@ -4305,107 +4306,7 @@ function createPopUp(popUp,map,hoveredFeatureId,svg){
   });
 
 
-///////////////////////////
-//////////fly to///////////
-///////////////////////////
-
-/////////////// FIX //////////////////////////////
-//////////change to ref the pre-loaded data  /////
-//////////////////////////////////////////////////
-Papa.parse(cbsaLatLngURL, {
-  download: true,
-  complete: function (csvResults) {
-    const cbsaData = csvResults.data;
-
-        Papa.parse(CBSA_histogram, {
-          download: true,
-          complete: function (histogramResults) {
-            const histogramData = histogramResults.data;
-
-            Papa.parse(national_histogram, {
-              download: true,
-              complete: function (nationalhistogramResults) {
-                const nationalhistorgramData = nationalhistogramResults.data;
-
-        // Add an event listener to the dropdown selection change
-        $('#cityDropdown1').dropdown({
-          onChange: function (value, text, $selectedItem) {
-            cityName = text; // Assign the value to the broader-scoped variable cityName
-                        // Process CSV data
-            const result = cbsaData.find((row) => row[3] === cityName);
-            $('#cityDropdown1').dropdown('hide');
-            if (result) {
-              const intptlat = parseFloat(result[10]);
-              const intptlon = parseFloat(result[11]);
-
-              // Fly to the selected location
-              map.flyTo({
-                center: [intptlon, intptlat],
-                zoom: 10.5,
-                essential: true,
-              });
-
-              console.log(`City '${cityName}'`);
-
-            }
-
-    $('#censusDropdown1').dropdown({
-      onChange: function (value, text, $selectedItem) {
-
-        var selectedcensus = text;
-        var selectedtext_translated = catDict1[selectedcensus];
-
-               updatewHhistoRanges(wHhistoRanges);
-               console.log(wHhistoRanges);
-          
-          $('#cityDropdown1').dropdown({
-          onChange: function (value, text, $selectedItem) {
-            cityName = text; // Assign the value to the broader-scoped variable cityName
-                        // Process CSV data
-            const result = cbsaData.find((row) => row[3] === cityName);
-            $('#cityDropdown1').dropdown('hide');
-                            if (result) {
-                              const intptlat = parseFloat(result[10]);
-                              const intptlon = parseFloat(result[11]);
-
-                              // Fly to the selected location
-                              map.flyTo({
-                                center: [intptlon, intptlat],
-                                zoom: 10,
-                                essential: true,
-                              });
-
-                              console.log(`City '${cityName}'`);
-
-                            };
-
-                // Dynamic histogram from visible map features
-                try {
-                  var currentMetric = $("#censusDropdown1 input").val() || 'total_diversity_exp';
-                  updateDynamicHistogram(map, currentMetric);
-                } catch(e) {
-                  console.warn('Histogram update error:', e);
-                }
-                        }
-});
-
-},
-        });
-
-
-
-
-
-          },
-        });
-      },
-
-    });
- },
-
-     });
-  },
-});
+// Dropdown handlers moved to $(document).ready() initialization
 
 
 function updatewHhistoRanges(updatedData) {
@@ -4612,8 +4513,8 @@ function drawHistogram(data, div_score_exp) {
     .attr("width", barPixelWidth)
     .attr("height", function(d) { return histogramHeight - histogramYScale(d.value); })
     .attr("fill-opacity", "1")
-    .attr("rx", 1)
-    .attr("ry", 1);
+    .attr("rx", 3)
+    .attr("ry", 3);
 
     entered.merge(NationalHis)
     .transition()
@@ -4625,14 +4526,14 @@ function drawHistogram(data, div_score_exp) {
     .attr("fill", function(d) {
         if (typeof div_score_exp !== 'undefined' && div_score_exp !== null &&
             d.bin <= div_score_exp && d.bin + defaultBinWidth >= div_score_exp) {
-          return "#2974f9"; // Highlight color
+          return "#2563eb"; // Highlight color
         } else {
-            return "#96bfff"; // Default color
+            return "#bfdbfe"; // Default color
         }
     })
     .attr("fill-opacity", "1")
-    .attr("rx", 1)
-    .attr("ry", 1)
+    .attr("rx", 3)
+    .attr("ry", 3)
     .attr("stroke", function(d) {
         if (typeof div_score_exp !== 'undefined' && div_score_exp !== null &&
             d.bin <= div_score_exp && d.bin + defaultBinWidth >= div_score_exp) {
@@ -4738,38 +4639,7 @@ $(document).ready(function() {
           /// 1. Initialize Census dropdown///
           ////////////////////////////////////
           var $censusDropdown = $("#censusDropdown");
-          $('#censusDropdown1').dropdown({
-            onChange: function(value, text, $selectedItem) {
-              var metric = catDict1[text];
-              if (!metric) return;
-
-              updateLegend(metric);
-
-              if (_mapInstance) {
-                var allLayers = [
-                  'counties', 'tracts',
-                  'tract_div_wdle', 'tract_div_wele', 'tract_div_wdm', 'tract_div_wem',
-                  'tract_div_wda', 'tract_div_wea', 'tract_div_wde', 'tract_div_wee',
-                  'tract_div_wdln', 'tract_div_weln',
-                  'counties_div_wdle', 'counties_div_wele', 'counties_div_wdm', 'counties_div_wem',
-                  'counties_div_wda', 'counties_div_wea', 'counties_div_wde', 'counties_div_wee',
-                  'counties_div_wdln', 'counties_div_weln'
-                ];
-                allLayers.forEach(function(lyr) {
-                  try { _mapInstance.setPaintProperty(lyr, 'fill-color', choroplethColors[metric]); } catch(e) {}
-                });
-
-                // Update histogram for new metric
-                try {
-                  if (_updateDynamicHistogramFn) {
-                    _updateDynamicHistogramFn(_mapInstance, metric);
-                  }
-                } catch(e) {
-                  console.warn('Histogram update error:', e);
-                }
-              }
-            }
-          });
+          $('#censusDropdown1').dropdown();
 
           $censusDropdown.empty();
           $.each(censusList1, function(k,v) {
@@ -5802,98 +5672,62 @@ $(document).ready(function() {
                     }
                 });
 
-            // Change paint on metric change
-            
-            $(document).on('change', '#censusDropdown1',function(){
-                    // metric = getFeatures()
-                    // console.log(metric);
-                metric = $("#censusDropdown1 input").val();
-                console.log(choroplethColors[metric]);
+            // Change paint on metric change - use direct click handler to bypass Fomantic event issues
+            var allMapLayers = [
+              'counties', 'tracts',
+              'tract_div_wdle', 'tract_div_wele', 'tract_div_wdm', 'tract_div_wem',
+              'tract_div_wda', 'tract_div_wea', 'tract_div_wde', 'tract_div_wee',
+              'tract_div_wdln', 'tract_div_weln',
+              'counties_div_wdle', 'counties_div_wele', 'counties_div_wdm', 'counties_div_wem',
+              'counties_div_wda', 'counties_div_wea', 'counties_div_wde', 'counties_div_wee',
+              'counties_div_wdln', 'counties_div_weln'
+            ];
+
+            $(document).on('click', '#censusDropdown1 .item', function() {
+              var newMetric = $(this).data('value');
+              setTimeout(function() {
+                metric = newMetric;
+                if (!metric || !choroplethColors[metric]) return;
 
                 updateLegend(metric);
-                
-                map.setPaintProperty(                
-                'counties', 'fill-color', choroplethColors[metric]
-                );
 
-                map.setPaintProperty(                
-                'tracts', 'fill-color', choroplethColors[metric]
-                );
+                allMapLayers.forEach(function(lyr) {
+                  try { map.setPaintProperty(lyr, 'fill-color', choroplethColors[metric]); } catch(e) {}
+                });
 
-                [layer,layerA] = getVisibleLayers();
-                console.log("line 8143"+layer);
-                map.setPaintProperty(                
-                'tract_div_wdle', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'tract_div_wele', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'tract_div_wdm', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'tract_div_wem', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'tract_div_wda', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'tract_div_wea', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'tract_div_wde', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'tract_div_wee', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'tract_div_wdln', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'tract_div_weln', 'fill-color', choroplethColors[metric]
-                );
-
-
-
-                map.setPaintProperty(                
-                'counties_div_wdle', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'counties_div_wele', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'counties_div_wdm', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'counties_div_wem', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'counties_div_wda', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'counties_div_wea', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'counties_div_wde', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'counties_div_wee', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(                
-                'counties_div_wdln', 'fill-color', choroplethColors[metric]
-                );
-                map.setPaintProperty(
-                'counties_div_weln', 'fill-color', choroplethColors[metric]
-                );
-
-                // Update histogram for new metric
                 try {
                   updateDynamicHistogram(map, metric);
                 } catch(e) {
                   console.warn('Histogram update error:', e);
                 }
+              }, 50);
+            });
 
-                });
+            // City flyTo handler - poll hidden input since Fomantic may stop click propagation
+            var _lastCityValue = $('#cityDropdown1 input[type="hidden"]').val();
+            setInterval(function() {
+              var currentVal = $('#cityDropdown1 input[type="hidden"]').val();
+              if (currentVal && currentVal !== _lastCityValue) {
+                _lastCityValue = currentVal;
+                cityName = currentVal;
+                var result = cbsaData.find(function(row) { return row['NAME'] === cityName; });
+                if (result) {
+                  var intptlat = parseFloat(result['INTPTLAT']);
+                  var intptlon = parseFloat(result['INTPTLON']);
+                  map.flyTo({
+                    center: [intptlon, intptlat],
+                    zoom: 10.5,
+                    essential: true,
+                  });
+                }
+                try {
+                  var currentMetric = $("#censusDropdown1 input").val() || 'total_diversity_exp';
+                  updateDynamicHistogram(map, currentMetric);
+                } catch(e) {
+                  console.warn('Histogram update error:', e);
+                }
+              }
+            }, 200);
 
 
             $('.ui.slider').slider({
