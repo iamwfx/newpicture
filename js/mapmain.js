@@ -5913,29 +5913,28 @@ $(document).ready(function() {
           //////////////////////////////////////
 
 
-          window.addEventListener("load", function(){
-              setTimeout(
-                  function open(event){
-                      document.querySelector(".overlay").style.display = "block"; // Show the overlay
-                      document.querySelector(".popupIntro").style.display = "block";
-                  },
-                  0
-              )
-          });
-
           function openOverlay() {
-              document.querySelector(".overlay").style.display = "block"; // Show the overlay
+              document.querySelector(".overlay").style.display = "block";
               document.querySelector(".popupIntro").style.display = "block";
           }
+
+          // Show intro popup on initial load
+          openOverlay();
 
           // Event listener for the About button
           document.querySelector("#aboutText").addEventListener("click", function(event) {
               openOverlay(); // Calls the function to open the overlay and popupIntro
           });
 
-          document.querySelector("#close").addEventListener("click", function(){
-              document.querySelector(".overlay").style.display = "none"; // Hide the overlay
+          function closeOverlay() {
+              document.querySelector(".overlay").style.display = "none";
               document.querySelector(".popupIntro").style.display = "none";
+          }
+
+          document.querySelector("#close").addEventListener("click", closeOverlay);
+
+          document.addEventListener("keydown", function(e) {
+              if (e.key === "Escape") closeOverlay();
           });
 
           // $(document).ready(function() {

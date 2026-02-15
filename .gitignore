@@ -3,3 +3,4 @@ webmap.sublime-workspace
 webmap.sublime-workspace
 config.js
 node_modules/
+*.eps
