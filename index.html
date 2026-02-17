@@ -58,10 +58,9 @@
         <script src="js/main.js"></script>
         -->    
 
-        <!-- Us Download map -->
-
-        <script src="js/mapdata.js"></script>
-        <script src="js/usmap.js"></script>
+        <!-- Us Download map (deferred to avoid blocking main map) -->
+        <script src="js/mapdata.js" defer></script>
+        <script src="js/usmap.js" defer></script>
 
     </head>
     <body>
@@ -113,13 +112,8 @@
 
           
               <!-- <div class="right menu rightmenu">>-->
-                  <!--<a class="item" id="aboutText">About</a>-->
-                  <i class="inverted big link info circle icon" id="aboutText"></i>
-                  <!-- filter icon removed -->
-
-                  <!--<a class="item" href="download.html">Download</a>-->
-                  <a href="download.html">
-                  <i class="inverted big link download icon"></i>
+                  <a class="nav-link" id="aboutText">About</a>
+                  <a class="nav-link" id="downloadBtn">Download</a>
 
 
 
@@ -127,9 +121,9 @@
 
               <div class="ui container">
             <div id="icons">
-                <a href="https://www.urbandataresearchlab.org/"><img src="jpg/urbanDRL_logo.svg" alt="urbanDRL_logo" width="150" height="75" >
+                <a href="https://www.urbandataresearchlab.org/"><img src="jpg/urbanDRL_logo.svg" alt="urbanDRL_logo">
                 </a>
-                <a href="https://www.ucsb.edu/" id="ucsbLink"><img src="jpg/UCSB.svg" alt="UCSB_logo" width="150" height="75" >
+                <a href="https://www.ucsb.edu/" id="ucsbLink"><img src="jpg/UCSB_wordmark.svg" alt="UCSB_logo">
                 </a>
              </div> 
           </div> 
@@ -210,54 +204,34 @@
 
            </h5>
 
-            <div class="ui grid census-grid">
-              <div class="row">
-                <div class="left floated twelve wide column">Total Population</div>
-                <div class="left floated four wide right aligned column">
-                  <div id="totolPopValue" class="factors">...</div>
-                </div>
+            <div class="census-stats">
+              <div class="census-stat-item">
+                <div class="census-stat-label">White</div>
+                <div class="census-stat-value" id="WHPopValue">...</div>
               </div>
-              <div class="row">
-                <div class="left floated twelve wide column">Percentage White Population</div>
-                <div class="left floated four wide right aligned column">
-                  <div id="WHPopValue" class="factors">...</div>
-                </div>
+              <div class="census-stat-item">
+                <div class="census-stat-label">Black</div>
+                <div class="census-stat-value" id="BLPopValue">...</div>
               </div>
-              <div class="row">
-                <div class="left floated twelve wide column">Percentage Black Population</div>
-                <div class="left floated four wide right aligned column">
-                  <div id="BLPopValue" class="factors">...</div>
-                </div>
+              <div class="census-stat-item">
+                <div class="census-stat-label">Asian</div>
+                <div class="census-stat-value" id="ASPopValue">...</div>
               </div>
-              <div class="row">
-                <div class="left floated twelve wide column">Percentage Asian Population</div>
-                <div class="left floated four wide right aligned column">
-                  <div id="ASPopValue" class="factors">...</div>
-                </div>
+              <div class="census-stat-item">
+                <div class="census-stat-label">Hispanic</div>
+                <div class="census-stat-value" id="HIPopValue">...</div>
               </div>
-              <div class="row">
-                <div class="left floated twelve wide column">Percentage Hispanic Population</div>
-                <div class="left floated four wide right aligned column">
-                  <div id="HIPopValue" class="factors">...</div>
-                </div>
+              <div class="census-stat-item">
+                <div class="census-stat-label">Other</div>
+                <div class="census-stat-value" id="OTPopValue">...</div>
               </div>
-              <div class="row">
-                <div class="left floated twelve wide column">Percentage Other Population</div>
-                <div class="left floated four wide right aligned column">
-                  <div id="OTPopValue" class="factors">...</div>
-                </div>
+              <div class="census-stat-item">
+                <div class="census-stat-label">Higher Education</div>
+                <div class="census-stat-value" id="baPercValueDisplay">...</div>
               </div>
-              <div class="row">
-                <div class="left floated twelve wide column">Higher Education</div>
-                <div class="left floated four wide right aligned column">
-                  <div id="baPercValueDisplay" class="factors">...</div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="left floated twelve wide column">Median Income</div>
-                <div class="left floated four wide right aligned column">
-                  <div id="medianIncValue" class="factors">...</div>
-                </div>
+              <div class="census-stat-item">
+                <div class="census-stat-label">Median Income</div>
+                <div class="census-stat-value" id="medianIncValue">...</div>
               </div>
             </div>
 
@@ -329,9 +303,72 @@
                <p>
                    Explore how experienced diversity varies across U.S. metropolitan areas by race, time of day, and day of week. Select a city and metric to compare experienced diversity with traditional residential measures at the census tract level.
                </p>
-               <img src="jpg/us map.png" alt="Map of experienced diversity across the United States">
                <button id="close">Explore the Map</button>
-          
+          </div>
+
+          <!-- Download Modal -->
+          <div class="overlay" id="downloadOverlay"></div>
+          <div class="downloadModal" id="downloadModal">
+               <i class="large close red icon" id="closeDownload"></i>
+               <h2>Data Download</h2>
+
+               <h4>About the Dataset</h4>
+               <p>
+                   The <b>National Experienced Racial-Ethnic Diversity (NERD)</b> dataset provides estimates of experienced diversity for the entire United States at the census tract level. Using anonymized mobile phone location data from over 66 million opted-in devices, the dataset measures the diversity people actually encounter throughout their day — not just where they live.
+               </p>
+               <p>
+                   Diversity in potential social interactions is estimated at 38.2 m × 19.1 m spatial resolution and 15-minute temporal resolution for a representative year, then aggregated to the census tract level for data privacy. The dataset includes experienced diversity broken down by race/ethnicity (White, Black, Asian, Hispanic, Other), time of day (morning, afternoon, evening, late evening, late night), and day of week (weekday vs. weekend), along with census demographic characteristics.
+               </p>
+
+               <h4>License</h4>
+               <p>
+                   This dataset is made available under a custom license. Copyright 2023 Wenfei Xu. Please cite the associated publication when using this data.
+               </p>
+
+               <h4>Citation</h4>
+               <p class="citation">
+                   Xu, W., Wang, Z., Attia, N., Attia, Y., Zhang, Y., & Zong, H. (2024). An experienced racial-ethnic diversity dataset in the United States using human mobility data. <i>Scientific Data</i>, 11, 638. <a href="https://doi.org/10.1038/s41597-024-03490-y" target="_blank">https://doi.org/10.1038/s41597-024-03490-y</a>
+               </p>
+
+               <h4>Data Dictionary</h4>
+               <table>
+                   <tr><td><b>Column</b></td><td><b>Description</b></td></tr>
+                   <tr><td>STATEFP10</td><td>2010 Census state FIPS code</td></tr>
+                   <tr><td>COUNTYFP10</td><td>2010 Census county FIPS code</td></tr>
+                   <tr><td>TRACTCE10</td><td>2010 Census census tract code</td></tr>
+                   <tr><td>GEOID10</td><td>Census tract identifier (state FIPS + county FIPS + tract code)</td></tr>
+                   <tr><td>STATE</td><td>State Name</td></tr>
+                   <tr><td>COUNTY</td><td>County Name</td></tr>
+                   <tr><td>CBSA Title</td><td>Core Based Statistical Area name</td></tr>
+                   <tr><td>total_pop</td><td>Total Population (2020 Census)</td></tr>
+                   <tr><td>white_perc</td><td>% Non-Hispanic White Alone (2020)</td></tr>
+                   <tr><td>black_perc</td><td>% Non-Hispanic Black Alone (2020)</td></tr>
+                   <tr><td>indigenous_perc</td><td>% Non-Hispanic American Indian and Alaska Native Alone (2020)</td></tr>
+                   <tr><td>asian_perc</td><td>% Non-Hispanic Asian Alone (2020)</td></tr>
+                   <tr><td>pac_isl_perc</td><td>% Non-Hispanic Native Hawaiian and Pacific Islander Alone (2020)</td></tr>
+                   <tr><td>other_perc</td><td>% Non-Hispanic Some Other Race Alone (2020)</td></tr>
+                   <tr><td>two_more_perc</td><td>% Non-Hispanic Two or More Races (2020)</td></tr>
+                   <tr><td>hispanic_perc</td><td>% Hispanic (2020)</td></tr>
+                   <tr><td>ba_higher_perc</td><td>% Bachelor's Degree or Higher (2020)</td></tr>
+                   <tr><td>median_inc</td><td>Median household income (2021 inflation-adjusted dollars)</td></tr>
+                   <tr><td>white_exp_exposure</td><td>White Experienced Diversity (2022)</td></tr>
+                   <tr><td>black_exp_diversity</td><td>Black Experienced Diversity (2022)</td></tr>
+                   <tr><td>asian_exp_diversity</td><td>Asian Experienced Diversity (2022)</td></tr>
+                   <tr><td>hispanic_exp_diversity</td><td>Hispanic Experienced Diversity (2022)</td></tr>
+                   <tr><td>other_exp_diversity</td><td>Other Race Experienced Diversity (2022)</td></tr>
+                   <tr><td>total_exp_diversity</td><td>Total Experienced Diversity (2022)</td></tr>
+                   <tr><td>residential_diversity</td><td>Residential Diversity (2020 Census)</td></tr>
+                   <tr><td>diff</td><td>Difference between Total Experienced and Residential Diversity</td></tr>
+               </table>
+
+               <h4>Download by State</h4>
+               <p>Click a state to download its GeoJSON file from the <a href="https://osf.io/x94gj/" target="_blank">OSF repository</a>.</p>
+               <div style="max-width: 1200px">
+                   <div style="padding: 10px 0">
+                       <div id="mapDownload"></div>
+                   </div>
+               </div>
+          </div>
 
     </body>
     <footer>

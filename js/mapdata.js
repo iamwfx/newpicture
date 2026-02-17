@@ -66,7 +66,7 @@ var simplemaps_usmap_mapdata={
 
 		//Advanced settings
 		div: "mapDownload",
-    auto_load: "yes",
+    auto_load: "no",
     rotate: "0",
     url_new_tab: "yes",
     images_directory: "default",
@@ -82,21 +82,21 @@ var simplemaps_usmap_mapdata={
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Hawaii.geojson"
+      url: "https://osf.io/download/660ef97bc053941bd4b4d456/"
     },
     AK: {
       name: "Alaska",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Alaska.geojson"
+      url: "https://osf.io/download/b4efm/"
     },
     FL: {
       name: "Florida",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Florida.geojson",
+      url: "https://osf.io/download/660ef8f4c053941bd3b4d352/",
       //inactive: "no"
     },
     NH: {
@@ -104,168 +104,168 @@ var simplemaps_usmap_mapdata={
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_New Hampshire.geojson"
+      url: "https://osf.io/download/660f0c1b219e712427f6a7c7/"
     },
     VT: {
       name: "Vermont",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Vermont.geojson"
+      url: "https://osf.io/download/660f2d67943bee1f0edfeccb/"
     },
     ME: {
       name: "Maine",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Maine.geojson"
+      url: "https://osf.io/download/660f0385bba39a1baa729fab/"
     },
     RI: {
       name: "Rhode Island",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Rhode Island.geojson"
+      url: "https://osf.io/download/660f2467c053941c82b4d37f/"
     },
     NY: {
       name: "New York",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_New York.geojson"
+      url: "https://osf.io/download/660f2144bba39a1c29729ee1/"
     },
     PA: {
       name: "Pennsylvania",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Pennsylvania.geojson"
+      url: "https://osf.io/download/660f2480c053941c7cb4d384/"
     },
     NJ: {
       name: "New Jersey",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_New Jersey.geojson"
+      url: "https://osf.io/download/660f0df5e65c60222b7d9b96/"
     },
     DE: {
       name: "Delaware",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Delaware.geojson"
+      url: "https://osf.io/download/660ef2f0e65c6021657d9f50/"
     },
     MD: {
       name: "Maryland",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Maryland.geojson"
+      url: "https://osf.io/download/660f03d6bba39a1ba172a1f9/"
     },
     VA: {
       name: "Virginia",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Virginia.geojson"
+      url: "https://osf.io/download/f6rmq/"
     },
     WV: {
       name: "West Virginia",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_West Virginia.geojson"
+      url: "https://osf.io/download/660f2ce3943bee1f0edfec74/"
     },
     OH: {
       name: "Ohio",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Ohio.geojson"
+      url: "https://osf.io/download/660f22abc053941c7cb4d34f/"
     },
     IN: {
       name: "Indiana",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Indiana.geojson"
+      url: "https://osf.io/download/y4zhw/"
     },
     IL: {
       name: "Illinois",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Illinois.geojson"
+      url: "https://osf.io/download/660efd5a219e7123ccf6a7df/"
     },
     CT: {
       name: "Connecticut",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Connecticut.geojson"
+      url: "https://osf.io/download/660ef269219e71238ef6a908/"
     },
     WI: {
       name: "Wisconsin",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Wisconsin.geojson"
+      url: "https://osf.io/download/660f2d4b943bee1f0edfecbf/"
     },
     NC: {
       name: "North Carolina",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_North Carolina.geojson"
+      url: "https://osf.io/download/660f219a219e7124a9f6a83c/"
     },
     DC: {
       name: "District of Columbia",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_District of Columbia.geojson"
+      url: "https://osf.io/download/660ef290bba39a1b4372a20d/"
     },
     MA: {
       name: "Massachusetts",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Massachusetts.geojson"
+      url: "https://osf.io/download/660f0218c053941bf5b4d3db/"
     },
     TN: {
       name: "Tennessee",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Tennessee.geojson"
+      url: "https://osf.io/download/3hfb7/"
     },
     AR: {
       name: "Arkansas",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Arkansas.geojson"
+      url: "https://osf.io/download/6rkzb/"
     },
     MO: {
       name: "Missouri",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Missouri.geojson"
+      url: "https://osf.io/download/660f08ace65c6021fe7d9c8b/"
     },
     GA: {
       name: "Georgia",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Georgia.geojson"
+      url: "https://osf.io/download/9pdwu/"
     },
     SC: {
       name: "South Carolina",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_South Carolina.geojson"
+      url: "https://osf.io/download/660f25f7c053941c83b4d4c4/"
     },
     KY: {
       name: "Kentucky",
@@ -273,175 +273,175 @@ var simplemaps_usmap_mapdata={
       color: "default",
       zoomable: "no",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Kentucky.geojson"
+      url: "https://osf.io/download/660f0069bba39a1ba0729ebb/"
     },
     AL: {
       name: "Alabama",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Alabama.geojson"
+      url: "https://osf.io/download/cjepw/"
     },
     LA: {
       name: "Louisiana",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Louisiana.geojson"
+      url: "https://osf.io/download/660f010bc053941bf2b4d3a9/"
     },
     MS: {
       name: "Mississippi",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Mississippi.geojson"
+      url: "https://osf.io/download/660f0883bba39a1bca729f23/"
     },
     IA: {
       name: "Iowa",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Iowa.geojson"
+      url: "https://osf.io/download/660efa90e65c6021907d9bb2/"
     },
     MN: {
       name: "Minnesota",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Minnesota.geojson"
+      url: "https://osf.io/download/660f05ede65c6021e57d9c55/"
     },
     OK: {
       name: "Oklahoma",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Oklahoma.geojson"
+      url: "https://osf.io/download/660f22b0bba39a1c3d729e98/"
     },
     TX: {
       name: "Texas",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Texas.geojson"
+      url: "https://osf.io/download/660f2b5ae65c6022cd7d9b98/"
     },
     NM: {
       name: "New Mexico",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_New Mexico.geojson"
+      url: "https://osf.io/download/660f1f2ee65c60227f7d9bfe/"
     },
     KS: {
       name: "Kansas",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Kansas.geojson"
+      url: "https://osf.io/download/660efe36c053941be1b4d28d/"
     },
     NE: {
       name: "Nebraska",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Nebraska.geojson"
+      url: "https://osf.io/download/660f0bcc219e712427f6a788/"
     },
     SD: {
       name: "South Dakota",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_South Dakota.geojson"
+      url: "https://osf.io/download/660f2502e65c6022a77d9ce4/"
     },
     ND: {
       name: "North Dakota",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_North Dakota.geojson"
+      url: "https://osf.io/download/660f0af7bba39a1bca72a2e3/"
     },
     WY: {
       name: "Wyoming",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Wyoming.geojson"
+      url: "https://osf.io/download/660f2bb3219e7124f6f6a753/"
     },
     MT: {
       name: "Montana",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Montana.geojson"
+      url: "https://osf.io/download/660f0a61c053941c18b4d2e8/"
     },
     CO: {
       name: "Colorado",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Colorado.geojson"
+      url: "https://osf.io/download/660ef194c053941babb4d32e/"
     },
     UT: {
       name: "Utah",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Utah.geojson"
+      url: "https://osf.io/download/660f2837bba39a1c4c729ef2/"
     },
     AZ: {
       name: "Arizona",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Arizona.geojson"
+      url: "https://osf.io/download/660eef80c053941ba3b4d54d/"
     },
     NV: {
       name: "Nevada",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Nevada.geojson"
+      url: "https://osf.io/download/660f1fb7219e712494f6a802/"
     },
     OR: {
       name: "Oregon",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Oregon.geojson"
+      url: "https://osf.io/download/660f2430bba39a1c39729ede/"
     },
     WA: {
       name: "Washington",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Washington.geojson"
+      url: "https://osf.io/download/660f2de3c053941cabb4d352/"
     },
     CA: {
       name: "California",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_California.geojson"
+      url: "https://osf.io/download/ta6w4/"
     },
     MI: {
       name: "Michigan",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Michigan.geojson"
+      url: "https://osf.io/download/660f058f943bee1e4ddfecca/"
     },
     ID: {
       name: "Idaho",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Idaho.geojson"
+      url: "https://osf.io/download/660efb99943bee1e2bdfebb4/"
     },
     GU: {
       name: "Guam",
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Guam.geojson",
+      url: "https://osf.io/x94gj/files/osfstorage",
       hide: "yes"
     },
     VI: {
@@ -449,7 +449,7 @@ var simplemaps_usmap_mapdata={
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Virgin Islands.geojson",
+      url: "https://osf.io/x94gj/files/osfstorage",
       hide: "yes"
     },
     PR: {
@@ -457,7 +457,7 @@ var simplemaps_usmap_mapdata={
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Puerto Rico.geojson",
+      url: "https://osf.io/x94gj/files/osfstorage",
       hide: "no"
     },
     AS: {
@@ -465,7 +465,7 @@ var simplemaps_usmap_mapdata={
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_American Samoa.geojson",
+      url: "https://osf.io/x94gj/files/osfstorage",
       hide: "yes"
     },
     MP: {
@@ -473,7 +473,7 @@ var simplemaps_usmap_mapdata={
       description: "no",
       color: "default",
       hover_color: "default",
-      url: "https://dewsfcxuf47u5.cloudfront.net/segregation_all_Northern Mariana Islands.geojson",
+      url: "https://osf.io/x94gj/files/osfstorage",
       hide: "yes"
     }
   },

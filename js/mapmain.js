@@ -4513,8 +4513,8 @@ function drawHistogram(data, div_score_exp) {
     .attr("width", barPixelWidth)
     .attr("height", function(d) { return histogramHeight - histogramYScale(d.value); })
     .attr("fill-opacity", "1")
-    .attr("rx", 3)
-    .attr("ry", 3);
+    .attr("rx", 0)
+    .attr("ry", 0);
 
     entered.merge(NationalHis)
     .transition()
@@ -4532,8 +4532,8 @@ function drawHistogram(data, div_score_exp) {
         }
     })
     .attr("fill-opacity", "1")
-    .attr("rx", 3)
-    .attr("ry", 3)
+    .attr("rx", 0)
+    .attr("ry", 0)
     .attr("stroke", function(d) {
         if (typeof div_score_exp !== 'undefined' && div_score_exp !== null &&
             d.bin <= div_score_exp && d.bin + defaultBinWidth >= div_score_exp) {
@@ -5934,8 +5934,29 @@ $(document).ready(function() {
           document.querySelector("#close").addEventListener("click", closeOverlay);
 
           document.addEventListener("keydown", function(e) {
-              if (e.key === "Escape") closeOverlay();
+              if (e.key === "Escape") {
+                  closeOverlay();
+                  closeDownloadModal();
+              }
           });
+
+          // Download modal
+          var downloadMapLoaded = false;
+          function openDownloadModal() {
+              document.getElementById("downloadOverlay").style.display = "block";
+              document.getElementById("downloadModal").style.display = "block";
+              if (!downloadMapLoaded && typeof simplemaps_usmap !== 'undefined') {
+                  simplemaps_usmap.load();
+                  downloadMapLoaded = true;
+              }
+          }
+          function closeDownloadModal() {
+              document.getElementById("downloadOverlay").style.display = "none";
+              document.getElementById("downloadModal").style.display = "none";
+          }
+          document.getElementById("downloadBtn").addEventListener("click", openDownloadModal);
+          document.getElementById("closeDownload").addEventListener("click", closeDownloadModal);
+          document.getElementById("downloadOverlay").addEventListener("click", closeDownloadModal);
 
           // $(document).ready(function() {
           ////////////////////////////////
