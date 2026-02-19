@@ -506,6 +506,13 @@ background: repeating-linear-gradient(-45deg,        #ff0000,   #ff0000 5px,   #
     border-left: 3px solid #2563eb;
     border-radius: 4px;
     font-size: 12.5px;
+    overflow-wrap: break-word;
+}
+
+.downloadModal .citation a {
+    writing-mode: horizontal-tb;
+    color: #2563eb !important;
+    font-size: inherit !important;
 }
 
 .downloadModal table {
