@@ -5272,28 +5272,38 @@ $(document).ready(function() {
                   compact: true
               }), 'bottom-right')
 
-              let jawgPlaces = new JawgPlaces.MapLibre({
-                    container: '#my-container',
-                    input: '#my-input',
-                    resultContainer: '#my-result-container',
-                    searchOnTyping: true,
-                            transition: {
-                          type: 'fly',
-                          flySpeed: 1.2,
-                          flyCurve: 1.42
-                        },
-                      adminArea: {
-                          fillColor: 'rgba(172,59,246, 0.0)',
-                          outlineColor: 'rgb(172,59,246)',
-                          outlineWidth: '2',
-                          show: true,
-                        },
-                        sources: 'wof'
-                          })
+              // Guard: if the JAWG search library failed to load, skip the search
+              // box rather than letting the error abort the rest of map setup.
+              if (typeof JawgPlaces !== 'undefined') {
+                try {
+                  let jawgPlaces = new JawgPlaces.MapLibre({
+                        container: '#my-container',
+                        input: '#my-input',
+                        resultContainer: '#my-result-container',
+                        searchOnTyping: true,
+                                transition: {
+                              type: 'fly',
+                              flySpeed: 1.2,
+                              flyCurve: 1.42
+                            },
+                          adminArea: {
+                              fillColor: 'rgba(172,59,246, 0.0)',
+                              outlineColor: 'rgb(172,59,246)',
+                              outlineWidth: '2',
+                              show: true,
+                            },
+                            sources: 'wof'
+                              })
 
-              map.addControl(jawgPlaces,'top-right');
-              jawgPlaces.attachMap(map);
-              jawgPlaces.close();
+                  map.addControl(jawgPlaces,'top-right');
+                  jawgPlaces.attachMap(map);
+                  jawgPlaces.close();
+                } catch (e) {
+                  console.warn('JAWG places search failed to initialize:', e);
+                }
+              } else {
+                console.warn('JawgPlaces not loaded; search box disabled.');
+              }
 
               });
 

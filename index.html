@@ -42,8 +42,14 @@
           rel="stylesheet"
         />
         
-        <!-- Config (API keys) -->
-        <script src="config.js"></script>
+        <!-- Config (API keys). NOTE: this token is public (sent from the browser),
+             so it is inlined here rather than loaded from a gitignored config.js.
+             Restrict it to this domain in the JAWG dashboard. -->
+        <script>
+          var CONFIG = {
+            JAWG_ACCESS_TOKEN: "7a2eSRhtCbdwcC29QQVpudx5QTKDKgcGTS9H6ZZFXnGQICMzOlGsWklmqRvVnIYy"
+          };
+        </script>
         <!-- Jawg search (loaded synchronously via document.write to ensure availability) -->
         <script>
           document.write('<script src="https://api.jawg.io/libraries/jawg-places@latest/jawg-places.js?access-token=' + CONFIG.JAWG_ACCESS_TOKEN + '"><\/script>');
