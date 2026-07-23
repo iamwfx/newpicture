@@ -4224,11 +4224,18 @@ function createPopUp(popUp,map,hoveredFeatureId,svg){
           // Calculate the popup position
           const popupLngLat = [bottomLeftCoordinate[0], bottomLeftCoordinate[1]];
 
+          // For the Difference metric, also show the underlying experienced value
+          var expLine = '';
+          if (metric === 'diff') {
+              var expVal = e.features[0]['properties']['total_diversity_exp'];
+              expLine = `<h6>Total Experienced Diversity: ${d3.format(",.2%")(expVal)}</h6>`;
+          }
+
           // Get the text
           popUpStr = `<div class='popup'>
 
               <h6>${catDict[metric]}: ${d3.format(",.2%")(div_score_exp)}</h6>
-              
+              ${expLine}
               <h6>${comparedMetric}: ${d3.format(",.2%")(hismetric)}</h6>
               <h6><br></h6>
               <h7>${geom_name}, ${geom_statename}</h7>
