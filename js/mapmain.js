@@ -5124,7 +5124,8 @@ $(document).ready(function() {
                 });
 
                 try {
-                  updateDynamicHistogram(map, metric);
+                  // updateDynamicHistogram is defined in another scope; call via the global bridge
+                  if (_updateDynamicHistogramFn) _updateDynamicHistogramFn(map, metric);
                 } catch(e) {
                   console.warn('Histogram update error:', e);
                 }
@@ -5148,12 +5149,18 @@ $(document).ready(function() {
                     essential: true,
                   });
                 }
-                try {
-                  var currentMetric = $("#censusDropdown1 input").val() || 'total_diversity_exp';
-                  updateDynamicHistogram(map, currentMetric);
-                } catch(e) {
-                  console.warn('Histogram update error:', e);
-                }
+                // Wait for the flyTo + new tiles to finish before computing the histogram,
+                // otherwise queryRenderedFeatures runs against tiles that haven't loaded yet
+                // (which left the Metric Distribution chart empty after selecting a city).
+                map.once('idle', function() {
+                  try {
+                    var currentMetric = $("#censusDropdown1 input").val() || 'total_diversity_exp';
+                    // updateDynamicHistogram is defined in another scope; call via the global bridge
+                    if (_updateDynamicHistogramFn) _updateDynamicHistogramFn(map, currentMetric);
+                  } catch(e) {
+                    console.warn('Histogram update error:', e);
+                  }
+                });
               }
             }, 200);
 
