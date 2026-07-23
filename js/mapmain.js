@@ -5204,6 +5204,22 @@ $(document).ready(function() {
               ///////////// 3. CREATE MAP OBJECT /////////////
               ////////////////////////////////////////////////
 
+              // MapLibre requires WebGL. If the browser has it disabled (for
+              // example, hardware acceleration turned off), show a clear
+              // message instead of a blank map and a cascade of errors.
+              if (typeof maplibregl.supported === 'function' && !maplibregl.supported()) {
+                  var mapEl = document.getElementById('map');
+                  if (mapEl) {
+                      mapEl.innerHTML =
+                          '<div class="webglError">' +
+                            '<h3>This map needs WebGL</h3>' +
+                            '<p>Your browser has WebGL (hardware-accelerated graphics) turned off, so the interactive map cannot load.</p>' +
+                            '<p><b>In Chrome:</b> open <code>chrome://settings/system</code>, turn on <b>Use hardware acceleration when available</b>, then relaunch Chrome and reload this page.</p>' +
+                            '<p>Most browsers, including Safari, have this enabled by default.</p>' +
+                          '</div>';
+                  }
+                  return;
+              }
 
               const map = new maplibregl.Map({
                   container: 'map',

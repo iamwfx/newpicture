@@ -232,7 +232,34 @@ background: repeating-linear-gradient(-45deg,        #ff0000,   #ff0000 5px,   #
 /*  height:calc(100% - 60px);*/
   height:100%;
   width:calc(100% - 5rem);
-}   
+}
+
+.webglError {
+  max-width: 460px;
+  margin: 0 auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 28px 32px;
+  text-align: center;
+  color: #334155;
+}
+.webglError h3 {
+  font-size: 20px;
+  margin: 0 0 12px;
+  color: #440154;
+}
+.webglError p {
+  font-size: 14px;
+  line-height: 22px;
+  margin: 8px 0;
+}
+.webglError code {
+  background: #eef1f5;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 12.5px;
+}
 
 
 .popup{
