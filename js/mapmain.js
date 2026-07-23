@@ -40,7 +40,7 @@ const catDict2 ={'white_diversity_exp':'white_perc',
             'other_diversity_exp':'other_perc',
             'total_diversity_exp':"total_diversity_resi",
             'total_diversity_resi':'total_diversity_resi',
-            'diff':"Difference"}
+            'diff':"total_diversity_resi"}
             
 // Color dict for the legend
 // const censusCatDict = {
