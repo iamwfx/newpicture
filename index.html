@@ -302,14 +302,55 @@
           <div class="overlay" id="overlay"></div>
           <div class="popupIntro">
 
-               <h2>A New Picture of Segregation</h2>
-               <p>
-                   Traditional measures of segregation rely on where people live, but daily life extends far beyond the home. This map visualizes the <b>National Experienced Racial-Ethnic Diversity (NERD)</b> dataset, which uses anonymized mobile phone location data to measure the diversity people actually encounter throughout their day — at work, during errands, and in leisure activities.
-               </p>
-               <p>
-                   Explore how experienced diversity varies across U.S. metropolitan areas by race, time of day, and day of week. Select a city and metric to compare experienced diversity with traditional residential measures at the census tract level.
-               </p>
-               <button id="close">Explore the Map</button>
+               <!-- Step 0: Welcome -->
+               <div class="introStep is-active" data-step="0">
+                   <h2>A New Picture of Segregation</h2>
+                   <p>
+                       Traditional measures of segregation rely on where people live, but daily life extends far beyond the home. This map visualizes the <b>National Experienced Racial-Ethnic Diversity (NERD)</b> dataset, which uses anonymized mobile phone location data to measure the diversity people actually encounter throughout their day: at work, during errands, and in leisure activities.
+                   </p>
+                   <p class="introLead">Take the quick tour, or jump right in.</p>
+               </div>
+
+               <!-- Step 1: Pick a place -->
+               <div class="introStep" data-step="1">
+                   <h3>1 · Pick a place</h3>
+                   <p>Use the <b>City</b> menu at the top left to jump to any U.S. metropolitan area. The map flies there and loads data for every census tract.</p>
+               </div>
+
+               <!-- Step 2: Choose a metric -->
+               <div class="introStep" data-step="2">
+                   <h3>2 · Choose a metric</h3>
+                   <p>The <b>Metric</b> menu sets what the colors show: <b>Total Experienced Diversity</b>, <b>Total Residential Diversity</b>, or the <b>Difference</b> between them. The <b>Legend</b> just below decodes the color scale.</p>
+               </div>
+
+               <!-- Step 3: Time of day and week -->
+               <div class="introStep" data-step="3">
+                   <h3>3 · Compare across the week</h3>
+                   <p>Toggle <b>Weekday / Weekend</b> and the time of day (<b>Morning</b> through <b>Late night</b>) to see how the diversity people experience shifts through the day.</p>
+               </div>
+
+               <!-- Step 4: Dig into the details -->
+               <div class="introStep" data-step="4">
+                   <h3>4 · Dig into the details</h3>
+                   <p>The <b>Metric Distribution</b> histogram summarizes the current view. <b>Click any tract</b> to compare its experienced vs. residential diversity and see its census characteristics, or use <b>Search Places</b> to fly to a specific address.</p>
+               </div>
+
+               <!-- Navigation -->
+               <div class="introNav">
+                   <div class="introDots">
+                       <span class="introDot" data-step="0"></span>
+                       <span class="introDot" data-step="1"></span>
+                       <span class="introDot" data-step="2"></span>
+                       <span class="introDot" data-step="3"></span>
+                       <span class="introDot" data-step="4"></span>
+                   </div>
+                   <div class="introNavRow">
+                       <button type="button" id="introBack" class="introBtn introBtnGhost">Back</button>
+                       <button type="button" id="introNext" class="introBtn">Next</button>
+                       <button id="close" class="introBtn">Explore the Map</button>
+                   </div>
+                   <a href="#" id="introSkip" class="introSkip">Skip tour</a>
+               </div>
           </div>
 
           <!-- Download Modal -->
@@ -317,14 +358,6 @@
           <div class="downloadModal" id="downloadModal">
                <i class="large close red icon" id="closeDownload"></i>
                <h2>Data Download</h2>
-
-               <h4>About the Dataset</h4>
-               <p>
-                   The <b>National Experienced Racial-Ethnic Diversity (NERD)</b> dataset provides estimates of experienced diversity for the entire United States at the census tract level. Using anonymized mobile phone location data from over 66 million opted-in devices, the dataset measures the diversity people actually encounter throughout their day — not just where they live.
-               </p>
-               <p>
-                   Diversity in potential social interactions is estimated at 38.2 m × 19.1 m spatial resolution and 15-minute temporal resolution for a representative year, then aggregated to the census tract level for data privacy. The dataset includes experienced diversity broken down by race/ethnicity (White, Black, Asian, Hispanic, Other), time of day (morning 6:00 AM–11:59 AM, afternoon 12:00 PM–4:59 PM, evening 5:00 PM–9:59 PM, late evening 10:00 PM–11:59 PM, late night 12:00 AM–5:59 AM), and day of week (weekday vs. weekend), along with census demographic characteristics.
-               </p>
 
                <h4>License</h4>
                <p>
@@ -376,11 +409,112 @@
                </div>
           </div>
 
+          <!-- About Modal -->
+          <div class="overlay" id="aboutOverlay"></div>
+          <div class="downloadModal" id="aboutModal">
+               <i class="large close red icon" id="closeAbout"></i>
+               <h2>About</h2>
+
+               <h4>About the Dataset</h4>
+               <p>
+                   The <b>National Experienced Racial-Ethnic Diversity (NERD)</b> dataset provides estimates of experienced diversity for the entire United States at the census tract level. Using anonymized mobile phone location data from over 66 million opted-in devices, the dataset measures the diversity people actually encounter throughout their day, not just where they live.
+               </p>
+               <p>
+                   Diversity in potential social interactions is estimated at 38.2 m × 19.1 m spatial resolution and 15-minute temporal resolution for a representative year, then aggregated to the census tract level for data privacy. The dataset includes experienced diversity broken down by race/ethnicity (White, Black, Asian, Hispanic, Other), time of day (morning 6:00 AM–11:59 AM, afternoon 12:00 PM–4:59 PM, evening 5:00 PM–9:59 PM, late evening 10:00 PM–11:59 PM, late night 12:00 AM–5:59 AM), and day of week (weekday vs. weekend), along with census demographic characteristics.
+               </p>
+
+               <h4>Methods</h4>
+
+               <h5>Mobility data</h5>
+               <p>
+                   The dataset is built from anonymized, opted-in mobile-device location data provided through Cuebiq's Spectus Data for Good program, covering roughly 66 million devices across the United States. To capture seasonal variation, four representative two-week periods spanning 2022 (March, June, September, and December) are used. GPS pings originate from everyday mobile applications (weather, navigation, games, and similar), with an average location accuracy of about 21 meters.
+               </p>
+
+               <h5>Inferring home and race/ethnicity</h5>
+               <p>
+                   Each device is assigned a home location by scoring where it dwells over the preceding month (favoring frequent, overnight, and long-duration stays), updated daily to reflect moves. Home locations are up-leveled to 2010 Census block groups for privacy, and only devices with an identifiable home are retained. Because individual race and ethnicity are not observed, each device is given a <b>probabilistic demographic profile</b> drawn from the American Community Survey composition of its home block group, across five groups: Non-Hispanic White, Non-Hispanic Black, Non-Hispanic Asian, Hispanic, and Non-Hispanic Other.
+               </p>
+
+               <h5>Measuring experienced diversity</h5>
+               <p>
+                   Co-locations (devices whose stays overlap in both space and time) are detected on a geohash-8 grid (about 38.2 m × 19.1 m) in 15-minute windows. For each cell and time window, experienced diversity is computed as a Gini-Simpson index:
+               </p>
+               <p class="formula"><b>D = 1 − Σ<sub>j</sub> ( n<sub>j</sub> / N )<sup>2</sup></b></p>
+               <p>
+                   where <i>n<sub>j</sub></i> is the number of people of group <i>j</i> present and <i>N</i> is the total. <b>D</b> is the probability that two people drawn at random from that place and time belong to different racial-ethnic groups. Cell-level values are aggregated into five times of day and averaged separately for weekdays and weekends.
+               </p>
+
+               <h5>Aggregation and privacy</h5>
+               <p>
+                   Geohash-level diversity is aggregated to 2010 Census tracts using an activity-weighted sum, so busier places contribute proportionally. To protect privacy, tracts with fewer than 20 unique devices are excluded (613 tracts nationwide), and all outputs are aggregated so that no individual or sensitive location, such as a school or place of worship, can be singled out.
+               </p>
+
+               <h5>Residential diversity and the Difference metric</h5>
+               <p>
+                   For comparison, <b>residential diversity</b> applies the same index to each tract's residential racial-ethnic composition from the 2017–2021 ACS. The map's <b>Difference</b> metric is experienced minus residential diversity: positive values mark places where people encounter more diversity through daily activity than the neighborhood's residents alone would suggest, and negative values the reverse.
+               </p>
+
+               <h5>Validation</h5>
+               <p>
+                   Device coverage tracks Census population closely (Spearman ρ ≈ 0.93 nationally), and inferred home and workplace locations align with the Census LEHD/LODES employment data (r &gt; 0.8), supporting the representativeness of the sample.
+               </p>
+
+               <h4>Citation</h4>
+               <p class="citation">
+                   Xu, W., Wang, Z., Attia, N., Attia, Y., Zhang, Y., & Zong, H. (2024). An experienced racial-ethnic diversity dataset in the United States using human mobility data. <i>Scientific Data</i>, 11, 638. <a href="https://doi.org/10.1038/s41597-024-03490-y" target="_blank">https://doi.org/10.1038/s41597-024-03490-y</a>
+               </p>
+          </div>
+
     </body>
     <footer>
         <script src="js/mapmain.js"></script>
         <!-- <script src="js/charts.js"></script> -->
         <!-- <script src="js/main.js"></script> -->
+
+        <!-- Intro walkthrough / guided tour -->
+        <script>
+        (function () {
+          function initIntroTour() {
+            var popup = document.querySelector('.popupIntro');
+            if (!popup) return;
+            var steps   = popup.querySelectorAll('.introStep');
+            var dots    = popup.querySelectorAll('.introDot');
+            var back    = popup.querySelector('#introBack');
+            var next    = popup.querySelector('#introNext');
+            var explore = popup.querySelector('#close');       // reuses existing close handler
+            var skip    = popup.querySelector('#introSkip');
+            if (!steps.length || !next || !explore) return;
+
+            var i = 0;
+            var last = steps.length - 1;
+
+            function render() {
+              for (var s = 0; s < steps.length; s++) steps[s].classList.toggle('is-active', s === i);
+              for (var d = 0; d < dots.length; d++) dots[d].classList.toggle('is-active', d === i);
+              back.style.display    = (i === 0)    ? 'none' : 'inline-block';
+              next.style.display    = (i === last) ? 'none' : 'inline-block';
+              explore.style.display = (i === last) ? 'inline-block' : 'none';
+              if (skip) skip.style.display = (i === last) ? 'none' : 'inline-block';
+            }
+            function go(n) { i = Math.max(0, Math.min(last, n)); render(); }
+
+            next.addEventListener('click', function () { go(i + 1); });
+            back.addEventListener('click', function () { go(i - 1); });
+            for (var d = 0; d < dots.length; d++) {
+              (function (idx) { dots[idx].addEventListener('click', function () { go(idx); }); })(d);
+            }
+            if (skip) skip.addEventListener('click', function (e) { e.preventDefault(); explore.click(); });
+
+            go(0);
+          }
+
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initIntroTour);
+          } else {
+            initIntroTour();
+          }
+        })();
+        </script>
     </footer>
 
     

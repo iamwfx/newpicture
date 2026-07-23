@@ -454,6 +454,90 @@ background: repeating-linear-gradient(-45deg,        #ff0000,   #ff0000 5px,   #
     border-radius: 8px; /* Apply border radius to the image if needed */
 }
 
+/* ---- Intro walkthrough / tour ---- */
+.introStep { display: none; }
+.introStep.is-active { display: block; }
+
+/* Give the step area a stable height so short steps don't make the modal jump */
+.introSteps, .popupIntro .introStep { min-height: 1px; }
+
+.popupIntro h3 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 4px 0 0;
+    color: #fff;
+}
+
+.introStep p {
+    text-align: center;
+    line-height: 24px;
+}
+.introStep[data-step="0"] p { text-align: justify; }
+
+.introLead {
+    font-weight: 600;
+    color: #fff !important;
+    text-align: center !important;
+    margin-top: 14px;
+}
+
+.introNav { margin-top: 20px; }
+
+.introDots {
+    display: flex;
+    justify-content: center;
+    gap: 9px;
+    margin-bottom: 18px;
+}
+.introDot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+.introDot:hover { background: rgba(255, 255, 255, 0.7); }
+.introDot.is-active { background: #fff; transform: scale(1.3); }
+
+.introNavRow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Override the generic .popupIntro button rule (fixed 130px, block) */
+.popupIntro .introBtn {
+    display: inline-block;
+    width: auto;
+    min-width: 110px;
+    margin: 0;
+    padding: 10px 24px;
+    font-size: 14px;
+    font-weight: 600;
+}
+.popupIntro .introBtnGhost {
+    background: transparent;
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+}
+.popupIntro .introBtnGhost:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.introSkip {
+    display: inline-block;
+    margin-top: 14px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 13px;
+    text-decoration: underline;
+    cursor: pointer;
+    writing-mode: horizontal-tb; /* links inherit a vertical writing-mode in this app */
+    white-space: nowrap;
+}
+.introSkip:hover { color: #fff; }
+
 .overlay {
     position: fixed;
     top: 0;
@@ -493,6 +577,21 @@ background: repeating-linear-gradient(-45deg,        #ff0000,   #ff0000 5px,   #
     color: #1e293b;
 }
 
+.downloadModal h5 {
+    margin-top: 1rem;
+    margin-bottom: 0.15rem;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #2563eb;
+}
+
+.downloadModal .formula {
+    text-align: center;
+    font-size: 15px;
+    margin: 12px 0;
+    color: #1e293b;
+}
+
 .downloadModal p {
     font-size: 13px;
     text-align: left;
@@ -520,7 +619,8 @@ background: repeating-linear-gradient(-45deg,        #ff0000,   #ff0000 5px,   #
     font-size: 12px;
 }
 
-.downloadModal #closeDownload {
+.downloadModal #closeDownload,
+.downloadModal #closeAbout {
     position: absolute;
     top: 15px;
     right: 15px;

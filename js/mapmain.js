@@ -5344,11 +5344,6 @@ $(document).ready(function() {
           // Show intro popup on initial load
           openOverlay();
 
-          // Event listener for the About button
-          document.querySelector("#aboutText").addEventListener("click", function(event) {
-              openOverlay(); // Calls the function to open the overlay and popupIntro
-          });
-
           function closeOverlay() {
               document.querySelector(".overlay").style.display = "none";
               document.querySelector(".popupIntro").style.display = "none";
@@ -5356,16 +5351,36 @@ $(document).ready(function() {
 
           document.querySelector("#close").addEventListener("click", closeOverlay);
 
+          // About modal (data description + methods), separate from the intro/tour
+          function openAboutModal() {
+              // Opening one page closes any other that's open
+              closeOverlay();
+              closeDownloadModal();
+              document.getElementById("aboutOverlay").style.display = "block";
+              document.getElementById("aboutModal").style.display = "block";
+          }
+          function closeAboutModal() {
+              document.getElementById("aboutOverlay").style.display = "none";
+              document.getElementById("aboutModal").style.display = "none";
+          }
+          document.querySelector("#aboutText").addEventListener("click", openAboutModal);
+          document.getElementById("closeAbout").addEventListener("click", closeAboutModal);
+          document.getElementById("aboutOverlay").addEventListener("click", closeAboutModal);
+
           document.addEventListener("keydown", function(e) {
               if (e.key === "Escape") {
                   closeOverlay();
                   closeDownloadModal();
+                  closeAboutModal();
               }
           });
 
           // Download modal
           var downloadMapLoaded = false;
           function openDownloadModal() {
+              // Opening one page closes any other that's open
+              closeOverlay();
+              closeAboutModal();
               document.getElementById("downloadOverlay").style.display = "block";
               document.getElementById("downloadModal").style.display = "block";
               if (!downloadMapLoaded && typeof simplemaps_usmap !== 'undefined') {
